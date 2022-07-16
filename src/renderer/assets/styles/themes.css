@@ -1,0 +1,52 @@
+.window--unfocused {
+    --bg-color: 249, 249, 249;
+    --bg-color--light: 243, 243, 243;
+    --border-color: 230, 230, 230;
+}
+
+
+/* DARK */
+
+.theme--dark.window--unfocused {
+    --bg-color: 39, 39, 39;
+    --bg-color--light: 32, 32, 32;
+    --border-color: 30, 30, 30;
+}
+
+.theme--dark {
+    --bg-color: 37, 40, 44;
+    --bg-color--light: 29, 33, 37;
+    --bg-color--solid: 51, 52, 55;
+    --bg-color--solid-inverted: 246, 246, 246;
+
+    --border-color: 25, 30, 34;
+    --border-color--light: 66, 66, 66;
+    --border-color--dark: 203, 203, 203;
+
+    --title-color: 255, 255, 255;
+    --title-color--inverted: 14, 14, 14;
+    --text-color: 240, 240, 240;
+    --text-color--light: 154, 155, 157;
+}
+
+.theme--dark .icon-color,
+.theme--dark .icon-color--light {
+    filter: invert(1);
+}
+
+.theme--dark .c-sidebar__item:hover,
+.theme--dark .c-toggle-sidebar:hover {
+    background-color: rgb(var(--bg-color));
+}
+.theme--dark .c-sidebar__item--active {
+    background-color: rgb(var(--bg-color));
+}
+
+.theme--dark .c-searchbar__icon:hover {
+    background-color: rgb(var(--border-color--dark), .3);
+}
+
+.theme--dark .btn--primary,
+.theme--dark .accent--color {
+    filter: saturate(.5);
+}

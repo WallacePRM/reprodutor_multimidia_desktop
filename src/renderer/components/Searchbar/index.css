@@ -1,0 +1,77 @@
+.c-searchbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: rgb(var(--text-color));
+    transition: .2s;
+}
+
+.c-searchbar__field {
+    font-family: 'Heebo', sans-serif;
+    flex: 1;
+    background-color: rgb(var(--bg-color));
+    border: 1px solid rgb(var(--border-color--light));
+    border-bottom: 1px solid rgb(var(--accent-color));
+    padding: 8px 10px;
+    border-radius: .3rem;
+    font-size: .875em;
+    text-decoration: none;
+    outline: none;
+}
+.c-searchbar__field:focus {
+    padding: 7.5px 10px;
+    border-bottom: 2px solid rgb(var(--accent-color));
+    background-color: rgb(var(--bg-color--solid));
+}
+
+.c-searchbar__icon {
+    position: absolute;
+    color: rgb(var(--text-color), .1);
+    padding: 8px;
+    border-radius: .3rem;
+    /* height: .7em; */
+    width: .875em;
+    right: 1.8rem;
+    transition: .2s;
+}
+.c-searchbar__icon:hover {
+    background-color: rgb(var(--border-color), .5);
+}
+
+/* SEACHBAR--OPENED */
+
+.c-searchbar--opened .c-searchbar__field{
+    opacity: 1;
+    pointer-events: all;
+}
+.c-searchbar--opened .c-searchbar__icon {
+    right: 1.8rem;
+    /* height: .7em; */
+    padding: 8px;
+}
+
+@media (max-width: 999px) {
+    .c-searchbar__field {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .c-searchbar__icon {
+        right: .35rem;
+        height: .9em;
+        padding: .7rem;
+    }
+}
+
+@media (max-width: 655px) {
+    .c-searchbar__field {
+        opacity: 1;
+        pointer-events: all;
+    }
+    .c-searchbar__icon {
+        right: 1.8rem;
+        height: .7em;
+        padding: 8px;
+    }
+}

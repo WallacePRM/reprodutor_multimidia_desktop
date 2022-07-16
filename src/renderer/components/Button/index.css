@@ -1,0 +1,26 @@
+.c-button {
+    font-size: .85em;
+    height: 32px;
+    white-space: nowrap;
+}
+
+.c-button__icon {
+    font-size: .7rem;
+}
+
+@media (max-width: 655px) {
+    .c-button__icon {
+        margin-right: 0;
+    }
+
+    .c-button__label {
+        display: none;
+    }
+
+    .c-button--no-media-style .c-button__label {
+        display: block;
+    }
+    .c-button--no-media-style .c-button__icon {
+        margin-right: 10px;
+    }
+}

@@ -1,0 +1,8 @@
+.c-previous-router {
+    width: 1em;
+}
+
+.c-previous-router--disabled {
+    opacity: .2;
+    pointer-events: none;
+}

@@ -1,0 +1,179 @@
+
+.c-grid-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.c-grid-list__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 220px;
+  max-height: 220px;;
+  width: max-content;
+  padding: .35rem;
+  border-radius: .5rem;
+  transition: .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid transparent;
+}
+
+.select-mode .c-grid-list__item__interface {
+  pointer-events: none;
+}
+
+.c-grid-list__item:hover {
+  background-color: rgb(var(--border-color), .4);
+  border-color: rgb(var(--border-color), .5);
+}
+
+.c-grid-list__item--animated {
+  transform: scale(.95);
+}
+
+.c-grid-list__item__thumbnail {
+  position: relative;
+  background-color: rgb(var(--bg-color--light));
+  width: 10rem;
+  height: 10rem;
+  border-radius: .3rem;
+  border: 1px solid rgb(var(--border-color--dark), .15)
+}
+
+.c-grid-list__item__thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: .3rem;
+  /* border: 1px solid rgb(var(--border-color--dark), .15); */
+}
+
+.c-grid-list__item__icon {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5em;
+  color: rgb(var(--text-color), .7);
+}
+
+.c-grid-list__item__icon__list {
+  position: absolute;
+  bottom: 2.5rem;
+  right: 3rem;
+  padding: 3px;
+  background-color: rgb(var(--bg-color--light));
+  font-size: 2rem;
+}
+
+.c-grid-list__item__actions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.c-grid-list__item__interface:hover .c-grid-list__item__actions {
+  opacity: 1;
+}
+
+.c-grid-list__item__actions__item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgb(var(--bg-color--light), .7);
+  border: 1px solid rgb(var(--border-color--dark), .7);
+  height: 2rem;
+  width: 2rem;
+  color: rgb(var(--text-color), 1);
+  transition: .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: .7em;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.c-grid-list__item:hover .c-grid-list__item__actions__item {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.c-grid-list__item__actions__item:hover {
+  background-color: rgb(var(--bg-color--solid), .9);
+}
+
+.select-mode .c-grid-list__item__actions__item--checkbox {
+  pointer-events: all !important;
+  opacity: 1;
+  z-index: 1;
+}
+
+
+.c-grid-list__item__actions__item--checkbox {
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border: none;
+  opacity: 0;
+  background-color: transparent;
+  pointer-events: none !important;
+}
+
+.c-grid-list__item__actions__item--checkbox:hover {
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.c-grid-list__item__actions__item--checkbox .checkbox-box {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  margin: .2rem;
+  pointer-events: all;
+}
+
+.c-grid-list__item__actions__item--play {
+  bottom: .5rem;
+  left: .5rem;
+}
+
+.c-grid-list__item__actions__item--options {
+  bottom: .5rem;
+  right: .5rem;
+}
+
+.c-grid-list__item__actions__item--options svg {
+  width: .5rem;
+  height: .5rem;
+}
+
+.c-grid-list__item__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: .5rem;
+  max-width: calc(10rem - .9rem);
+}
+
+.c-grid-list__item__title {
+  font-weight: 500;
+  font-size: .875em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(var(--title-color));
+}
+
+.c-grid-list__item__subtitle {
+  font-size: .75em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(var(--text-color--light));
+}

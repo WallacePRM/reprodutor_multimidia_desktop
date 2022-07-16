@@ -1,0 +1,12 @@
+.c-grid-list__item--video {
+    height: 180px;
+}
+
+.c-grid-list__item--video .c-grid-list__item__thumbnail {
+    height: 7.5rem;
+    width: 13.5rem;
+}
+
+.c-grid-list__item--video .c-grid-list__item__info {
+    max-width: calc(13.5rem - .85rem);
+}

@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@400;500;700&display=swap');
+
+.c-notfound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 40px 60px;
+    color: rgb(var(--title-color));
+    font-size: 1rem;
+    overflow: hidden;
+}
+
+.c-notfound__img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.c-notfound__img svg {
+    max-width: 48rem;
+}
+
+.c-notfound__message {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0;
+    margin-top: 6rem 0;
+    text-align: center;
+}
+
+.c-notfound__title {
+    font-size: 2.5em;
+    font-family: 'Signika', sans-serif;
+}
+.c-notfound__description {
+    font-size: 1.1em;
+    color: rgb(var(--text-color--light));
+}
