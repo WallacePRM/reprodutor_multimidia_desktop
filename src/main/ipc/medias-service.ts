@@ -1,6 +1,10 @@
 import { ipcMain } from "electron";
 import { Media, MediaInfo } from "../../common/medias/types";
 import { getKnex } from "../database";
+
+import { app } from 'electron';
+import musicMetadata from "music-metadata";
+import fs from "fs";
 import path from 'path';
 
 export const initListeners = () => {
@@ -25,17 +29,23 @@ export const initListeners = () => {
             let mediasCreated: Media[] = [];
             for (const mediaInfo of medias) {
 
+                const mediaType = mapMediaType(path.extname(mediaInfo.path));
+                if (mediaType === null) {
+                    continue;
+                };
+
+                const mediaMetadata = await getMediaMetadata(mediaInfo.path);
                 const media: Media = {
                     id: null,
                     src: mediaInfo.path,
                     name: path.basename(mediaInfo.path),
-                    duration: 0,
+                    duration: mediaMetadata.duration,
                     releaseDate: new Date().toISOString(),
-                    album: null,
+                    album: mediaMetadata.album,
                     genre: null,
-                    author: null,
-                    thumbnail: null,
-                    type: 'music',
+                    author: mediaMetadata.artist,
+                    thumbnail: mediaMetadata.thumbnailPath,
+                    type: mediaType,
                 };
 
                 await knex.raw('INSERT INTO medias (name, type, author, album, genre, thumbnail, filename, duration, releaseDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -73,5 +83,64 @@ export const initListeners = () => {
         };
 
         return mediaMapped;
+    };
+
+    const mapMediaType = (ext: string) => {
+
+        ext = ext.replace('.', '');
+        const mediaType: Record<string, string> = {
+            "mp3": 'music',
+            "mp4": 'video',
+        };
+
+        if (mediaType[ext]) {
+            return mediaType[ext];
+        }
+
+        return null;
+    };
+
+    const getMediaMetadata = async (filePath: string) => {
+
+        const meta = await musicMetadata.parseFile(filePath, { duration: true });
+        let imageName = null;
+        let imagePath = null;
+
+        if (meta.common?.picture?.at(0)?.data) {
+
+            imageName = getThumbnailNameFromFilepPath(path.basename(filePath));
+
+            const folder = getThumbnailsPath();
+            imagePath = path.join(getThumbnailsPath(), imageName);
+
+            if (!fs.existsSync(folder)) {
+                fs.mkdirSync(folder);
+            }
+
+            fs.writeFileSync(imagePath, meta.common.picture.at(0).data);
+        }
+
+        const metadata = {
+            title: meta.common?.title ?? null,
+            artist: meta.common?.artist ?? null,
+            album: meta.common?.album ?? null,
+            thumbnailPath: imagePath ?? null,
+            duration: meta.format?.duration ?? null,
+        };
+
+        return metadata;
+    };
+
+    const getThumbnailNameFromFilepPath = (filename: string) => {
+
+        let imageName = filename.replace(path.extname(filename), '');
+        imageName = imageName + '.artwork.jpg';
+
+        return imageName;
+    };
+
+    const getThumbnailsPath = () => {
+
+        return path.join(app.getPath('userData'), 'thumbnails');
     };
 };
