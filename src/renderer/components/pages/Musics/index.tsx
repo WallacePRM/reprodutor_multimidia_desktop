@@ -11,7 +11,7 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMediaService } from "../../../service/media";
 import { selectMedias, setMedias } from "../../../store/medias";
-import { Media } from "../../../service/media/types";
+import { Media } from '../../../../common/medias/types';
 import { setCurrentMedias } from "../../../store/player";
 import { arrayUnshiftItem, shuffle, sortAsc } from "../../../common/array";
 import { isOdd } from "../../../common/number";

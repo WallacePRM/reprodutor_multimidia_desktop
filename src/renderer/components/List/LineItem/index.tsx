@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as Play } from '@icon/themify-icons/icons/control-play.svg';
 import { useSelector } from 'react-redux';
 import { formatMMSS } from '../../../common/time';
-import { Media } from "../../../service/media/types";
+import { Media } from '../../../../common/medias/types';
 import { selectMediaPlaying } from '../../../store/mediaPlaying';
 import { faFilm, faMusic } from '@fortawesome/free-solid-svg-icons';
 import Opacity from '../../Animations/Opacity';

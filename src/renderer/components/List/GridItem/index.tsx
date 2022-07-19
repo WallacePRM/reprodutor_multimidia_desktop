@@ -15,7 +15,7 @@ import { ReactComponent as PlusIcon } from '@icon/themify-icons/icons/plus.svg';
 import { ReactComponent as PencilIcon } from '@icon/themify-icons/icons/pencil.svg';
 import { ReactComponent as CloseIcon } from '@icon/themify-icons/icons/close.svg';
 import { ReactComponent as InfoIcon } from '@icon/themify-icons/icons/info-alt.svg';
-import { Media } from "../../../service/media/types";
+import { Media } from '../../../../common/medias/types';
 import { formatStrHHMMSS } from "../../../common/time";
 import Opacity from "../../Animations/Opacity";
 import Margin from "../../Animations/Margin";
@@ -146,9 +146,9 @@ function GridItem(props: FileProps) {
                             <><FontAwesomeIcon className="c-grid-list__item__icon__folder" icon={faFolderClosed} />
                             <FontAwesomeIcon className="c-grid-list__item__icon__list" icon={faBars}/></> : null}
                             { file.type === 'music' ?
-                            <><MusicAlt className="icon-color--light" style={{ height: '3.5rem', width: '3.5rem' }}/></> : null}
+                            <><MusicAlt className="icon-color--light"/></> : null}
                             { file.type === 'video' ?
-                            <><LayoutWidthDefault className="icon-color--light" style={{ height: '3.5rem', width: '3.5rem' }}/></> : null}
+                            <><LayoutWidthDefault className="icon-color--light"/></> : null}
                         </div>
                     }
                     <div className="c-grid-list__item__actions">
@@ -176,7 +176,7 @@ function GridItem(props: FileProps) {
                                         <h3 className="c-popup__item__title">Reproduzir em seguida</h3>
                                     </div>
                                 </div>
-                                <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div style={{ borderTop: 'var(--border)'}} className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><PlusIcon className="c-popup__item__icon icon-color" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="right top" >
+                                {/* <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div style={{ borderTop: 'var(--border)'}} className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><PlusIcon className="c-popup__item__icon icon-color" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="right top" >
                                     <div role="tooltip" className="c-popup noselect" style={{ minWidth: '130px' }}>
                                         <div className="c-popup__item c-popup__item--row" style={{ borderBottom: 'var(--border)'}}>
                                             <div className="c-popup__item__icons">
@@ -195,7 +195,7 @@ function GridItem(props: FileProps) {
                                             </div>
                                         </div>
                                     </div>
-                                </Popup>
+                                </Popup> */}
                                 <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div onClick={handleDeleteMedia} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
@@ -205,23 +205,23 @@ function GridItem(props: FileProps) {
                                         <h3 className="c-popup__item__title">Remover</h3>
                                     </div>
                                 </div>
-                                <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                                {/* <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div className="c-popup__item__icons">
                                         <PencilIcon className="c-popup__item__icon icon-color" />
                                     </div>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Editar informações</h3>
                                     </div>
-                                </div>
-                                <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                                </div> */}
+                                {/* <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div className="c-popup__item__icons">
                                         <InfoIcon className="c-popup__item__icon icon-color" />
                                     </div>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Propriedades</h3>
                                     </div>
-                                </div>
-                                <div className="c-popup__item c-popup__item--row" style={{ borderTop: 'var(--border)'}} onClick={closeTooltip}>
+                                </div> */}
+                                <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
                                     <div onClick={handleChangeSelected} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <CheckICon className="c-popup__item__icon icon-color" />

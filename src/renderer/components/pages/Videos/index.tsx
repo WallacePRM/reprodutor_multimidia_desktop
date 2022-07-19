@@ -9,7 +9,7 @@ import emptyMessageIcon from "../../../assets/img/video.svg";
 import { useDispatch } from "react-redux";
 import GridItem from "../../List/GridItem";
 import { setCurrentMedias } from "../../../store/player";
-import { Media } from "../../../service/media/types";
+import { Media } from '../../../../common/medias/types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { getMediaService } from "../../../service/media";

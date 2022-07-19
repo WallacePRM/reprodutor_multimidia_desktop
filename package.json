@@ -46,7 +46,7 @@
         [
           "@electron-forge/plugin-webpack",
           {
-            "devContentSecurityPolicy": "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;",
+            "devContentSecurityPolicy": "default-src * self blob: data: gap: file:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;",
             "mainConfig": "./webpack.main.config.js",
             "renderer": {
               "config": "./webpack.renderer.config.js",
@@ -102,8 +102,11 @@
     "@fortawesome/react-fontawesome": "^0.1.19",
     "@icon/themify-icons": "^1.0.1-alpha.3",
     "@reduxjs/toolkit": "^1.8.1",
+    "better-sqlite3": "^7.6.2",
     "electron-squirrel-startup": "^1.0.0",
     "framer-motion": "^6.3.10",
+    "knex": "^2.1.0",
+    "pg": "^8.7.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-error-boundary": "^3.1.4",

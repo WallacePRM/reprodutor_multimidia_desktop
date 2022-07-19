@@ -1,4 +1,5 @@
 .c-preload {
+    -webkit-app-region: no-drag;
     position: fixed;
     top: 0;
     left: 0;

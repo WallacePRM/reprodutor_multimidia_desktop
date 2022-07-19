@@ -1,5 +1,5 @@
+import { GetMediasOptions, Media, MediaInfo, isMediaBlob } from "../../../common/medias/types";
 import { MediaService } from ".";
-import { GetMediasOptions, Media } from "./types";
 
 export const urlBase = 'http://localhost:5004';//window.location.hostname === 'localhost' ? 'http://localhost:5004' : 'https://reprodutor-multimidia-api.herokuapp.com';
 
@@ -20,7 +20,11 @@ export class ApiMediaService implements MediaService {
         return medias;
     }
 
-    public async insertMedias(medias: Blob[]): Promise<Media[]> {
+    public async insertMedias(medias: Blob[] | MediaInfo[]): Promise<Media[]> {
+
+        if (!isMediaBlob(medias)) {
+            throw new Error('Invalid medias type');
+        }
 
         const formData = new FormData();
         for (const media of medias) {

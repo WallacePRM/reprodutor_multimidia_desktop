@@ -2,9 +2,10 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from "electron";
-import { windowElectronApi } from "./preload-types";
+import { GetMediasOptions, Media, MediaInfo } from "../common/medias/types";
+import { WindowElectronApi } from "./preload-types";
 
-const electronApi: windowElectronApi['electronApi'] = {
+const electronApi: WindowElectronApi['electronApi'] = {
 
     closeWindow: () => {
 
@@ -18,6 +19,16 @@ const electronApi: windowElectronApi['electronApi'] = {
 
         return ipcRenderer.invoke("window.maximize");
     },
+
+
+    getMedias: (options: GetMediasOptions) => {
+
+        return ipcRenderer.invoke('mediaService.getMedias', options);
+    },
+    insertMedias: (medias: MediaInfo[]): Promise<Media[]> => {
+
+        return ipcRenderer.invoke('mediaService.insertMedias', medias);
+    }
 };
 
 contextBridge.exposeInMainWorld("electronApi", electronApi);

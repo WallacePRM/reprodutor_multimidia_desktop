@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
-import { Media } from "../../service/media/types";
+import { Media } from "../../../common/medias/types";
 
 const playerSlice = createSlice({
     name: 'playerState',

@@ -83,13 +83,13 @@ function Sidebar() {
                         </div>
                         <div className="highlighter"></div>
                     </Link>
-                    <Link to="/playlists/youtube" className={'c-sidebar__item' + (pathname === '/playlists/youtube' ? ' c-sidebar__item--active' : '')} title="Youtube playlists (Ctrl+Y)">
+                    {/* <Link to="/playlists/youtube" className={'c-sidebar__item' + (pathname === '/playlists/youtube' ? ' c-sidebar__item--active' : '')} title="Youtube playlists (Ctrl+Y)">
                         <div className="d-flex a-items-center">
                             <FontAwesomeIcon className="c-sidebar__item__icon" icon={faYoutube} style={{ color: 'rgb(var(--red-color), .8)'}}/>
                             <label className="c-sidebar__item__label">Playlists</label>
                         </div>
                         <div className="highlighter"></div>
-                    </Link>
+                    </Link> */}
                 </nav>
             </div>
             <div className="c-sidebar__footer">

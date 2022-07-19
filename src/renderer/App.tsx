@@ -29,7 +29,7 @@ function App() {
           <Route path="/musics" element={<Musics />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/queue" element={<PlayQueue />} />
-          <Route path="/playlists/youtube" element={<Playlists />} />
+          {/* <Route path="/playlists/youtube" element={<Playlists />} /> */}
           <Route path="/" element={<Navigate to={lastRoute} replace/>}></Route>
           <Route path="*" element={<NotFound />} />
         </Route>

@@ -24,7 +24,7 @@ import { setPlayerConfig } from '../../store/playerConfig';
 import { setPageConfig } from '../../store/pageConfig';
 import { selectSelectedFiles, setSelectedFiles } from '../../store/selectedFiles';
 import Load from '../Load';
-import { Media } from '../../service/media/types';
+import { Media } from '../../../common/medias/types';
 import WindowControls from '../WindowControls';
 import { selectPlayerMode } from '../../store/playerMode';
 import { PageConfig } from '../../service/page/type';
@@ -104,13 +104,14 @@ function Main(props: MainProps) {
                     dispatch(setCurrentMedias(media ? [media] : null));
                     dispatch(setMediaPlaying(media));
                 }
-
-                setPreLoad(false);
             }
             catch (error) {
                 console.log(error);
 
-                throw new Error("Falha ao baixar mídias");
+                // throw new Error("Falha ao baixar mídias");
+            }
+            finally {
+                setPreLoad(false);
             }
         };
 

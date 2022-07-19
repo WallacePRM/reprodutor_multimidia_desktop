@@ -48,6 +48,10 @@
   opacity: 1;
 }
 
+.select-mode.c-line-list__item--active .c-line-animated {
+  opacity: 0;
+}
+
 .c-line-list__item:hover {
   background-color: rgb(var(--border-color), .4);
 }

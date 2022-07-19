@@ -8,7 +8,7 @@ import GridItem from '../../List/GridItem';
 import { useDispatch, useSelector } from "react-redux";
 import { getMediaService } from "../../../service/media";
 import { selectMedias, setMedias } from "../../../store/medias";
-import { Media } from "../../../service/media/types";
+import { Media } from '../../../../common/medias/types';
 import { setCurrentMedias } from "../../../store/player";
 import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
 import { setPlayerMode } from "../../../store/playerMode";
@@ -23,6 +23,7 @@ import TranformOpacity from "../../Animations/TransformOpacity";
 import { validateUrl } from "../../../common/async";
 import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
+import { extractFilesInfo } from "../../../service/media/media-handle";
 
 function Home() {
 
@@ -54,11 +55,17 @@ function Home() {
 
         popupRef.current.close();
 
-        const input = e.currentTarget;
-        const fileList = input.files || [];
+        const input = e.currentTarget as HTMLInputElement;
+        const files: File[] = Array.prototype.slice.call(input.files, 0);
+        const fileList = extractFilesInfo(files);
 
-        const medias = await getMediaService().insertMedias(fileList);
-        dispatch(setMedias(listItems.concat(medias)));
+        try {
+            const medias = await getMediaService().insertMedias(fileList);
+            dispatch(setMedias(listItems.concat(medias)));
+        }
+        catch(e) {
+            console.log(e);
+        }
     };
 
     const handleSelectMedia = (file: Media) => {

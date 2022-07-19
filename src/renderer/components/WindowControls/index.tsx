@@ -1,5 +1,5 @@
 import React from 'react';
-import { windowElectronApi } from '../../preload-types';
+import { WindowElectronApi } from '../../preload-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquare, faSquareFull } from '@fortawesome/free-regular-svg-icons';
 import { faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -17,17 +17,17 @@ function WindowControls(props: WindowControlsProps) {
 
     const handleClose = async () => {
 
-        await (window as windowElectronApi).electronApi.closeWindow();
+        await (window as WindowElectronApi).electronApi.closeWindow();
     };
 
     const handleMaximize = async () => {
 
-        await (window as windowElectronApi).electronApi.maximizeWindow();
+        await (window as WindowElectronApi).electronApi.maximizeWindow();
     };
 
     const handleMinimize = async () => {
 
-        await (window as windowElectronApi).electronApi.minimizeWindow();
+        await (window as WindowElectronApi).electronApi.minimizeWindow();
     };
 
     return (

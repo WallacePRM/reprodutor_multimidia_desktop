@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentMedias, setCurrentMedias } from "../../../store/player";
 import Button from "../../Button";
 import LineItem from "../../List/LineItem";
-import { Media } from "../../../service/media/types";
 import { isOdd } from "../../../common/number";
 import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
 import Margin from "../../Animations/Margin";
@@ -19,6 +18,7 @@ import { setMedias } from "../../../store/medias";
 import { getPlayerService } from "../../../service/player";
 import { selectSelectedFiles, setSelectedFiles } from "../../../store/selectedFiles";
 import SelectBlock from "../../SelectBlock";
+import { Media } from "../../../../common/medias/types";
 
 function PlayQueue() {
 
@@ -108,7 +108,7 @@ function PlayQueue() {
                     <div className={'c-container__content__title__actions' + (listItems.length === 0 ? ' disabled' : '')} style={{ margin: '0' }}>
                         <Button onClick={handleClearQueue} className="mr-10" label="Limpar" icon={faTrashCan} title="Limpar (Ctrl+Shift+X)" />
 
-                        <Popup keepTooltipInside ref={popupAction}  arrow={false} trigger={<button className="c-button box-field"><FontAwesomeIcon className="c-button__icon" icon={faPlus}/>{document.body.clientWidth > 655 && <span className="c-button__label ml-10">Adicionar a</span>}</button>} position="bottom left" >
+                        {/* <Popup keepTooltipInside ref={popupAction}  arrow={false} trigger={<button className="c-button box-field"><FontAwesomeIcon className="c-button__icon" icon={faPlus}/>{document.body.clientWidth > 655 && <span className="c-button__label ml-10">Adicionar a</span>}</button>} position="bottom left" >
                             <div className="c-popup noselect" style={{ minWidth: '130px' }}>
                                 <div className="c-popup__item c-popup__item--row" onClick={closeActionTooltip} style={{ borderBottom: 'var(--border)'}}>
                                     <div onClick={handleAddToQueue} className="c-popup__item__button-hidden"></div>
@@ -128,7 +128,7 @@ function PlayQueue() {
                                     </div>
                                 </div>
                             </div>
-                        </Popup>
+                        </Popup> */}
                     </div>
                 </div>
                 { selectedItems.length > 0 &&

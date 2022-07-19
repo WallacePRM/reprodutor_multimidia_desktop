@@ -31,10 +31,9 @@ import Popup from 'reactjs-popup';
 import { toggleFullScreen } from '../../common/dom';
 import { getPlayerService } from '../../service/player';
 import { selectPlayerState, setPlayerState } from '../../store/playerState';
-import { Media } from '../../service/media/types';
+import { Media } from '../../../common/medias/types';
 import Load from '../Load';
 import WindowControls from '../WindowControls';
-import { selectPageConfig } from '../../store/pageConfig';
 
 import './index.css';
 
@@ -46,7 +45,6 @@ function Player() {
 
     const playerService = getPlayerService();
     const playerConfig = useSelector(selectPlayerConfig);
-    const pageConfig = useSelector(selectPageConfig);
     const currentMedias = useSelector(selectCurrentMedias) || [];
     const file = useSelector(selectMediaPlaying);
     const playerMode = useSelector(selectPlayerMode);
@@ -469,7 +467,7 @@ function Player() {
             { !file?.thumbnail && file?.type === 'folder' &&
                 <><FontAwesomeIcon className="c-grid-list__item__icon__folder" icon={faFolderClosed} />
                 <FontAwesomeIcon className="c-grid-list__item__icon__list" icon={faBars}/></> }
-            { !file?.thumbnail && file?.type === 'music' && <MusicAlt className="icon-color--light" style={{ height: '1.5rem', width: '1.5rem' }}/>}
+            { !file?.thumbnail && file?.type === 'music' && <MusicAlt className="icon-color--light"/>}
             {mediaLoad && playerMode === 'default' && <Load className="player-load"/>}
         </Opacity>
     );

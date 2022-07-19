@@ -5,7 +5,7 @@ import { selectSidebarOpened, toggleSidebar } from '../../store/sidebarOpened';
 
 import './index.css';
 
-function Searchbar(props: SearchbarProps) {
+function Searchbar() {
 
     const inputRef: any = useRef(null);
 
@@ -28,10 +28,6 @@ function Searchbar(props: SearchbarProps) {
             <Search className="c-searchbar__icon icon-color icon--inverted" title="Clique para pesquisar"/>
         </div>
     );
-}
-
-type SearchbarProps = {
-
 }
 
 export default Searchbar;
