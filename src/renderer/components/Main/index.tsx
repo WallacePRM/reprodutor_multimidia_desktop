@@ -98,9 +98,13 @@ function Main(props: MainProps) {
 
                 if (playerState) {
                     playerState.first_load = true;
-                    dispatch(setPlayerState(playerState));
 
                     const media = medias.find(item => item.id === playerState.file_id) || null;
+                    if (media) {
+                        dispatch(setPlayerState(playerState));
+                    }
+
+                    dispatch(setPlayerState(null));
                     dispatch(setCurrentMedias(media ? [media] : null));
                     dispatch(setMediaPlaying(media));
                 }

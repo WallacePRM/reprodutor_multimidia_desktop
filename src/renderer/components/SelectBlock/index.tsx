@@ -2,13 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { ReactComponent as PlayIcon } from '@icon/themify-icons/icons/control-play.svg';
 import { ReactComponent as PlayForwardIcon } from '@icon/themify-icons/icons/control-forward.svg';
-import { ReactComponent as PlusIcon } from '@icon/themify-icons/icons/plus.svg';
-import { ReactComponent as PencilIcon } from '@icon/themify-icons/icons/pencil.svg';
-import { ReactComponent as InfoAltIcon } from '@icon/themify-icons/icons/info-alt.svg';
-import { ReactComponent as LayoutListThumb } from '@icon/themify-icons/icons/layout-list-thumb.svg';
-import { ReactComponent as InfoIcon } from '@icon/themify-icons/icons/info-alt.svg';
+import { ReactComponent as CloseIcon } from '@icon/themify-icons/icons/close.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faEllipsis, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import { selectSelectedFiles, setSelectedFiles } from '../../store/selectedFiles';
 import { useDispatch } from 'react-redux';
@@ -19,6 +15,8 @@ import { setPlayerState } from '../../store/playerState';
 import { selectContainerMargin } from '../../store/containerMargin';
 import Popup from 'reactjs-popup';
 import Margin from '../Animations/Margin';
+import { getMediaService } from '../../service/media';
+import { selectMedias, setMedias } from '../../store/medias';
 
 import './index.css';
 
@@ -27,6 +25,7 @@ function SelectBlock(props: SelectBlockProps) {
     const [ selected, setSelected ] = useState(false);
 
     const medias = props.list;
+    const allMedias = useSelector(selectMedias);
     const currentMedias: Media[] | null = useSelector(selectCurrentMedias);
     const mediaPlaying = useSelector(selectMediaPlaying);
     const selectedItems = useSelector(selectSelectedFiles);
@@ -111,6 +110,29 @@ function SelectBlock(props: SelectBlockProps) {
         clearSelectedItems();
     };
 
+    const handleDeleteMediasSelected = async (e: React.MouseEvent) => {
+
+        if (e.target !== e.currentTarget) return;
+        if (selectedItems.length < 1) return;
+
+        try {
+
+            const mediasSelected = medias.filter(m => selectedItems.some(s => s.id === m.id));
+
+            const mediaService = getMediaService();
+            await mediaService.deleteMedias(mediasSelected);
+
+            const newListMedias = medias.filter(m => !mediasSelected.some(s => s.id === m.id));
+            dispatch(setMedias(newListMedias));
+            clearSelectedItems();
+        }
+        catch(error) {
+
+            console.error(error);
+            alert('Falha ao remover item');
+        }
+    };
+
     useEffect(() => {
 
         if (selectedItems.length !== medias.length) {
@@ -141,6 +163,11 @@ function SelectBlock(props: SelectBlockProps) {
                     <PlayForwardIcon className="c-button__icon mr-5"/>
                     <span className="c-button__label">Reproduzir em seguida</span>
                 </button>}
+                {containerWidth > 910 && <button onClick={handleDeleteMediasSelected} className="c-select-block__actions__item c-button box-field ">
+                    <CloseIcon className="c-button__icon mr-5"/>
+                    <span className="c-button__label">Remover</span>
+                </button>}
+
                 {/* {containerWidth > 910 && <button className="c-select-block__actions__item c-button box-field ">
                     <PlusIcon className="c-button__icon mr-5"/>
                     <span className="c-button__label">Adicionar a</span>
@@ -154,7 +181,7 @@ function SelectBlock(props: SelectBlockProps) {
                     <span className="c-button__label">Propriedades</span>
                 </button>} */}
 
-                {(containerWidth < 790 && selectedItems.length === 1 || containerWidth < 910 && selectedItems.length > 1) && <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={ <button className="c-select-block__actions__item c-button box-field ml-10">
+                {(containerWidth < 910 && selectedItems.length === 1 || containerWidth < 910 && selectedItems.length > 1) && <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={ <button className="c-select-block__actions__item c-button box-field ml-10">
                     <FontAwesomeIcon icon={faEllipsis} className="c-button__icon icon-color"/>
                     </button>} position="top center">
                     <Margin cssAnimation={["marginTop"]} className="c-popup noselect" style={{ minWidth: '200px' }}>
@@ -165,6 +192,15 @@ function SelectBlock(props: SelectBlockProps) {
                             </div>
                             <div className="c-popup__item__label">
                                 <h3 className="c-popup__item__title">Reproduzir em seguida</h3>
+                            </div>
+                        </div>}
+                        {containerWidth < 910 && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                            <div onClick={handleDeleteMediasSelected} className="c-popup__item__button-hidden"></div>
+                            <div className="c-popup__item__icons">
+                                <CloseIcon className="c-popup__item__icon icon-color" />
+                            </div>
+                            <div className="c-popup__item__label">
+                                <h3 className="c-popup__item__title">Remover</h3>
                             </div>
                         </div>}
                         {/* {containerWidth < 910 && <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><PlusIcon className="c-popup__item__icon icon-color" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="right top" >
