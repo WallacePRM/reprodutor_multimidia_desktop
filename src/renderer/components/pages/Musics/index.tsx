@@ -27,9 +27,12 @@ import { getPageService } from "../../../service/page";
 import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from '../../../service/media/media-handle';
+import Load from '../../Load';
 
 
 function Musics() {
+
+    const [ load, setLoad ] = useState(false);
 
     const selectedItems = useSelector(selectSelectedFiles);
     const pageConfig = useSelector(selectPageConfig);
@@ -54,11 +57,16 @@ function Musics() {
         const fileList = extractFilesInfo(files);
 
         try {
+            setLoad(true);
+
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
         }
         catch(e) {
             console.log(e);
+        }
+        finally {
+            setLoad(false);
         }
     };
 
@@ -189,6 +197,7 @@ function Musics() {
             </Opacity> : null }
 
             <div className="c-container__content" style={{ height: musics.length === 0 ? '100%' : '' }}>
+                {load && <Load style={{backgroundColor: 'rgb(var(--bg-color))'}}/>}
                 { musics.length === 0 ?  <EmptyMessage icon={emptyMessageIcon}
                     title="Não foi possível encontrar nenhuma música"
                     description="Sua biblioteca de música não contém nenhum conteúdo de música."

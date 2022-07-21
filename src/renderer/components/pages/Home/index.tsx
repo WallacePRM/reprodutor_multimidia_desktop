@@ -24,11 +24,13 @@ import { validateUrl } from "../../../common/async";
 import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from "../../../service/media/media-handle";
+import Load from "../../Load";
 
 function Home() {
 
     const [ urlType, setUrlStype ] = useState('video');
     const [ urlValidate, setUrlValidate ] = useState(false);
+    const [ load, setLoad ] = useState(false);
 
     const listItems = useSelector(selectMedias);
     const mediaPlaying = useSelector(selectMediaPlaying);
@@ -60,11 +62,16 @@ function Home() {
         const fileList = extractFilesInfo(files);
 
         try {
+            setLoad(true);
+
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
         }
         catch(e) {
             console.log(e);
+        }
+        finally {
+            setLoad(false);
         }
     };
 
@@ -228,6 +235,7 @@ function Home() {
             : null }
 
             <div className="c-container__content" style={{ height: listItems.length === 0 ? '100%' : '' }}>
+                {load && <Load style={{backgroundColor: 'rgb(var(--bg-color))'}}/>}
                 { listItems.length == 0 ?  <EmptyMessage icon={emptyMessageIcon}
                     title="Conheça o novo Reprodutor Multimídia"
                     description="Use este aplicativo para reproduzir seus arquivos de áudio e vídeo e explorar suas bibliotecas pessoais."

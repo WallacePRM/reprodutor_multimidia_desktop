@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
 import { useSelector } from "react-redux";
 import { sortAsc } from "../../../common/array";
@@ -25,10 +25,13 @@ import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
 import { getPageService } from "../../../service/page";
 import { extractFilesInfo } from '../../../service/media/media-handle';
+import Load from '../../Load';
 
 import './index.css';
 
 function Videos() {
+
+    const [ load, setLoad ] = useState(false);
 
     const selectedItems = useSelector(selectSelectedFiles);
     const listItems = useSelector(selectMedias);
@@ -48,11 +51,16 @@ function Videos() {
         const fileList = extractFilesInfo(files);
 
         try {
+            setLoad(true);
+
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
         }
         catch(e) {
             console.log(e);
+        }
+        finally {
+            setLoad(false);
         }
     };
 
@@ -123,6 +131,7 @@ function Videos() {
             }
 
             <div className="c-container__content" style={{ height: videoList.length === 0 ? '100%' : '' }}>
+                {load && <Load style={{backgroundColor: 'rgb(var(--bg-color))'}}/>}
                 { videoList.length == 0 ?  <EmptyMessage icon={emptyMessageIcon}
                     title="Não conseguimos encontrar nenhum vídeo"
                     description="Sua biblioteca de vídeos não contém nenhum conteúdo de vídeo."

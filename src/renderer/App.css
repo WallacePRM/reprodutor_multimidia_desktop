@@ -78,6 +78,8 @@
 }
 
 .c-container__content {
+  flex: 1;
+  position: relative;
   margin: 0 5px;
   overflow: hidden;
 }
