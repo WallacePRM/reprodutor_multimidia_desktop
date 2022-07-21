@@ -69,6 +69,27 @@ export const initListeners = () => {
         }
     });
 
+    ipcMain.handle('mediaService.deleteMedias', async (event, medias: Media[]) => {
+
+        const knex = getKnex();
+        const transaction = await knex.transaction();
+
+        const mediasId = medias.map(m => m.id);
+        const result = await knex.raw(`SELECT thumbnail FROM medias WHERE id in (${mediasId.map(x => '?').join(', ')})`, mediasId).transacting(transaction);
+
+        for (let media of medias) {
+
+            await knex.raw('DELETE FROM medias WHERE id = ?', [ media.id ]).transacting(transaction);
+        }
+
+        await transaction.commit();
+
+        for (let media of result) {
+
+            fs.rmSync(media.thumbnail);
+        }
+    });
+
     const mapMedia = (media: any) => {
         const mediaMapped: Media = {
             id: media.id,
@@ -166,7 +187,6 @@ export const initListeners = () => {
             const command = ffmpeg(filePath).takeScreenshots({
                 timemarks: ['10%'],
                 filename: imageName,
-                size: '320x240'
             }, folder);
 
             command.on('end', () => {

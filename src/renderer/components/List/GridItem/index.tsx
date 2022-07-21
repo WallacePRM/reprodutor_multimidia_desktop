@@ -26,6 +26,7 @@ import { ApiMediaService } from "../../../service/media/api-media-service";
 import { selectMedias, setMedias } from "../../../store/medias";
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from "../../../store/selectedFiles";
 import { setMediaPlaying } from "../../../store/mediaPlaying";
+import { getMediaService } from "../../../service/media";
 
 import './index.css';
 
@@ -65,7 +66,8 @@ function GridItem(props: FileProps) {
         if (e.target !== e.currentTarget) return;
 
         try {
-            await new ApiMediaService().removeMedia(file.id);
+            const mediaService = getMediaService();
+            await mediaService.deleteMedias([file]);
 
             const medias = allMedias.filter(x => x.id !== file.id);
             dispatch(setMedias(medias));

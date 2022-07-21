@@ -7,5 +7,6 @@ export type WindowElectronApi = Window & typeof globalThis & {
         maximizeWindow: () => Promise<void>;
         getMedias: (options: GetMediasOptions) => Promise<Media[]>;
         insertMedias: (medias: MediaInfo[]) => Promise<Media[]>;
+        deleteMedias: (medias: Media[]) => Promise<void>;
     }
 };

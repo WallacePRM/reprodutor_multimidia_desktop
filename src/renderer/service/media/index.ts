@@ -5,6 +5,7 @@ export interface MediaService {
     getMedias(options: GetMediasOptions): Promise<Media[]>;
     insertMedias(medias: Blob[]): Promise<Media[]>;
     insertMedias(medias: MediaInfo[]): Promise<Media[]>;
+    deleteMedias(medias: Media[]): Promise<void>;
 }
 
 export function getMediaService (): MediaService {

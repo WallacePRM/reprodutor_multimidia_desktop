@@ -28,6 +28,9 @@ const electronApi: WindowElectronApi['electronApi'] = {
     insertMedias: (medias: MediaInfo[]): Promise<Media[]> => {
 
         return ipcRenderer.invoke('mediaService.insertMedias', medias);
+    },
+    deleteMedias: (medias: Media[]): Promise<void> => {
+        return ipcRenderer.invoke('mediaService.deleteMedias', medias);
     }
 };
 

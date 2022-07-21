@@ -5,6 +5,10 @@ export const urlBase = 'http://localhost:5004';//window.location.hostname === 'l
 
 export class ApiMediaService implements MediaService {
 
+    deleteMedias(medias: Media[]): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
     public async getMedias(options: GetMediasOptions): Promise<Media[]> {
 
         const response = await fetch(urlBase + `/medias?offset=${options.offSet || 0}&limit=${options.limit || 50}`, {
