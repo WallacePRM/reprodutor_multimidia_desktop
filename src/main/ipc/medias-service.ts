@@ -4,6 +4,7 @@ import { getKnex } from "../database";
 
 import { app } from 'electron';
 import musicMetadata from "music-metadata";
+import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import path from 'path';
 
@@ -120,6 +121,19 @@ export const initListeners = () => {
             fs.writeFileSync(imagePath, meta.common.picture.at(0).data);
         }
 
+        if (mapMediaType(path.extname(filePath)) === 'video') {
+
+            imageName = getThumbnailNameFromFilepPath(path.basename(filePath));
+            const folder = getThumbnailsPath();
+
+            if (!fs.existsSync(folder)) {
+                fs.mkdirSync(folder);
+            }
+
+            await createVideoThumbnail({filePath, imageName, folder});
+            imagePath = path.join(getThumbnailsPath(), imageName);
+        }
+
         const metadata = {
             title: meta.common?.title ?? null,
             artist: meta.common?.artist ?? null,
@@ -142,5 +156,25 @@ export const initListeners = () => {
     const getThumbnailsPath = () => {
 
         return path.join(app.getPath('userData'), 'thumbnails');
+    };
+
+    const createVideoThumbnail = (data: {filePath: string, imageName: string, folder: string}) => {
+
+        const { filePath, imageName, folder } = data;
+
+        return new Promise<void>((resolve, reject) => {
+            const command = ffmpeg(filePath).takeScreenshots({
+                timemarks: ['10%'],
+                filename: imageName,
+                size: '320x240'
+            }, folder);
+
+            command.on('end', () => {
+                resolve();
+            });
+            command.on('error', (error) => {
+                reject(error);
+            });
+        });
     };
 };

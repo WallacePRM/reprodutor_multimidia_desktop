@@ -26,16 +26,6 @@ module.exports = [
       },
     },
   },
-  // {
-  //   test: /\.svg$/,
-  //   use: {
-  //     loader: 'file-loader',
-  //     options: {
-  //       name: '[path][name].[ext]',
-  //       publicPath: '../'
-  //     }
-  //   },
-  // },
   {
     test: /\.svg$/i,
     issuer: /\.[jt]sx?$/,

@@ -3,6 +3,7 @@ import { createTablesOnce } from './main/database';
 import { initListeners as initListenersWindowControls} from './main/ipc/window-controls';
 import { initListeners as initListenersMediaService} from './main/ipc/medias-service';
 import { createWindow } from './main/main-window';
+import path from 'path';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -34,6 +35,11 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+const binPath = path.join(__dirname, 'libs');
+process.env.FFMPEG_PATH = path.join(binPath, "ffmpeg.exe");
+process.env.FFPROBE_PATH = path.join(binPath, "ffprobe.exe");
+
 
 createTablesOnce();
 initListenersWindowControls();

@@ -26,6 +26,7 @@ import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
 import { getPageService } from "../../../service/page";
 import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
+import { extractFilesInfo } from '../../../service/media/media-handle';
 
 
 function Musics() {
@@ -48,12 +49,17 @@ function Musics() {
 
     const handleSelectFile = async (e: React.ChangeEvent<any>) => {
 
-        const input = e.currentTarget;
-        const fileList = input.files || [];
+        const input = e.currentTarget as HTMLInputElement;
+        const files: File[] = Array.prototype.slice.call(input.files, 0);
+        const fileList = extractFilesInfo(files);
 
-
-        const medias = await getMediaService().insertMedias(fileList);
-        dispatch(setMedias(listItems.concat(medias)));
+        try {
+            const medias = await getMediaService().insertMedias(fileList);
+            dispatch(setMedias(listItems.concat(medias)));
+        }
+        catch(e) {
+            console.log(e);
+        }
     };
 
     const handleSelectMedia = (file: Media) => {
