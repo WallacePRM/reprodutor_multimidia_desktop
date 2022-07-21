@@ -9,10 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMediaService } from "../../../service/media";
 import { selectMedias, setMedias } from "../../../store/medias";
 import { Media } from '../../../../common/medias/types';
-import { setCurrentMedias } from "../../../store/player";
 import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
 import { setPlayerMode } from "../../../store/playerMode";
-import { arrayUnshiftItem } from "../../../common/array";
+import { arrayUnshiftItem, revertOrder } from "../../../common/array";
 import Margin from "../../Animations/Margin";
 import Opacity from "../../Animations/Opacity";
 import { setPlayerState } from "../../../store/playerState";
@@ -25,6 +24,7 @@ import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from "../../../service/media/media-handle";
 import Load from "../../Load";
+import { setCurrentMedias } from "../../../store/player";
 
 function Home() {
 
@@ -36,7 +36,7 @@ function Home() {
     const mediaPlaying = useSelector(selectMediaPlaying);
     const selectedItems = useSelector(selectSelectedFiles);
     const itemIndex = listItems.findIndex(item => item.id === mediaPlaying?.id);
-    let recentMedias: any[] = [...listItems];
+    let recentMedias: any[] = revertOrder(listItems);
     const popupRef: any = useRef();
     const modalRef: any = useRef();
     const urlRef: any = useRef(null);
@@ -66,6 +66,10 @@ function Home() {
 
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
+
+            dispatch(setCurrentMedias(medias));
+            dispatch(setMediaPlaying(medias[0]));
+            dispatch(setPlayerMode('full'));
         }
         catch(e) {
             console.log(e);
@@ -127,18 +131,18 @@ function Home() {
         setUrlValidate(validateUrl(url));
     };
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const orderByRecents = () => {
+    //     const orderByRecents = () => {
 
-            if (itemIndex !== -1) {
-                recentMedias = arrayUnshiftItem(recentMedias, itemIndex);
-                dispatch(setMedias(recentMedias));
-            }
-        };
+    //         if (itemIndex !== -1) {
+    //             recentMedias = arrayUnshiftItem(recentMedias, itemIndex);
+    //             dispatch(setMedias(recentMedias));
+    //         }
+    //     };
 
-        orderByRecents();
-    }, [mediaPlaying?.id]);
+    //     orderByRecents();
+    // }, [mediaPlaying?.id]);
 
     return (
         <div className="c-app c-home">

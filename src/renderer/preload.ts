@@ -19,6 +19,10 @@ const electronApi: WindowElectronApi['electronApi'] = {
 
         return ipcRenderer.invoke("window.maximize");
     },
+    isMaximize: () => {
+
+        return ipcRenderer.invoke("window.isMaximize");
+    },
 
 
     getMedias: (options: GetMediasOptions) => {

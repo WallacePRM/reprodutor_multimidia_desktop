@@ -18,6 +18,12 @@ export const initListeners = () => {
         }
     });
 
+    ipcMain.handle('window.isMaximize', () => {
+
+        return mainWindow.isMaximized();
+
+    });
+
     ipcMain.handle('window.close', () => {
 
         mainWindow.close();

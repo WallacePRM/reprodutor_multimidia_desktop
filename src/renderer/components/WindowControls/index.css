@@ -5,14 +5,17 @@
     right: 0;
     display: flex;
     align-items: center;
+    max-height: 100%;
     justify-content: flex-end;
     width: 100%;
     font-size: .9rem;
     color: rgb(var(--title-color));
+    overflow: hidden;
     z-index: 7;
 }
 
 .c-window-controls__item {
+    position: relative;
     -webkit-app-region: no-drag;
     display: flex;
     align-items: center;
@@ -31,4 +34,16 @@
 
 .c-window-controls__item--maximize {
     font-size: .7rem;
+}
+
+.c-window-controls__item--maximize-layer-1 {
+    background-color: rgb(var(--bg-color));
+    z-index: 1;
+}
+
+.c-window-controls__item--maximize-layer-2 {
+    position: absolute;
+    top: 45%;
+    left: 55%;
+    transform: translate(-50%, -50%);
 }
