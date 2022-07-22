@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as Play } from '@icon/themify-icons/icons/control-play.svg';
 import { useSelector } from 'react-redux';
-import { formatMMSS } from '../../../common/time';
+import { formatHHMMSS, formatMMSS } from '../../../common/time';
 import { Media } from '../../../../common/medias/types';
 import { selectMediaPlaying } from '../../../store/mediaPlaying';
 import { faFilm, faMusic } from '@fortawesome/free-solid-svg-icons';
@@ -95,7 +95,7 @@ function LineItem(props: FileProps) {
                 <span className="ml-10"> {file.genre ? file.genre : 'Gênero desconhecido'}</span>
             </div>
             <div className="c-line-list__item__info c-line-list__item__duration">
-                <span>{duration ? formatMMSS(duration) : '00:00'}</span>
+                <span>{duration ? formatHHMMSS(duration) : '00:00'}</span>
             </div>
         </Opacity>
     );

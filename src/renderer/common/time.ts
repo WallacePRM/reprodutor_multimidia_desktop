@@ -12,7 +12,7 @@ export const formatHHMMSS = (time: number) => {
     const mStr = minutes.toString().padStart(2, '0');
     const sStr = seconds.toString().padStart(2, '0');
 
-    return `${hStr}:${mStr}:${sStr}`;
+    return `${parseInt(hStr) > 0 ? (hStr + ':') : ''}${mStr}:${sStr}`;
 };
 
 export const formatStrHHMMSS = (time: number) => {

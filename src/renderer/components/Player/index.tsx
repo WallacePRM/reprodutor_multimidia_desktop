@@ -302,7 +302,6 @@ function Player() {
 
     const handleSetPlayerbackRate = async (e: any) => {
 
-        console.log('chamou');
         const newRate = parseFloat(e.target.value);
         if (mediaRef.current) {
             mediaRef.current.playbackRate = newRate;
@@ -475,7 +474,7 @@ function Player() {
     if (playerMode === 'full') {
         if (file?.type === 'music') {
             const backgroundImagePath = file?.thumbnail ? `${encodeURI(file?.thumbnail.replace(/\\/g, '/'))}` : '';
-            console.log(backgroundImagePath);
+
             audioComponent = ReactDOM.createPortal(
                 <Opacity cssAnimation={["opacity"]} onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen'} style={{ backgroundImage: `url("${backgroundImagePath}")` }}>
                     <div style={{ display: 'flex', alignItems: 'flex-end', height: 'calc(100% - 7.3rem)', width: '100%', background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)', backdropFilter: 'blur(2rem)' }}>

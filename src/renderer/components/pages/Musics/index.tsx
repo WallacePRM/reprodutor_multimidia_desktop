@@ -126,7 +126,7 @@ function Musics() {
 
     const mapSeparatorByFilter = (filter: string) => {
 
-        if (!filter) return mapmusicsOrderBy(filterField) + ' desconhecido';
+        if (!filter) return mapMusicsOrderBy(filterField) + ' desconhecido';
 
         return filter;
     };
@@ -148,7 +148,7 @@ function Musics() {
                     <Button onClick={ handleShuffle } className="btn--primary c-button--no-media-style" label="Ordem aleatória e reproduzir" icon={faShuffle} title={ document.body.clientWidth <= 655 ? 'Ordem aleatória e reproduzir' : ''}/>
                     <div className="c-container__content__title__actions">
 
-                        <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapmusicsOrderBy(filterField)}</span></label><FontAwesomeIcon className="box-field__icon ml-10" icon={faChevronDown} /></div>} position="bottom right" >
+                        <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapMusicsOrderBy(filterField)}</span></label><FontAwesomeIcon className="box-field__icon ml-10" icon={faChevronDown} /></div>} position="bottom right" >
                             <div  className="c-popup noselect" style={{ minWidth: '130px' }}>
                                 <div className={'c-popup__item  c-popup__item--row' + (pageConfig.musicsOrderBy === 'name' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
                                     <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="name"/>
@@ -242,7 +242,7 @@ function Musics() {
     );
 }
 
-function mapmusicsOrderBy(musicsOrderBy: string) {
+function mapMusicsOrderBy(musicsOrderBy: string) {
 
     if (musicsOrderBy === 'name') return 'A - Z';
     if (musicsOrderBy === 'author') return 'Artista';
@@ -277,7 +277,7 @@ function createSeparators(listItems: Media[], filterField: string) {
                 separator = item[filterField];
             }
             else {
-                separator = mapmusicsOrderBy(filterField) + ' desconhecido';
+                separator = mapMusicsOrderBy(filterField) + ' desconhecido';
             }
         }
 
@@ -297,19 +297,19 @@ function createSeparators(listItems: Media[], filterField: string) {
 function createLastSeparator() {
 
     const separators: HTMLElement[] = Array.prototype.slice.call(document.querySelectorAll('.c-line-list__separator:not(.c-line-list__separator--fixed)') as NodeListOf<HTMLElement>, 0);
-    const separatorsFormatd = separators.map(separator => ({
+    const separatorsFormated = separators.map(separator => ({
         isVisible: isVisible(separator),
         letter: separator.innerText
     }));
 
-    const firstIndex = separatorsFormatd.findIndex(separator => separator.isVisible);
+    const firstIndex = separatorsFormated.findIndex(separator => separator.isVisible);
 
     if (firstIndex > 0) {
-        const lastSeparator = separatorsFormatd[firstIndex - 1];
+        const lastSeparator = separatorsFormated[firstIndex - 1];
         return (lastSeparator.letter);
     }
     else {
-        return (separatorsFormatd[0].letter);
+        return (separatorsFormated[0].letter);
     }
 }
 

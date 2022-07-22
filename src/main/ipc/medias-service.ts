@@ -94,9 +94,9 @@ export const initListeners = () => {
         const mediaMapped: Media = {
             id: media.id,
             src: 'file://' + media.filename,
-            name: media.name,
+            name: removeMediaType(media.name),
             duration: media.duration,
-            releaseDate: media.releaseDate,
+            releaseDate: new Date(media.releaseDate).getFullYear().toString(),
             album: media.album,
             genre: media.genre,
             author: media.author,
@@ -121,6 +121,11 @@ export const initListeners = () => {
 
         return null;
     };
+
+    const removeMediaType = (name: string) => {
+
+        return name.replace(/\.[^/.]+$/, "");
+    }
 
     const getMediaMetadata = async (filePath: string) => {
 

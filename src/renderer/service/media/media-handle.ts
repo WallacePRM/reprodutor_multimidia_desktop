@@ -6,7 +6,5 @@ export const extractFilesInfo = (files: File[]) => {
         path: file.path,
     }));
 
-    console.log(filesInfo);
-
     return filesInfo;
 };
