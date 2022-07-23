@@ -7,6 +7,7 @@
   width: 100%;
   font-family: 'Heebo', sans-serif;
   background-color: rgb(var(--bg-color));
+  transition: .2s cubic-bezier(0.075, 0.82, 0.165, 1);
   overflow: hidden;
 }
 

@@ -1,4 +1,4 @@
-export const formatHHMMSS = (time: number) => {
+export const formatHHMMSS = (time: number, fullFormat?: boolean) => {
 
     const hourTemp = time / 3600;
     const hour = Math.trunc(hourTemp);
@@ -8,11 +8,13 @@ export const formatHHMMSS = (time: number) => {
 
     const seconds = Math.round((minutesTemp - minutes) * 60);
 
-    const hStr = hour.toString().padStart(2, '0');
+    let hStr = hour.toString().padStart(2, '0');
+    hStr = fullFormat ? hStr + ':' : (parseInt(hStr) > 0 ? (hStr + ':') : '');
+
     const mStr = minutes.toString().padStart(2, '0');
     const sStr = seconds.toString().padStart(2, '0');
 
-    return `${parseInt(hStr) > 0 ? (hStr + ':') : ''}${mStr}:${sStr}`;
+    return `${hStr}${mStr}:${sStr}`;
 };
 
 export const formatStrHHMMSS = (time: number) => {

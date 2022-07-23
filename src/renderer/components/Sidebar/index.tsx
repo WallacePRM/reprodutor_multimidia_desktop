@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as Home } from '@icon/themify-icons/icons/home.svg';
 import { ReactComponent as MusicAlt } from '@icon/themify-icons/icons/music-alt.svg';
 import { ReactComponent as LayoutWidthDefault } from '@icon/themify-icons/icons/layout-width-default.svg';
@@ -83,13 +81,6 @@ function Sidebar() {
                         </div>
                         <div className="highlighter"></div>
                     </Link>
-                    {/* <Link to="/playlists/youtube" className={'c-sidebar__item' + (pathname === '/playlists/youtube' ? ' c-sidebar__item--active' : '')} title="Youtube playlists (Ctrl+Y)">
-                        <div className="d-flex a-items-center">
-                            <FontAwesomeIcon className="c-sidebar__item__icon" icon={faYoutube} style={{ color: 'rgb(var(--red-color), .8)'}}/>
-                            <label className="c-sidebar__item__label">Playlists</label>
-                        </div>
-                        <div className="highlighter"></div>
-                    </Link> */}
                 </nav>
             </div>
             <div className="c-sidebar__footer">

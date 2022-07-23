@@ -10,13 +10,16 @@
 .theme--dark.window--unfocused {
     --bg-color: 39, 39, 39;
     --bg-color--light: 32, 32, 32;
+    --bg-color--solid: 50, 50, 50;
     --border-color: 30, 30, 30;
 }
 
 .theme--dark {
+    --border: 1px solid rgb(var(--border-color));
+
     --bg-color: 37, 40, 44;
     --bg-color--light: 29, 33, 37;
-    --bg-color--solid: 51, 52, 55;
+    --bg-color--solid: 48, 52, 55;
     --bg-color--solid-inverted: 246, 246, 246;
 
     --border-color: 25, 30, 34;
@@ -46,7 +49,7 @@
     background-color: rgb(var(--border-color--dark), .3);
 }
 
-.theme--dark .btn--primary,
+/* .theme--dark .btn--primary,
 .theme--dark .accent--color {
-    filter: saturate(.5);
-}
+    filter: brightness(1.2);
+} */

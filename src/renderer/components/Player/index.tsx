@@ -55,6 +55,7 @@ function Player() {
     const mediaLoadRef = useRef<boolean>();
     mediaLoadRef.current = mediaLoad;
     const refLastFileId = useRef<number>();
+
     (window as any).audio = mediaRef;
 
     let playerState = useSelector(selectPlayerState);
@@ -144,9 +145,30 @@ function Player() {
     const handlePrevious = () => {
 
         const index = currentMedias.findIndex((media) => media.id === file?.id);
+
+        const hourTemp = playerState.currentTime / 3600;
+        const hour = Math.trunc(hourTemp);
+
+        const minutesTemp = (hourTemp - hour) * 60;
+        const minutes =  Math.trunc(minutesTemp);
+
+        const seconds = Math.round((minutesTemp - minutes) * 60);
+
+        if (seconds > 5 || index === 0) {
+
+            dispatch(setMediaPlaying(null));
+            dispatch(setPlayerState({ file_id: null, duration: 0, currentTime: 0 }));
+
+            setTimeout(() => dispatch(setMediaPlaying(file)), 0);
+
+            return;
+        }
+
         if (index > 0) {
+
             const newFile = currentMedias[index - 1];
             dispatch(setMediaPlaying(newFile));
+
         }
     };
 
@@ -495,11 +517,12 @@ function Player() {
         <div onMouseOver={setPlayerVisible} className={'c-player' + (playerHidden ? ' c-player--hidden' : '') +
         (playerMode === 'full' && file?.type === 'video' ? ' c-player--full-mode-video theme--dark' : '') +
         (playerMode === 'full' && file?.type === 'music' ? ' c-player--full-mode-music' : '') +
-        (!file ? ' c-player--disabled ' : '')}>
+        (!file ? ' c-player--disabled ' : '')}
+        style={{transition: playerMode === 'full' ? '.7s cubic-bezier(0.215, 0.610, 0.355, 1)' : '.2s cubic-bezier(0.075, 0.82, 0.165, 1)'}}>
             <div className="c-player__progress">
-                <span className="c-player__progress__time">{playerState ? formatHHMMSS(playerState.currentTime) : '00:00:00'}</span>
+                <span className="c-player__progress__time">{playerState ? formatHHMMSS(playerState.currentTime, true) : '00:00:00'}</span>
                 <Slider className="c-player__progress__bar" onChange={handleChangeFileCurrentTime} data={ {value: currentTimePorcents, min: 0, max: 100} } style={!file ? {filter: 'grayscale(1)'} : {}} />
-                <span className="c-player__left__time">{playerState ? formatHHMMSS(playerState.duration - playerState.currentTime) : '00:00:00'}</span>
+                <span className="c-player__left__time">{playerState ? formatHHMMSS(playerState.duration - playerState.currentTime, true) : '00:00:00'}</span>
             </div>
             <div  className="c-player__actions">
                 <div className="c-player__file">
@@ -517,7 +540,7 @@ function Player() {
                         {!playerConfig.shuffle && <ShuffleDesativeIcon className="icon-color c-player__controls__item--desatived"/>}
                         <ShuffleIcon className="icon-color"/>
                     </div>}
-                    <div onClick={handlePrevious} className={'c-player__controls__item player--button' + (file && (currentMedias?.length === 1 || firstMedia?.id === file?.id) ? ' disabled' : '')} title="Voltar (Ctrl+B)">
+                    <div onClick={handlePrevious} className={'c-player__controls__item player--button'} title="Voltar (Ctrl+B)">
                         <FontAwesomeIcon icon={faBackwardStep}/>
                     </div>
                     { document.body.clientWidth > 655 && file?.type === 'video' && playerMode === 'full' &&

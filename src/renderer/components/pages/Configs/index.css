@@ -1,0 +1,109 @@
+.c-configs__block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: .5rem;
+}
+
+.c-configs__block__title {
+    font-weight: 500;
+    font-size: 1.3em;
+    margin: .5rem 0;
+}
+
+.c-configs__block__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.c-configs__block__content__item {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(var(--bg-color--solid));
+    color: rgb(var(--text-color));
+    margin-bottom: .2rem;
+    border: var(--border);
+    border-radius: .3rem;
+    overflow: hidden;
+}
+
+.c-configs__block__content__item__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+}
+.c-configs__block__content__item__info:hover .c-configs__block__content__item__actions__icon {
+    background-color: rgb(var(--bg-color--light));
+}
+
+.c-configs__block__content__item__label,
+.c-configs__block__content__item__actions {
+    display: flex;
+    align-items: center;
+}
+
+.c-configs__block__content__item__label {
+    font-size: .85em;
+}
+
+.c-configs__block__content__item__label__icon {
+    margin-right: 1rem;
+}
+
+.c-configs__block__content__item__actions__icon {
+    margin-left: 1rem;
+    font-size: .6em;
+}
+
+.c-configs__block__content__item__actions__icon > :first-child {
+    transition: transform .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.c-configs__block__content__item--show-up .c-configs__block__content__item__actions__icon > :first-child {
+    transform: rotate(180deg);
+}
+
+.c-configs__block__content__item__actions__label {
+    font-size: .85em;
+}
+
+.c-configs__block__content__item__list {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    background-color: rgb(var(--bg-color--light));
+    border-top: var(--border);
+    font-size: .85em;
+    /* padding: .5rem 0; */
+}
+.c-configs__block__content__item--show-up .c-configs__block__content__item__list {
+    display: flex;
+}
+
+.c-configs__block__content__item__list__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .1rem;
+    padding: .5rem 3rem;
+}
+
+.c-configs__block__content__item__list__item__actions {
+    margin-right: .5rem;
+}
+
+.c-configs__block__content__item__list__item__label {
+    display: flex;
+    align-items: center;
+}
+
+.c-configs__block--about {
+    font-size: .85em;
+}
+
+.c-configs__block--about .c-configs__block__content__item {
+    justify-content: flex-start;
+    background-color: transparent;
+    padding: .5rem 0;
+    border: 0;
+}

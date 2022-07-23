@@ -21,27 +21,42 @@ import { setMediaPlaying } from '../../store/mediaPlaying';
 import { setCurrentMedias } from '../../store/player';
 import { setPlayerState } from '../../store/playerState';
 import { setPlayerConfig } from '../../store/playerConfig';
-import { setPageConfig } from '../../store/pageConfig';
+import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
 import { selectSelectedFiles, setSelectedFiles } from '../../store/selectedFiles';
-import Load from '../Load';
 import { Media } from '../../../common/medias/types';
 import WindowControls from '../WindowControls';
 import { selectPlayerMode } from '../../store/playerMode';
 import { PageConfig } from '../../service/page/type';
+import { systemPreferences } from 'electron';
 
 function Main(props: MainProps) {
 
     const [ preLoad, setPreLoad ] = useState(true);
-    const [ load, setLoad ] = useState(false);
 
-    const [windowFocused] = props.windowState;
+    const [windowFocused, theme] = props.windowState;
     const location = useLocation();
     const containerMargin = useSelector(selectContainerMargin);
     const selectedItems = useSelector(selectSelectedFiles);
     const listItems = useSelector(selectMedias);
     const playerMode = useSelector(selectPlayerMode);
-    let pageConfig: PageConfig = null;
+    const pageConfig: PageConfig = useSelector(selectPageConfig);
     const dispatch = useDispatch();
+
+    // const mapTheme = (theme: string) => {
+    //     switch (theme) {
+    //         case 'dark':
+    //             return 'dark';
+    //         case 'light':
+    //             return 'light';
+    //         default:
+    //             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    //                 return 'dark';
+    //             }
+    //             else {
+    //                 return 'light';
+    //             }
+    //     }
+    // }
 
     useEffect(() => {
 
@@ -86,7 +101,7 @@ function Main(props: MainProps) {
                 const playerService = getPlayerService();
                 const playerState = await playerService.getLastMedia();
                 const playerConfig = await playerService.getPlayerConfig();
-                pageConfig = await getPageService().getPageConfig();
+                const pageConfig = await getPageService().getPageConfig();
 
                 if (pageConfig) {
                     dispatch(setPageConfig(pageConfig));
@@ -139,9 +154,6 @@ function Main(props: MainProps) {
 
             const lastRoute = location.pathname;
             localStorage.setItem('lastRoute', lastRoute);
-
-            // setLoad(true);
-            // setTimeout(() => setLoad(false), 200);
         };
 
         setDefaultRoute();
@@ -153,7 +165,7 @@ function Main(props: MainProps) {
     return (
         <div className={'c-app noselect' +
         (windowFocused ? '' : ' window--unfocused') +
-        (pageConfig?.theme === 'dark' ? ' theme--dark' : '')}>
+        (pageConfig?.theme ? ' theme--' + theme : '')}>
             {playerMode !== 'full' && <WindowControls />}
             <main id="popup-root" className="c-app__content">
                 <Sidebar />
@@ -171,10 +183,7 @@ function Main(props: MainProps) {
                         </div> : null}
                     <div className="c-container__pages">
                         <AnimatePresence>
-                            { load ?
-                                <Load /> :
-                                <Outlet />
-                            }
+                            <Outlet />
                         </AnimatePresence>
                     </div>
                 </div>

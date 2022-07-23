@@ -12,6 +12,7 @@ import Playlists from './components/pages/Playlists';
 import { CheckInteraction } from './common/dom';
 
 import './App.css';
+import Configs from './components/pages/Configs';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/musics" element={<Musics />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/queue" element={<PlayQueue />} />
+          <Route path="/configs" element={<Configs />} />
           {/* <Route path="/playlists/youtube" element={<Playlists />} /> */}
           <Route path="/" element={<Navigate to={lastRoute} replace/>}></Route>
           <Route path="*" element={<NotFound />} />
