@@ -209,13 +209,13 @@ function Musics() {
 
                 <>
                     <Margin cssAnimation={["marginTop"]} onScroll={onScrollToBottom} className="c-list c-line-list">
-                        <div ref={separatorRef} className="w-100"><div className={'c-line-list__separator c-line-list__separator--fixed z-index-1'} style={{width: separatorRef.current ? separatorRef.current.offsetWidth : '100%'}}>{capitalizeFirstLetter(lastSeparatorInvisible || '')}</div></div>
+                        <div ref={separatorRef} className="w-100"><div className={'c-line-list__separator c-line-list__separator--fixed z-index-1'} style={{width: separatorRef.current ? separatorRef.current.offsetWidth : '100%'}}><span className="accent--color">{capitalizeFirstLetter(lastSeparatorInvisible || '')}</span></div></div>
 
                         {
                             listSeparators.map((separator) => {
 
                                 const elements: React.ReactNode[] = [];
-                                elements.push(<div className={'c-line-list__separator'} key={separator}>{capitalizeFirstLetter(separator)}</div>);
+                                elements.push(<div className={'c-line-list__separator accent--color'} key={separator}>{capitalizeFirstLetter(separator)}</div>);
 
                                 let musicsFiltred: Media[] = [];
                                 if (filterField === 'name') {

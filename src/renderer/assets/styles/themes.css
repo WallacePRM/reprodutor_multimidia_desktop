@@ -49,7 +49,23 @@
     background-color: rgb(var(--border-color--dark), .3);
 }
 
-/* .theme--dark .btn--primary,
+.theme--dark .btn--primary,
+.theme--dark .highlighter {
+    filter: brightness(2);
+    opacity: .8;
+    color: rgb(var(--title-color--inverted));
+}
+
+.theme--dark .c-player__controls__item--play,
+.theme--dark .c-slider__progress-bar,
+.theme--dark .c-slider__input::-webkit-slider-thumb {
+    filter: brightness(1.7);
+}
+
+.theme--dark .checkbox-radio:checked,
+.theme--dark .c-line-animated__item,
+.theme--dark .c-line-list__item.c-line-list__item--active span,
 .theme--dark .accent--color {
-    filter: brightness(1.2);
-} */
+    filter: brightness(1.9);
+    opacity: .8;
+}
