@@ -10,11 +10,11 @@ import Button from '../../Button';
 import Margin from '../../Animations/Margin';
 import { selectPageConfig, setPageConfig } from '../../../store/pageConfig';
 import { getPageService } from '../../../service/page';
-
-import './index.css';
 import PathItem from './PathItem';
 import { Folder } from '../../../../common/folders/type';
 import { getFolderService } from '../../../service/folder';
+
+import './index.css';
 
 function Configs() {
 

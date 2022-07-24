@@ -229,7 +229,7 @@
     border-radius: 2rem;
     border: var(--border);
     transition: .3s;
-    cursor: pointer;
+    cursor: default;
 }
 .checkbox-switch:hover {
     opacity: .8;
@@ -272,7 +272,7 @@
     border-radius: 3rem;
     border: 1px solid rgb(var(--border-color--dark), .6);
     transition: .1s;
-    cursor: pointer;
+    cursor: default;
 }
 
 .checkbox-radio:hover {

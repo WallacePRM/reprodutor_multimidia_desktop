@@ -13,8 +13,17 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    background-color: rgb(var(--bg-color));
+    background-color: rgb(var(--bg-color), .8);
     border-color: rgb(var(--border-color--dark), .2);
+}
+
+.c-player-fullscreen__background-music-blur {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    width: 100%;
+    background: rgb(var(--bg-color--solid), 0.8);
+    backdrop-filter: blur(1rem);
 }
 
 .c-player--full-mode-video {
@@ -154,6 +163,8 @@
 }
 
 .c-player__file__cover--music {
+    position: absolute;
+    bottom: 7.3rem;
     height: 15.5rem;
     width: 15.5rem;
     margin: 1.2rem;

@@ -34,6 +34,7 @@ function Sidebar() {
 
     const setRotateAnimation = () => {
 
+        if (localStorage.getItem('lastRoute') === '/configs') return;
         setRotate(true);
         setTimeout(() => setRotate(false), 700);
     };

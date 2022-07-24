@@ -29,11 +29,13 @@ import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from '../../../service/media/media-handle';
 import Load from '../../Load';
 import { getFolderService } from '../../../service/folder';
+import FilterBlock from '../../FilterBlock';
 
 
 function Musics() {
 
     const [ load, setLoad ] = useState(false);
+    const [ filterBlock, setFilterBlock ] = useState(false);
 
     const selectedItems = useSelector(selectSelectedFiles);
     const pageConfig = useSelector(selectPageConfig);
@@ -122,6 +124,18 @@ function Musics() {
         dispatch(setPageConfig({ musicsOrderBy: value }));
         await getPageService().setPageConfig({ musicsOrderBy: value });
         setLastSeparatorInvisible(createLastSeparator());
+    };
+
+    const handleShowUpFilterBlock = () => {
+
+        setFilterBlock(true);
+    };
+
+    const hanndleGoToFilterSelected = () => {
+
+
+
+        setFilterBlock(false);
     };
 
     const onScrollToBottom = () => {
@@ -217,14 +231,15 @@ function Musics() {
                 /> :
 
                 <>
+                    {filterBlock && <FilterBlock onClose={hanndleGoToFilterSelected} filterList={listSeparators} filter={filterField} ></FilterBlock>}
                     <Margin cssAnimation={["marginTop"]} onScroll={onScrollToBottom} className="c-list c-line-list">
-                        <div ref={separatorRef} className="w-100"><div className={'c-line-list__separator c-line-list__separator--fixed z-index-1'} style={{width: separatorRef.current ? separatorRef.current.offsetWidth : '100%'}}><span className="accent--color">{capitalizeFirstLetter(lastSeparatorInvisible || '')}</span></div></div>
+                        <div onClick={handleShowUpFilterBlock} ref={separatorRef} className="w-100"><div className={'c-line-list__separator c-line-list__separator--fixed z-index-1'} style={{width: separatorRef.current ? separatorRef.current.offsetWidth : '100%'}}><span className="accent--color">{capitalizeFirstLetter(lastSeparatorInvisible || '')}</span></div></div>
 
                         {
                             listSeparators.map((separator) => {
 
                                 const elements: React.ReactNode[] = [];
-                                elements.push(<div className={'c-line-list__separator accent--color'} key={separator}>{capitalizeFirstLetter(separator)}</div>);
+                                elements.push(<div onClick={handleShowUpFilterBlock} className={'c-line-list__separator accent--color'} key={separator}>{capitalizeFirstLetter(separator)}</div>);
 
                                 let musicsFiltred: Media[] = [];
                                 if (filterField === 'name') {

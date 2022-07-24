@@ -501,7 +501,7 @@ function Player() {
 
             audioComponent = ReactDOM.createPortal(
                 <Opacity cssAnimation={["opacity"]} onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen'} style={{ backgroundImage: `url("${backgroundImagePath}")` }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', height: 'calc(100% - 7.3rem)', width: '100%', background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)', backdropFilter: 'blur(2rem)' }}>
+                    <div className="c-player-fullscreen__background-music-blur" style={{ background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)' }}>
                         <div className="c-player-fullscreen__header">
                             <PreviousRouter className="c-player-fullscreen__header__icon" onClick={ () => dispatch(setPlayerMode('default'))} title="Voltar"/>
                             <Logo className="ml-10"/>

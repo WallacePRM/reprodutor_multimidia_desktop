@@ -6,7 +6,7 @@ function TranformOpacity(props: AnimationsProps) {
 
     const pageVariants = {
         initial: {
-            [props.cssAnimation[0]]: "scale(1.05)",
+            [props.cssAnimation[0]]: "scale(1.5)",
             opacity: 0,
         },
         in: {
@@ -14,7 +14,7 @@ function TranformOpacity(props: AnimationsProps) {
             opacity: 1,
         },
         out: {
-            [props.cssAnimation[0]]: "scale(1.05)",
+            [props.cssAnimation[0]]: "scale(1.5)",
             opacity: 0,
         }
     };

@@ -62,7 +62,9 @@
     filter: brightness(1.7);
 }
 
+.theme--dark .c-filter-block__item:hover,
 .theme--dark .checkbox-radio:checked,
+.theme--dark .checkbox-switch:checked,
 .theme--dark .c-line-animated__item,
 .theme--dark .c-line-list__item.c-line-list__item--active span,
 .theme--dark .accent--color {
