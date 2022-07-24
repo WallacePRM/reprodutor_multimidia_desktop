@@ -8,7 +8,8 @@ const pageConfigSlice = createSlice({
            musicsOrderBy: 'name',
            videosOrderBy: 'name',
            theme: 'auto',
-           accentColor: 'systemPreferences.getAccentColor()'
+           accentColor: 'systemPreferences.getAccentColor()',
+           mediaArt: true,
         } as pageConfig,
     },
     reducers: {
@@ -29,6 +30,7 @@ export type pageConfig = {
     videosOrderBy?: string;
     theme?: string;
     accentColor?: string;
+    mediaArt?: boolean;
 };
 
 export default pageConfigSlice.reducer;

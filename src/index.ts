@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { createTablesOnce } from './main/database';
 import { initListeners as initListenersWindowControls} from './main/ipc/window-controls';
 import { initListeners as initListenersMediaService} from './main/ipc/medias-service';
+import { initListeners as initListenersFolderService} from './main/ipc/folders-service';
 import { createWindow } from './main/main-window';
 import path from 'path';
 
@@ -44,3 +45,4 @@ process.env.FFPROBE_PATH = path.join(binPath, "ffprobe.exe");
 createTablesOnce();
 initListenersWindowControls();
 initListenersMediaService();
+initListenersFolderService();

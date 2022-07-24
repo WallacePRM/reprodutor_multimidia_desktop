@@ -5,21 +5,27 @@ import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as PaletteIcon } from '@icon/themify-icons/icons/palette.svg';
 import { ReactComponent as BrushIcon } from '@icon/themify-icons/icons/brush.svg';
+import { ReactComponent as WorldIcon } from '@icon/themify-icons/icons/world.svg';
 import Button from '../../Button';
 import Margin from '../../Animations/Margin';
 import { selectPageConfig, setPageConfig } from '../../../store/pageConfig';
 import { getPageService } from '../../../service/page';
 
 import './index.css';
+import PathItem from './PathItem';
+import { Folder } from '../../../../common/folders/type';
+import { getFolderService } from '../../../service/folder';
 
 function Configs() {
 
     const [configState, setConfigState] = useState({
         music: {
             isOpen: false,
+            folders: [] as Folder[]
         },
         video: {
             isOpen: false,
+            folders: [] as Folder[]
         },
         theme: {
             isOpen: false,
@@ -27,7 +33,7 @@ function Configs() {
         color: {
             isOpen: false,
         }
-    } as any);
+    });
 
     const dispatch = useDispatch();
     const pageConfig = useSelector(selectPageConfig);
@@ -46,21 +52,18 @@ function Configs() {
 
     const handleShowUp = (type: string) => {
 
+        const configStateType = (configState as any)[type];
+
         setConfigState({
             ...configState,
             [type]: {
-                ...configState[type],
-                isOpen: !configState[type].isOpen,
+                ...configStateType,
+                isOpen: !configStateType.isOpen,
             }
         });
     };
 
-    const handleSelectTheme = (e: any) => {
-
-        e.currentTarget.querySelector('input').click();
-    };
-
-    const handleChangeTheme = async (e: any) => {
+    const handleChangeTheme = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         e.stopPropagation();
 
@@ -70,21 +73,56 @@ function Configs() {
         dispatch(setPageConfig({theme: theme}));
     };
 
-    useEffect(() => {
+    const HandleToggleMediaArt = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        const setPageConfig = () => {
+        e.stopPropagation();
+
+        const mediaArt = e.currentTarget.checked;
+
+        await pageService.setPageConfig({mediaArt: mediaArt});
+        dispatch(setPageConfig({mediaArt: mediaArt}));
+    };
+
+    const handleDeletePath = async (pathItem: Folder) => {
+
+        try {
+            await getFolderService().deleteFolder(pathItem);
+
+            const configStateType = (configState as any)[pathItem.type];
             setConfigState({
                 ...configState,
-                theme: {
-                    ...configState.theme,
-                    current: pageConfig.theme,
+                [pathItem.type]: {
+                    ...configStateType,
+                    folders: configStateType.folders.filter((folder: Folder) => folder.id !== pathItem.id)
                 }
             });
+        }
+        catch {}
+    };
+
+    useEffect(() => {
+
+        const getFoldersPath = async () => {
+
+            const folders = await getFolderService().getFolders();
+            const musicFolders = folders.filter(folder => folder.type === 'music');
+            const videoFolders = folders.filter(folder => folder.type === 'video');
+
+            setConfigState((lastState: any) => ({
+                ...lastState,
+                music: {
+                    ...lastState.music,
+                    folders: musicFolders,
+                },
+                video: {
+                    ...lastState.video,
+                    folders: videoFolders,
+                }
+            }));
         };
 
-        setPageConfig();
-
-    }, [pageConfig]);
+        getFoldersPath();
+    }, []);
 
     return (
         <div className="c-app c-configs">
@@ -112,14 +150,8 @@ function Configs() {
                                 </div>
 
                                 <div className="c-configs__block__content__item__list">
-                                    <div className="c-configs__block__content__item__list__item">
-                                        <div className="c-configs__block__content__item__list__item__label">
-                                            <span>D:\Músicas</span>
-                                        </div>
-                                        <div className="c-configs__block__content__item__list__item__actions">
-                                            <Button icon={faTimes} onClick={() => {}}/>
-                                        </div>
-                                    </div>
+                                    {configState.music.folders.map((item) => <PathItem onDelete={handleDeletePath} pathItem={item} key={item.id}/>)}
+                                    {configState.music.folders.length === 0 && <div className="c-configs__block__content__item__list__empty">Nenhum item adicionado</div>}
                                 </div>
                             </div>
                             <div className={'c-configs__block__content__item' + (configState.video.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
@@ -137,14 +169,8 @@ function Configs() {
                                 </div>
 
                                 <div className="c-configs__block__content__item__list">
-                                    <div className="c-configs__block__content__item__list__item">
-                                        <div className="c-configs__block__content__item__list__item__label">
-                                            <span>D:\_Dev\Utilitários\Vídeos</span>
-                                        </div>
-                                        <div className="c-configs__block__content__item__list__item__actions">
-                                            <Button icon={faTimes} onClick={() => {}}/>
-                                        </div>
-                                    </div>
+                                    {configState.video.folders.map((item) => <PathItem onDelete={handleDeletePath} pathItem={item} key={item.id}/>)}
+                                    {configState.video.folders.length === 0 && <div className="c-configs__block__content__item__list__empty">Nenhum item adicionado</div>}
                                 </div>
                             </div>
                         </div>
@@ -168,22 +194,22 @@ function Configs() {
 
                                 <div className="c-configs__block__content__item__list">
                                     <div className="c-configs__block__content__item__list__item">
-                                        <div onClick={handleSelectTheme} className="c-configs__block__content__item__list__item__label">
-                                            <input onClick={handleChangeTheme} defaultValue="light" className="checkbox-radio" type="radio" checked={configState.theme.current === 'light' ? true : false} />
+                                        <label className="c-configs__block__content__item__list__item__label">
+                                            <input onChange={handleChangeTheme} defaultValue="light" className="checkbox-radio" type="radio" checked={pageConfig.theme === 'light' ? true : false} />
                                             <span className="ml-10">Claro</span>
-                                        </div>
+                                        </label>
                                     </div>
                                     <div className="c-configs__block__content__item__list__item">
-                                        <div onClick={handleSelectTheme} className="c-configs__block__content__item__list__item__label">
-                                            <input onClick={handleChangeTheme} defaultValue="dark" className="checkbox-radio" type="radio" checked={configState.theme.current === 'dark' ? true : false}/>
+                                        <label className="c-configs__block__content__item__list__item__label">
+                                            <input onChange={handleChangeTheme} defaultValue="dark" className="checkbox-radio" type="radio" checked={pageConfig.theme === 'dark' ? true : false}/>
                                             <span className="ml-10">Escuro</span>
-                                        </div>
+                                        </label>
                                     </div>
                                     <div className="c-configs__block__content__item__list__item">
-                                        <div onClick={handleSelectTheme} className="c-configs__block__content__item__list__item__label">
-                                            <input onClick={handleChangeTheme} defaultValue="auto" className="checkbox-radio" type="radio" checked={configState.theme.current === 'auto' ? true : false}/>
+                                        <label className="c-configs__block__content__item__list__item__label">
+                                            <input onChange={handleChangeTheme} defaultValue="auto" className="checkbox-radio" type="radio" checked={pageConfig.theme === 'auto' ? true : false}/>
                                             <span className="ml-10">Usar a configuração do sistema</span>
-                                        </div>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -209,6 +235,24 @@ function Configs() {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="c-configs__block">
+                        <h2 className="c-configs__block__title">Informações sobre a mídia</h2>
+                        <div className="c-configs__block__content">
+                            <div className={'c-configs__block__content__item' + (configState.theme.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
+                                <div className="c-configs__block__content__item__info">
+                                    <div className="c-configs__block__content__item__label">
+                                        <WorldIcon className="c-configs__block__content__item__label__icon icon-color"/>
+                                        <span>Habilitar arte da mídia</span>
+                                    </div>
+                                    <label className="c-configs__block__content__item__actions">
+                                        <span className="c-configs__block__content__item__actions__label">{'Ativado'}</span>
+                                        <input onChange={HandleToggleMediaArt} className="ml-20 checkbox-switch" type="checkbox" checked={pageConfig.mediaArt}/>
+                                    </label>
+                                </div>
+
                             </div>
                         </div>
                     </div>

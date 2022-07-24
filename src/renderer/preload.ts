@@ -2,6 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from "electron";
+import { Folder } from "../common/folders/type";
 import { GetMediasOptions, Media, MediaInfo } from "../common/medias/types";
 import { WindowElectronApi } from "./preload-types";
 
@@ -35,6 +36,21 @@ const electronApi: WindowElectronApi['electronApi'] = {
     },
     deleteMedias: (medias: Media[]): Promise<void> => {
         return ipcRenderer.invoke('mediaService.deleteMedias', medias);
+    },
+
+    getFolders(): Promise<Folder[]> {
+
+        return ipcRenderer.invoke('folderService.getFolders');
+    },
+
+    insertFolder(folder: Folder): Promise<Folder> {
+
+        return ipcRenderer.invoke('folderService.insertFolder', folder);
+    },
+
+    deleteFolder(folder: Folder): Promise<void> {
+
+        return ipcRenderer.invoke('folderService.deleteFolder', folder);
     }
 };
 

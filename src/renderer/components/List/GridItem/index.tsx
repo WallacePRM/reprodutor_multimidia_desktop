@@ -27,6 +27,7 @@ import { selectMedias, setMedias } from "../../../store/medias";
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from "../../../store/selectedFiles";
 import { setMediaPlaying } from "../../../store/mediaPlaying";
 import { getMediaService } from "../../../service/media";
+import { selectPageConfig } from "../../../store/pageConfig";
 
 import './index.css';
 
@@ -40,6 +41,7 @@ function GridItem(props: FileProps) {
     const popupRef: any = useRef();
     const currentMedias = useSelector(selectCurrentMedias) || [];
     const allMedias = useSelector(selectMedias);
+    const pageConfig = useSelector(selectPageConfig);
     const dispatch = useDispatch();
 
     const handleSelectMedia = () => {
@@ -139,7 +141,7 @@ function GridItem(props: FileProps) {
         onMouseLeave={() => setAnimation(false)}>
             <div className="c-grid-list__item__interface">
                 <div className="c-grid-list__item__thumbnail" style={ !file.thumbnail ? { border: '1px solid rgb(var(--border-color--dark), .1)'} : {}}>
-                    { file.thumbnail ?
+                    { file.thumbnail && pageConfig.mediaArt ?
                         <div className="h-100 w-100">
                             <LazyLoadImage src={file.thumbnail}/>
                         </div> :

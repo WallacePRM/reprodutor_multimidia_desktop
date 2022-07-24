@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
-import { Media, MediaInfo } from "../../common/medias/types";
 import { getKnex } from "../database";
+import { Media, MediaInfo } from "../../common/medias/types";
 
 import { app } from 'electron';
 import musicMetadata from "music-metadata";

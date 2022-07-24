@@ -26,6 +26,7 @@ import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
 import { getPageService } from "../../../service/page";
 import { extractFilesInfo } from '../../../service/media/media-handle';
 import Load from '../../Load';
+import { getFolderService } from '../../../service/folder';
 
 import './index.css';
 
@@ -50,11 +51,19 @@ function Videos() {
         const files: File[] = Array.prototype.slice.call(input.files, 0);
         const fileList = extractFilesInfo(files);
 
+        const pathSeparator = fileList[0].path.includes('/') ? '/' : '\\';
+        const fileFolder = {
+            path: fileList[0].path.split(pathSeparator).slice(0, -1).join(pathSeparator),
+            type: 'video'
+        };
+
         try {
             setLoad(true);
 
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
+
+            const videoFolder = await getFolderService().insertFolder(fileFolder);
         }
         catch(e) {
             console.log(e);

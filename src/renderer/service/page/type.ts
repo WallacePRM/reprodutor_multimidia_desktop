@@ -4,4 +4,5 @@ export type PageConfig = {
     videosOrderBy?: string;
     theme?: string;
     accentColor?: string;
+    mediaArt?: boolean;
 }

@@ -13,8 +13,8 @@ export const createWindow = (): void => {
     mainWindow = new BrowserWindow({
         height: 750,
         width: 700,
-        minHeight: 600,
-        minWidth: 400,
+        minHeight: 350,
+        minWidth: 500,
         autoHideMenuBar: true,
         resizable: true,
         movable: true,

@@ -48,7 +48,7 @@ export function useWindowState(): WindowState {
 
         const handleChangeTheme = () => {
 
-            if (theme === 'auto') {
+            if (pageConfig.current.theme === 'auto') {
 
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 
@@ -58,8 +58,6 @@ export function useWindowState(): WindowState {
                     setTheme('light');
                 }
             }
-
-            console.log('handleChangeTheme', theme);
         };
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleChangeTheme);

@@ -20,6 +20,12 @@ export const getKnex = () => {
 
 export const createTablesOnce = async () => {
 
+    await createMediasTableOnce();
+    await createFoldersTableOnce();
+};
+
+const createMediasTableOnce = async () => {
+
     const knex = getKnex();
 
     try {
@@ -39,5 +45,22 @@ export const createTablesOnce = async () => {
         filename TEXT NOT NULL,
         duration INTEGER,
         releaseDate TEXT
+    )`);
+};
+
+const createFoldersTableOnce = async () => {
+
+    const knex = getKnex();
+
+    try {
+        await knex.raw(`SELECT 1 from folders LIMIT 1`);
+        return;
+    }
+    catch {}
+
+    await knex.raw(`CREATE TABLE folders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL,
+        type TEXT NOT NULL
     )`);
 };

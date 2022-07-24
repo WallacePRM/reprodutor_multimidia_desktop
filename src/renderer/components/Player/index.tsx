@@ -142,7 +142,7 @@ function Player() {
         }
     };
 
-    const handlePrevious = () => {
+    const handlePrevious = async () => {
 
         const index = currentMedias.findIndex((media) => media.id === file?.id);
 
@@ -156,10 +156,12 @@ function Player() {
 
         if (seconds > 5 || index === 0) {
 
-            dispatch(setMediaPlaying(null));
-            dispatch(setPlayerState({ file_id: null, duration: 0, currentTime: 0 }));
+            const newTime = 0;
+            mediaRef.current.currentTime = newTime;
 
-            setTimeout(() => dispatch(setMediaPlaying(file)), 0);
+            const newLastMedia = { currentTime: newTime };
+            await playerService.setLastMedia(newLastMedia);
+            dispatch(setPlayerState(newLastMedia));
 
             return;
         }
@@ -380,7 +382,7 @@ function Player() {
             });
             mediaRef.current.addEventListener('waiting', () => {
 
-                if (mediaLoadRef.current === false) setMediaLoad(true);
+                // if (mediaLoadRef.current === false) setMediaLoad(true);
             });
             mediaRef.current.addEventListener('ended', async () => {
 
@@ -433,7 +435,7 @@ function Player() {
                 };
                 dispatch(setMediaPlaying(newFile));
 
-                if (mediaLoadRef.current) setMediaLoad(false);
+                // if (mediaLoadRef.current) setMediaLoad(false);
             });
             mediaRef.current.addEventListener('pause', () => {
 
@@ -443,7 +445,7 @@ function Player() {
                 // };
                 // dispatch(setMediaPlaying(newFile));
 
-                if (mediaLoadRef.current) setMediaLoad(false);
+                // if (mediaLoadRef.current) setMediaLoad(false);
             });
             mediaRef.current.addEventListener('error', () => {
 

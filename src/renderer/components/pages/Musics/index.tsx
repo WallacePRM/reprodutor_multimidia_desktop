@@ -28,6 +28,7 @@ import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from '../../../service/media/media-handle';
 import Load from '../../Load';
+import { getFolderService } from '../../../service/folder';
 
 
 function Musics() {
@@ -56,11 +57,19 @@ function Musics() {
         const files: File[] = Array.prototype.slice.call(input.files, 0);
         const fileList = extractFilesInfo(files);
 
+        const pathSeparator = fileList[0].path.includes('/') ? '/' : '\\';
+        const fileFolder = {
+            path: fileList[0].path.split(pathSeparator).slice(0, -1).join(pathSeparator),
+            type: 'music'
+        };
+
         try {
             setLoad(true);
 
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
+
+            const musicFolder = await getFolderService().insertFolder(fileFolder);
         }
         catch(e) {
             console.log(e);
