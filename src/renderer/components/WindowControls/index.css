@@ -24,7 +24,7 @@
 }
 
 .c-window-controls__item:hover {
-    background-color: rgb(var(--border-color));
+    background-color: rgb(var(--hover-bg-color));
 }
 
 .c-window-controls__item--close:hover {

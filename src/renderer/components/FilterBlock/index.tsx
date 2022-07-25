@@ -6,11 +6,11 @@ import './index.css';
 function FilterBlock(props: FilterBlockProps) {
 
     const { filterList, filter } = props;
-    const alphabet = [ '&', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    const alphabet = [ '&', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '...'];
 
-    const handleClose = () => {
+    const handleSelectItem = (e: React.MouseEvent) => {
 
-        props.onClose();
+        props.onSelectItem(e);
     };
 
     return (
@@ -22,7 +22,7 @@ function FilterBlock(props: FilterBlockProps) {
 
 
                     return (
-                    <div onClick={handleClose} key={index} className={'c-filter-block__item' +
+                    <div onClick={handleSelectItem} key={index} className={'c-filter-block__item' +
                     (filter === 'name' && !filterList.find(x => x === item) ? ' disabled' : '')}>
                         <span>{item}</span>
                     </div>)
@@ -35,7 +35,7 @@ function FilterBlock(props: FilterBlockProps) {
 type FilterBlockProps = {
     filterList: any[];
     filter: string;
-    onClose: () => void;
+    onSelectItem: (e: React.MouseEvent) => void;
 };
 
 export default FilterBlock;

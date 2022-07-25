@@ -53,11 +53,11 @@
 }
 
 .c-sidebar__item:hover {
-    background-color: rgb(var(--border-color), .5);
+    background-color: rgb(var(--hover-bg-color));
 }
 
 .c-sidebar__item--active {
-    background-color: rgb(var(--border-color), .5);
+    background-color: rgb(var(--hover-bg-color));
 }
 
 

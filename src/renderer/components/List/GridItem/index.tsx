@@ -2,19 +2,15 @@ import React, { useRef, useState, useEffect } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
-import { faBars,faChevronRight, faEllipsis, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactComponent as ControlPlay } from '@icon/themify-icons/icons/control-play.svg';
 import { ReactComponent as MusicAlt } from '@icon/themify-icons/icons/music-alt.svg';
 import { ReactComponent as LayoutWidthDefault } from '@icon/themify-icons/icons/layout-width-default.svg';
-import { ReactComponent as LayoutListThumb } from '@icon/themify-icons/icons/layout-list-thumb.svg';
 import { ReactComponent as PlayIcon } from '@icon/themify-icons/icons/control-play.svg';
 import { ReactComponent as PlayForwardIcon } from '@icon/themify-icons/icons/control-forward.svg';
 import { ReactComponent as CheckICon } from '@icon/themify-icons/icons/check.svg';
-import { ReactComponent as PlusIcon } from '@icon/themify-icons/icons/plus.svg';
-import { ReactComponent as PencilIcon } from '@icon/themify-icons/icons/pencil.svg';
 import { ReactComponent as CloseIcon } from '@icon/themify-icons/icons/close.svg';
-import { ReactComponent as InfoIcon } from '@icon/themify-icons/icons/info-alt.svg';
 import { Media } from '../../../../common/medias/types';
 import { formatStrHHMMSS } from "../../../common/time";
 import Opacity from "../../Animations/Opacity";
@@ -22,12 +18,12 @@ import Margin from "../../Animations/Margin";
 import Popup from "reactjs-popup";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentMedias, setCurrentMedias } from "../../../store/player";
-import { ApiMediaService } from "../../../service/media/api-media-service";
 import { selectMedias, setMedias } from "../../../store/medias";
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from "../../../store/selectedFiles";
 import { setMediaPlaying } from "../../../store/mediaPlaying";
 import { getMediaService } from "../../../service/media";
 import { selectPageConfig } from "../../../store/pageConfig";
+import { removeMediaType } from "../../../common/string";
 
 import './index.css';
 
@@ -160,8 +156,8 @@ function GridItem(props: FileProps) {
                             <ControlPlay className="icon-color" />
                         </div>
 
-                        <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><FontAwesomeIcon icon={faEllipsis} className="icon-color" /></div>} position="top center">
-                            <Margin cssAnimation={["marginTop"]} className="c-popup noselect" style={{ minWidth: '200px' }}>
+                        <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><FontAwesomeIcon icon={faEllipsis} /></div>} position="top center">
+                            <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '200px' }}>
                                 <div  className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div onClick={handleSelectMedia} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
@@ -239,7 +235,7 @@ function GridItem(props: FileProps) {
                     </div>
                 </div>
                 <div className="c-grid-list__item__info">
-                    <span className="c-grid-list__item__title" title={file.name + (file.author ? ` - ${file.author}` : '')}>{file.name + (file.author ? ` - ${file.author}` : '')}</span>
+                    <span className="c-grid-list__item__title" title={removeMediaType(file.name) + (file.author ? ` - ${file.author}` : '')}>{removeMediaType(file.name) + (file.author ? ` - ${file.author}` : '')}</span>
                     { file.type === 'video' ? <span className="c-grid-list__item__subtitle">{file.duration > 0 ? formatStrHHMMSS(file.duration) : ''}</span> : null}
                     { file.type === 'music' ? <span className="c-grid-list__item__subtitle">{file.author || ''}</span> : null}
                 </div>

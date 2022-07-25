@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
 import { useSelector } from "react-redux";
 import { sortAsc } from "../../../common/array";
@@ -27,6 +27,8 @@ import { getPageService } from "../../../service/page";
 import { extractFilesInfo } from '../../../service/media/media-handle';
 import Load from '../../Load';
 import { getFolderService } from '../../../service/folder';
+import { getPlayerService } from '../../../service/player';
+import { delay } from '../../../common/async';
 
 import './index.css';
 
@@ -37,6 +39,7 @@ function Videos() {
     const selectedItems = useSelector(selectSelectedFiles);
     const listItems = useSelector(selectMedias);
     const pageConfig = useSelector(selectPageConfig);
+    const firstRun = pageConfig.firstRun;
     const filterField = pageConfig?.videosOrderBy ? pageConfig.videosOrderBy : 'name';
     const videoList = getVideosFromMedias(listItems, filterField);
     const files: any[] = [];
@@ -73,13 +76,15 @@ function Videos() {
         }
     };
 
-    const handleSelectMedia = (file: Media) => {
+    const handleSelectMedia = async (file: Media) => {
 
         if (file.type === 'video') {
             dispatch(setPlayerMode('full'));
         }
 
         dispatch(setCurrentMedias(videoList));
+        await getPlayerService().setLastMedia({current_medias: videoList});
+
         if (mediaPlaying?.id !== file.id) {
             dispatch(setMediaPlaying(file));
         }
@@ -99,6 +104,36 @@ function Videos() {
         await getPageService().setPageConfig({ videosOrderBy: value });
     };
 
+    const saveScrollPosition = () => {
+
+        delay(async () => {
+
+            const scrollPosition = document.querySelector('.c-list').scrollTop;
+            await getPageService().setPageConfig({scrollPosition: scrollPosition});
+
+        }, 500);
+    };
+
+    useEffect(() => {
+
+        const restoreScrollPosition = async () => {
+
+            const pageConfig = await getPageService().getPageConfig();
+
+            if (pageConfig.scrollPosition && firstRun) {
+
+                document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
+
+                dispatch(setPageConfig({firstRun: false}));
+            }
+            else {
+                await getPageService().setPageConfig({scrollPosition: 0});
+            }
+        };
+
+        restoreScrollPosition();
+    }, []);
+
     return (
         <div className="c-page c-videos">
             <div className="c-container__header">
@@ -113,7 +148,7 @@ function Videos() {
                 <div className="d-flex a-items-center">
                     <div className="c-container__content__title__actions">
                         <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapvideosOrderBy(filterField)}</span></label><FontAwesomeIcon className="box-field__icon ml-10" icon={faChevronDown} /></div>} position="bottom right" >
-                            <div  className="c-popup noselect" style={{ minWidth: '130px' }}>
+                            <Margin cssAnimation={["marginTop"]}  className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '130px' }}>
                                 <div className={'c-popup__item  c-popup__item--row' + (pageConfig.videosOrderBy === 'name' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
                                     <input onChange={() => {}} onClick={handleChangeOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="name"/>
                                     <div className="c-popup__item__label">
@@ -128,7 +163,7 @@ function Videos() {
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
-                            </div>
+                            </Margin>
                         </Popup>
                     </div>
                 </div>
@@ -149,7 +184,7 @@ function Videos() {
                     </div>}
                 /> :
                 <>
-                    <Margin cssAnimation={["marginTop"]} className="c-list c-grid-list">
+                    <Margin onScroll={saveScrollPosition} cssAnimation={["marginTop"]} className="c-list c-grid-list">
                         {videoList.map((item) => <GridItem className="c-grid-list__item--video"  onClick={ handleSelectMedia } file={item} key={item.id}/>)}
                     </Margin>
                 </>

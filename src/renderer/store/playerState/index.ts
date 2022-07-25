@@ -24,10 +24,10 @@ export const { setPlayerState } = playerStateSlice.actions;
 export const selectPlayerState = (state: RootState) => state.playerState.currentState;
 
 export type PlayerState = {
-  file_id: number,
+  file_id: number | null,
   duration: number,
   currentTime: number,
-  first_load?: boolean,
+  first_load?: boolean
 };
 
 export default playerStateSlice.reducer;

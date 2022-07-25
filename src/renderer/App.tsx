@@ -9,10 +9,10 @@ import NotFound from './components/pages/NotFound';
 import PlayQueue from './components/pages/PlayQueue';
 import Videos from './components/pages/Videos';
 import Playlists from './components/pages/Playlists';
+import Configs from './components/pages/Configs';
 import { CheckInteraction } from './common/dom';
 
 import './App.css';
-import Configs from './components/pages/Configs';
 
 function App() {
 

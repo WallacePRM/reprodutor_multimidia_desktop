@@ -1,29 +1,18 @@
-.window--unfocused {
-    --bg-color: 249, 249, 249;
-    --bg-color--light: 243, 243, 243;
-    --border-color: 230, 230, 230;
-}
-
-
 /* DARK */
-
-.theme--dark.window--unfocused {
-    --bg-color: 39, 39, 39;
-    --bg-color--light: 32, 32, 32;
-    --bg-color--solid: 50, 50, 50;
-    --border-color: 30, 30, 30;
-}
 
 .theme--dark {
     --border: 1px solid rgb(var(--border-color));
 
-    --bg-color: 37, 40, 44;
-    --bg-color--light: 29, 33, 37;
-    --bg-color--solid: 48, 52, 55;
-    --bg-color--solid-inverted: 246, 246, 246;
+    --bg-color: 39, 39, 39; /*37, 40, 44;*/
+    --bg-color--light: 32, 32, 32; /*29, 33, 37;*/
+    --bg-color--solid: 50, 50, 50; /*48, 52, 55;*/
+    --bg-color--solid-inverted: 249, 249, 249;
 
-    --border-color: 25, 30, 34;
-    --border-color--light: 66, 66, 66;
+    --hover-bg-color: 45, 45, 45;
+    --button-bg-color: 52, 52, 52;
+
+    --border-color: 29, 29, 29; /*25, 30, 34;*/
+    --border-color--light: 50, 50, 50; /*66, 66, 66;*/
     --border-color--dark: 203, 203, 203;
 
     --title-color: 255, 255, 255;
@@ -70,4 +59,17 @@
 .theme--dark .accent--color {
     filter: brightness(1.9);
     opacity: .8;
+}
+
+.theme--dark .checkbox-input:checked+.checkbox-box {
+    filter: brightness(1.9);
+    opacity: .8;
+}
+
+.theme--dark .checkbox-box::after {
+    color: #000;
+}
+
+.theme--dark .box-field .icon-color--inverted {
+    filter: invert(0);
 }

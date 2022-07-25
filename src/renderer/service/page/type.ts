@@ -5,4 +5,6 @@ export type PageConfig = {
     theme?: string;
     accentColor?: string;
     mediaArt?: boolean;
+    scrollPosition?: number;
+    firstRun?: boolean;
 }

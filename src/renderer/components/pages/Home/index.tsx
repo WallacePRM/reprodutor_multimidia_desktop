@@ -19,12 +19,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TranformOpacity from "../../Animations/TransformOpacity";
-import { validateUrl } from "../../../common/async";
+import { delay, validateUrl } from "../../../common/async";
 import SelectBlock from "../../SelectBlock";
 import { selectSelectedFiles } from "../../../store/selectedFiles";
 import { extractFilesInfo } from "../../../service/media/media-handle";
 import Load from "../../Load";
 import { setCurrentMedias } from "../../../store/player";
+import { getPlayerService } from "../../../service/player";
+import { getPageService } from "../../../service/page";
+import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
 
 function Home() {
 
@@ -35,11 +38,14 @@ function Home() {
     const listItems = useSelector(selectMedias);
     const mediaPlaying = useSelector(selectMediaPlaying);
     const selectedItems = useSelector(selectSelectedFiles);
+    const pageConfig = useSelector(selectPageConfig);
+    const firstRun = pageConfig.firstRun;
     const itemIndex = listItems.findIndex(item => item.id === mediaPlaying?.id);
     let recentMedias: any[] = revertOrder(listItems);
     const popupRef: any = useRef();
     const modalRef: any = useRef();
     const urlRef: any = useRef(null);
+    const listRef: any = useRef(null);
     const closeTooltip = () => setTimeout(() => popupRef.current && popupRef.current.close(), 0);
     const closeModalTooltip = () => modalRef.current && modalRef.current.close();
     const openModalTooltip = () => modalRef.current && modalRef.current.open();
@@ -68,6 +74,8 @@ function Home() {
             dispatch(setMedias(listItems.concat(medias)));
 
             dispatch(setCurrentMedias(medias));
+            await getPlayerService().setLastMedia({current_medias: medias});
+
             dispatch(setMediaPlaying(medias[0]));
             dispatch(setPlayerMode('full'));
         }
@@ -79,13 +87,15 @@ function Home() {
         }
     };
 
-    const handleSelectMedia = (file: Media) => {
+    const handleSelectMedia = async (file: Media) => {
 
         if (file.type === 'video') {
             dispatch(setPlayerMode('full'));
         }
 
         dispatch(setCurrentMedias([file]));
+        await getPlayerService().setLastMedia({current_medias: [file]});
+
         if (mediaPlaying?.id !== file.id) {
             dispatch(setMediaPlaying(file));
         }
@@ -131,6 +141,36 @@ function Home() {
         setUrlValidate(validateUrl(url));
     };
 
+    const saveScrollPosition = () => {
+
+        delay(async () => {
+
+            const scrollPosition = document.querySelector('.c-list').scrollTop;
+            await getPageService().setPageConfig({scrollPosition: scrollPosition});
+
+        }, 500);
+    };
+
+    useEffect(() => {
+
+        const restoreScrollPosition = async () => {
+
+            const pageConfig = await getPageService().getPageConfig();
+
+            console.log(pageConfig.firstRun);
+            if (pageConfig.scrollPosition && firstRun) {
+
+                document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
+                dispatch(setPageConfig({firstRun: false}));
+            }
+            else {
+                await getPageService().setPageConfig({scrollPosition: 0});
+            }
+        };
+
+        restoreScrollPosition();
+    }, []);
+
     // useEffect(() => {
 
     //     const orderByRecents = () => {
@@ -152,7 +192,7 @@ function Home() {
                     { listItems.length > 0 ? <>
                     <Button onRead={ handleSelectFile } accept="audio/*,video/*" title="Procure arquivos para reproduzir" label="Abrir arquivo(s)" icon={faFolderClosed} style={{ borderRadius: '.3rem 0 0 .3rem', borderRight: 0 }}/>
                     <Popup arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" icon={faChevronDown}/></button>} position="bottom right" >
-                        <div className="c-popup noselect">
+                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
                             <label className="c-popup__item" >
                                 <Button className="c-popup__item__button-hidden" onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
@@ -183,7 +223,7 @@ function Home() {
                                     <span className="c-popup__item__description">Insíra uma URL e faça streaming de mídia desse endereço</span>
                                 </div>
                             </div>
-                        </div>
+                        </Margin>
                     </Popup>
 
                     <Popup onOpen={() => closeTooltip()} ref={modalRef} modal closeOnDocumentClick={false} arrow={false} keepTooltipInside overlayStyle={{backgroundColor: "rgb(var(--modal-bg-color), .35)"}}>
@@ -200,7 +240,7 @@ function Home() {
                                     <div className="d-flex a-items-center">
                                         <Button onClick={() => {}} className="c-button--no-media-style" label={mapUrlType(urlType)} style={{ borderRadius: '.3rem 0 0 .3rem' }} />
                                         <Popup nested arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0', borderLeft: 'none' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" icon={faChevronDown}/></button>} position="bottom right" >
-                                            <div className="c-popup noselect" style={{minWidth: '100px'}}>
+                                            <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '100px'}}>
                                                 <label className="c-popup__item" onClick={closeTooltip}>
                                                     <input onClick={handleChangeUrlType} className="c-popup__item__button-hidden" type="text" defaultValue="video"/>
                                                     <div className="c-popup__item__label">
@@ -213,7 +253,7 @@ function Home() {
                                                         <h3 className="c-popup__item__title">Música(s)</h3>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Margin>
                                         </Popup>
                                     </div>
                                 </div>
@@ -246,7 +286,7 @@ function Home() {
                     button={<div className="d-flex a-items-center">
                     <Button onRead={ handleSelectFile } accept="audio/*,video/*" className="btn--primary c-button--no-media-style" label="Abrir arquivo" icon={faFolderClosed} style={{ borderRadius: '.3rem 0 0 .3rem', borderRight: 0 }}/>
                     <Popup arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="btn--primary c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" icon={faChevronDown}/></button>} position="bottom right" >
-                        <div className="c-popup noselect">
+                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
                             <label className="c-popup__item">
                                 <Button className="c-popup__item__button-hidden" onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
@@ -278,7 +318,7 @@ function Home() {
                                     <span className="c-popup__item__description">Insíra uma URL e faça streaming de mídia desse endereço</span>
                                 </div>
                             </div>}>
-                                <div className="c-modal noselect">
+                                <Margin cssAnimation={["marginTop"]} className="c-modal bg-acrylic bg-acrylic--popup noselect">
                                     <div className="c-modal__header">
                                         <h3 className="c-modal__title">Abrir um URL</h3>
                                     </div>
@@ -289,13 +329,13 @@ function Home() {
                                         <Button className="btn--primary" label="Abrir"/>
                                         <Button onClick={() => closeModalTooltip()} label="Cancelar"/>
                                     </div>
-                                </div>
+                                </Margin>
                             </Popup>
-                        </div>
+                        </Margin>
                     </Popup></div>}
                 /> :
                 <>
-                    <Margin cssAnimation={["marginTop"]} className="c-list c-grid-list">
+                    <Margin onScroll={saveScrollPosition} cssAnimation={["marginTop"]} className="c-list c-grid-list">
                         {recentMedias.map((item) => <GridItem onClick={ handleSelectMedia } file={item} key={item.id}/>)}
                     </Margin>
                 </>

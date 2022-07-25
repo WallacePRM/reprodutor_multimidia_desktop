@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
@@ -30,6 +30,8 @@ import { extractFilesInfo } from '../../../service/media/media-handle';
 import Load from '../../Load';
 import { getFolderService } from '../../../service/folder';
 import FilterBlock from '../../FilterBlock';
+import { getPlayerService } from '../../../service/player';
+import { delay } from '../../../common/async';
 
 
 function Musics() {
@@ -39,6 +41,7 @@ function Musics() {
 
     const selectedItems = useSelector(selectSelectedFiles);
     const pageConfig = useSelector(selectPageConfig);
+    const firstRun = pageConfig.firstRun;
     const filterField: string = pageConfig?.musicsOrderBy ? pageConfig.musicsOrderBy : 'name';
     const listItems = useSelector(selectMedias);
     const playerConfig = useSelector(selectPlayerConfig);
@@ -81,7 +84,7 @@ function Musics() {
         }
     };
 
-    const handleSelectMedia = (file: Media) => {
+    const handleSelectMedia = async (file: Media) => {
 
         let medias = [...musics];
         if (playerConfig.shuffle) {
@@ -91,7 +94,9 @@ function Musics() {
             const index = medias.findIndex(item => item.id === file.id);
             medias = arrayUnshiftItem(medias, index);
         }
+
         dispatch(setCurrentMedias(medias));
+        await getPlayerService().setLastMedia({current_medias: medias});
 
         if (mediaPlaying?.id !== file.id) {
             dispatch(setMediaPlaying(file));
@@ -105,10 +110,13 @@ function Musics() {
         }
     };
 
-    const handleShuffle = () => {
+    const handleShuffle = async () => {
 
         const shuffled = shuffle(musics);
+
         dispatch(setCurrentMedias(shuffled));
+        await getPlayerService().setLastMedia({current_medias: shuffled});
+
         if (mediaPlaying?.id !== shuffled[0].id) {
             dispatch(setMediaPlaying(shuffled[0]));
         }
@@ -131,9 +139,16 @@ function Musics() {
         setFilterBlock(true);
     };
 
-    const hanndleGoToFilterSelected = () => {
+    const hanndleGoToFilterSelected = (e: React.MouseEvent) => {
 
+        const filter = e.currentTarget.textContent;
 
+        const separators = document.querySelectorAll(`.c-line-list__separator`);
+        separators.forEach(separator => {
+            if (separator.innerHTML === filter) {
+                separator.scrollIntoView({ block: 'start' });
+            }
+        });
 
         setFilterBlock(false);
     };
@@ -145,6 +160,10 @@ function Musics() {
 
             setLastSeparatorInvisible(createLastSeparator());
         }, 50);
+
+        delay(() => {
+            saveScrollPosition();
+        }, 500);
     };
 
     const mapSeparatorByFilter = (filter: string) => {
@@ -153,6 +172,36 @@ function Musics() {
 
         return filter;
     };
+
+    const saveScrollPosition = () => {
+
+        delay(async () => {
+
+            const scrollPosition = document.querySelector('.c-list').scrollTop;
+            await getPageService().setPageConfig({scrollPosition: scrollPosition});
+
+        }, 500);
+    };
+
+    useEffect(() => {
+
+        const restoreScrollPosition = async () => {
+
+            const pageConfig = await getPageService().getPageConfig();
+
+            if (pageConfig.scrollPosition && firstRun) {
+
+                document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
+
+                dispatch(setPageConfig({firstRun: false}));
+            }
+            else {
+                await getPageService().setPageConfig({scrollPosition: 0});
+            }
+        };
+
+        restoreScrollPosition();
+    }, []);
 
     return (
         <div className="c-app c-musics">
@@ -172,7 +221,7 @@ function Musics() {
                     <div className="c-container__content__title__actions">
 
                         <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapMusicsOrderBy(filterField)}</span></label><FontAwesomeIcon className="box-field__icon ml-10" icon={faChevronDown} /></div>} position="bottom right" >
-                            <div  className="c-popup noselect" style={{ minWidth: '130px' }}>
+                            <Margin cssAnimation={["marginTop"]}  className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '130px' }}>
                                 <div className={'c-popup__item  c-popup__item--row' + (pageConfig.musicsOrderBy === 'name' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
                                     <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="name"/>
                                     <div className="c-popup__item__label">
@@ -208,7 +257,7 @@ function Musics() {
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
-                            </div>
+                            </Margin>
                         </Popup>
 
                     </div>
@@ -231,7 +280,7 @@ function Musics() {
                 /> :
 
                 <>
-                    {filterBlock && <FilterBlock onClose={hanndleGoToFilterSelected} filterList={listSeparators} filter={filterField} ></FilterBlock>}
+                    {filterBlock && <FilterBlock onSelectItem={hanndleGoToFilterSelected} filterList={listSeparators} filter={filterField} ></FilterBlock>}
                     <Margin cssAnimation={["marginTop"]} onScroll={onScrollToBottom} className="c-list c-line-list">
                         <div onClick={handleShowUpFilterBlock} ref={separatorRef} className="w-100"><div className={'c-line-list__separator c-line-list__separator--fixed z-index-1'} style={{width: separatorRef.current ? separatorRef.current.offsetWidth : '100%'}}><span className="accent--color">{capitalizeFirstLetter(lastSeparatorInvisible || '')}</span></div></div>
 

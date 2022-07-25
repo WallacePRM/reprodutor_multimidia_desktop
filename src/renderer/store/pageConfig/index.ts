@@ -10,6 +10,7 @@ const pageConfigSlice = createSlice({
            theme: 'auto',
            accentColor: 'systemPreferences.getAccentColor()',
            mediaArt: true,
+           firstRun: true,
         } as pageConfig,
     },
     reducers: {
@@ -31,6 +32,7 @@ export type pageConfig = {
     theme?: string;
     accentColor?: string;
     mediaArt?: boolean;
+    firstRun?: boolean;
 };
 
 export default pageConfigSlice.reducer;

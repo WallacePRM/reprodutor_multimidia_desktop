@@ -12,6 +12,7 @@ import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from '../../
 import { useDispatch } from 'react-redux';
 
 import './index.css';
+import { removeMediaType } from '../../../common/string';
 
 function LineItem(props: FileProps) {
 
@@ -68,7 +69,7 @@ function LineItem(props: FileProps) {
             </div>
             }
             {props.fileTypeVisible &&
-            <div className={'c-line-list__item__type-icon' + (mediaPlaying?.id === file.id ? ' accent--color' : ' icon-color--light')}>
+            <div className={'c-line-list__item__type-icon' + (mediaPlaying?.id === file.id ? ' accent--color' : '')}>
                 { file?.type === 'music' && <FontAwesomeIcon icon={faMusic} /> }
                 { file?.type === 'video' && <FontAwesomeIcon icon={faFilm} /> }
             </div>}
@@ -82,7 +83,7 @@ function LineItem(props: FileProps) {
                 </div>
             </div>
             <div className="c-line-list__item__info c-line-list__item__title" >
-                <span>{file.name}</span>
+                <span>{removeMediaType(file.name)}</span>
             </div>
             <div className="c-line-list__item__info c-line-list__item__singer" >
                 <span>{file.author ? file.author : 'Artista desconhecido'}</span>
@@ -90,9 +91,11 @@ function LineItem(props: FileProps) {
             <div className="c-line-list__item__info c-line-list__item__album" >
                 <span>{file.album ? file.album : 'Álbum desconhecido'}</span>
             </div>
-            <div className="c-line-list__item__info c-line-list__item__genre" >
-                <span>{file.releaseDate ? new Date(file.releaseDate).getFullYear() : ''}</span>
-                <span className="ml-10"> {file.genre ? file.genre : 'Gênero desconhecido'}</span>
+            <div className="c-line-list__item__info">
+
+                <span className="c-line-list__item__releaseDate">{file.releaseDate ? new Date(file.releaseDate).getFullYear() : ''}</span>
+                <span className="c-line-list__item__genre ml-10"> {file.genre ? file.genre : 'Gênero desconhecido'}</span>
+
             </div>
             <div className="c-line-list__item__info c-line-list__item__duration">
                 <span>{duration ? formatHHMMSS(duration) : '00:00'}</span>

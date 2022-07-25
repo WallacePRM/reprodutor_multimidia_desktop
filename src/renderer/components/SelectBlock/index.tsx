@@ -122,7 +122,7 @@ function SelectBlock(props: SelectBlockProps) {
             const mediaService = getMediaService();
             await mediaService.deleteMedias(mediasSelected);
 
-            const newListMedias = medias.filter(m => !mediasSelected.some(s => s.id === m.id));
+            const newListMedias = allMedias.filter(m => !mediasSelected.some(s => s.id === m.id));
             dispatch(setMedias(newListMedias));
             clearSelectedItems();
         }
@@ -182,9 +182,9 @@ function SelectBlock(props: SelectBlockProps) {
                 </button>} */}
 
                 {(containerWidth < 910 && selectedItems.length === 1 || containerWidth < 910 && selectedItems.length > 1) && <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={ <button className="c-select-block__actions__item c-button box-field ml-10">
-                    <FontAwesomeIcon icon={faEllipsis} className="c-button__icon icon-color"/>
+                    <FontAwesomeIcon icon={faEllipsis} className="c-button__icon"/>
                     </button>} position="top center">
-                    <Margin cssAnimation={["marginTop"]} className="c-popup noselect" style={{ minWidth: '200px' }}>
+                    <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '200px' }}>
                         {containerWidth < 790 && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                             <div onClick={handleSetNextMedias} className="c-popup__item__button-hidden"></div>
                             <div className="c-popup__item__icons">
@@ -204,7 +204,7 @@ function SelectBlock(props: SelectBlockProps) {
                             </div>
                         </div>}
                         {/* {containerWidth < 910 && <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><PlusIcon className="c-popup__item__icon icon-color" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="right top" >
-                            <div role="tooltip" className="c-popup noselect" style={{ minWidth: '130px' }}>
+                            <div role="tooltip" className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '130px' }}>
                                 <div className="c-popup__item c-popup__item--row" style={{ borderBottom: 'var(--border)'}}>
                                     <div className="c-popup__item__icons">
                                         <LayoutListThumb className="c-popup__item__icon icon-color" />

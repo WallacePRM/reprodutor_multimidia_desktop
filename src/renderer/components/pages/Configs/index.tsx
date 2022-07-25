@@ -151,7 +151,7 @@ function Configs() {
 
                                 <div className="c-configs__block__content__item__list">
                                     {configState.music.folders.map((item) => <PathItem onDelete={handleDeletePath} pathItem={item} key={item.id}/>)}
-                                    {configState.music.folders.length === 0 && <div className="c-configs__block__content__item__list__empty">Nenhum item adicionado</div>}
+                                    {configState.music.folders.length === 0 && <div className="c-configs__block__content__item__list__item c-configs__block__content__item__list__item--empty">Nenhuma pasta foi incluída nesta biblioteca.</div>}
                                 </div>
                             </div>
                             <div className={'c-configs__block__content__item' + (configState.video.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
@@ -170,7 +170,7 @@ function Configs() {
 
                                 <div className="c-configs__block__content__item__list">
                                     {configState.video.folders.map((item) => <PathItem onDelete={handleDeletePath} pathItem={item} key={item.id}/>)}
-                                    {configState.video.folders.length === 0 && <div className="c-configs__block__content__item__list__empty">Nenhum item adicionado</div>}
+                                    {configState.video.folders.length === 0 && <div className="c-configs__block__content__item__list__item c-configs__block__content__item__list__item--empty">Nenhuma pasta foi incluída nesta biblioteca.</div>}
                                 </div>
                             </div>
                         </div>
@@ -241,7 +241,7 @@ function Configs() {
                     <div className="c-configs__block">
                         <h2 className="c-configs__block__title">Informações sobre a mídia</h2>
                         <div className="c-configs__block__content">
-                            <div className={'c-configs__block__content__item' + (configState.theme.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
+                            <div className={'c-configs__block__content__item c-configs__block__content__item--huge' + (configState.theme.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
                                 <div className="c-configs__block__content__item__info">
                                     <div className="c-configs__block__content__item__label">
                                         <WorldIcon className="c-configs__block__content__item__label__icon icon-color"/>
@@ -252,7 +252,6 @@ function Configs() {
                                         <input onChange={HandleToggleMediaArt} className="ml-20 checkbox-switch" type="checkbox" checked={pageConfig.mediaArt}/>
                                     </label>
                                 </div>
-
                             </div>
                         </div>
                     </div>

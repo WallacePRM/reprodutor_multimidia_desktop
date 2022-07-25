@@ -26,6 +26,10 @@
     overflow: hidden;
 }
 
+.c-configs__block__content__item--huge .c-configs__block__content__item__info {
+    padding: .8rem 1rem;
+}
+
 .c-configs__block__content__item__info {
     display: flex;
     align-items: center;

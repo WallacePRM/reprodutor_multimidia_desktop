@@ -27,13 +27,12 @@ import { Media } from '../../../common/medias/types';
 import WindowControls from '../WindowControls';
 import { selectPlayerMode } from '../../store/playerMode';
 import { PageConfig } from '../../service/page/type';
-import { systemPreferences } from 'electron';
 
 function Main(props: MainProps) {
 
     const [ preLoad, setPreLoad ] = useState(true);
 
-    const [windowFocused, theme] = props.windowState;
+    const [theme] = props.windowState;
     const location = useLocation();
     const containerMargin = useSelector(selectContainerMargin);
     const selectedItems = useSelector(selectSelectedFiles);
@@ -78,11 +77,11 @@ function Main(props: MainProps) {
         };
 
         const getMedias = async () => {
-
+            console.log('getMedias');
             try {
                 const mediasOptions = {
                     offSet: 0,
-                    limit: 20,
+                    limit: 10000,
                 };
 
                 let medias: Media[] = [];
@@ -103,6 +102,7 @@ function Main(props: MainProps) {
                 const playerConfig = await playerService.getPlayerConfig();
                 const pageConfig = await getPageService().getPageConfig();
 
+                pageConfig.firstRun = true;
                 if (pageConfig) {
                     dispatch(setPageConfig(pageConfig));
                 }
@@ -114,13 +114,22 @@ function Main(props: MainProps) {
                 if (playerState) {
                     playerState.first_load = true;
 
+                    let currentMedias: Media[] = [];
+                    if (playerState.current_medias) {
+                        for (const media of playerState.current_medias) {
+
+                            if (medias.find(m => m.id === media.id))
+                            currentMedias.push(media);
+                        }
+                    }
+
                     const media = medias.find(item => item.id === playerState.file_id) || null;
                     if (media) {
                         dispatch(setPlayerState(playerState));
                     }
 
                     dispatch(setPlayerState(null));
-                    dispatch(setCurrentMedias(media ? [media] : null));
+                    dispatch(setCurrentMedias(currentMedias ? currentMedias : null));
                     dispatch(setMediaPlaying(media));
                 }
             }
@@ -137,16 +146,10 @@ function Main(props: MainProps) {
         getMedias();
     }, []);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const resetSelectedItems = () => {
-            dispatch(setSelectedFiles([]));
-        };
 
-        if (selectedItems.length > 0) {
-            resetSelectedItems();
-        }
-    }, [location.pathname]);
+    // }, [location.pathname]);
 
     useEffect(() => {
 
@@ -156,6 +159,14 @@ function Main(props: MainProps) {
             localStorage.setItem('lastRoute', lastRoute);
         };
 
+        const resetSelectedItems = () => {
+            dispatch(setSelectedFiles([]));
+        };
+
+        if (selectedItems.length > 0) {
+            resetSelectedItems();
+        }
+
         setDefaultRoute();
     }, [location]);
 
@@ -164,7 +175,6 @@ function Main(props: MainProps) {
     }
     return (
         <div className={'c-app noselect' +
-        (windowFocused ? '' : ' window--unfocused') +
         (pageConfig?.theme ? ' theme--' + theme : '')}>
             {playerMode !== 'full' && <WindowControls />}
             <main id="popup-root" className="c-app__content">

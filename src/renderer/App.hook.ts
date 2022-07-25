@@ -7,24 +7,11 @@ import { setSidebarOpened } from "./store/sidebarOpened";
 
 export function useWindowState(): WindowState {
 
-    const [ windowFocused, setWindowFocused]  = useState(true);
     const [ theme, setTheme ] = useState('auto');
 
     let pageConfig = useRef(null);
     pageConfig.current = useSelector(selectPageConfig);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-
-        window.onfocus = function () {
-
-            setWindowFocused(true);
-        };
-        window.onblur = function () {
-
-            setWindowFocused(false);
-        };
-    }, []);
 
     useEffect(() => {
 
@@ -105,9 +92,8 @@ export function useWindowState(): WindowState {
     }, []);
 
     return [
-        windowFocused,
         theme,
     ]
 };
 
-export type WindowState = [boolean, string];
+export type WindowState = [string];

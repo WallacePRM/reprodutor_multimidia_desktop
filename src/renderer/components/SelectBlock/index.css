@@ -7,6 +7,7 @@
     padding: .7rem 1rem;
     width: calc(100% - 110px - 1rem);
     background-color: rgb(var(--bg-color--solid), 1);
+    color: rgb(var(--title-color));
     font-size: .85rem;
     border-radius: .5rem;
     border: 1px solid rgb(var(--border-color--dark), .1);

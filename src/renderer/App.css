@@ -130,11 +130,12 @@
   padding: .3rem;
   max-width: 400px;
   min-width: 350px;
-  background-color: rgb(var(--bg-color), .9);
-  backdrop-filter: blur(.8rem);
+  /* background-color: rgb(var(--bg-color), .9);
+  backdrop-filter: blur(.8rem); */
   font-size: .75rem;
   border-radius: .5rem;
-  border: 1px solid rgb(var(--border-color--dark), .15);
+  /* border: 1px solid rgb(var(--border-color--dark), .15); */
+  border: 1px solid rgb(var(--border-color));
   box-shadow: 0 2px 15px rgba(0, 0, 0, .2);
 }
 
@@ -144,10 +145,11 @@
   align-items: center;
   border-radius: .3rem;
   padding: .3rem .7rem;
+  z-index: 1;
 }
 
 .c-popup__item:hover {
-  background-color: rgb(var(--border-color), .7);
+  background-color: rgb(var(--hover-bg-color), .9);
 }
 
 .c-popup__item--active .highlighter {

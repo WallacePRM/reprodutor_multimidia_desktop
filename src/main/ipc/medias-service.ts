@@ -7,6 +7,7 @@ import musicMetadata from "music-metadata";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import path from 'path';
+import { spawn } from "child_process";
 
 export const initListeners = () => {
 
@@ -22,32 +23,37 @@ export const initListeners = () => {
 
     ipcMain.handle('mediaService.insertMedias', async (event, medias: MediaInfo[]) => {
 
+        let mediasCreated: Media[] = [];
+
+        for (const mediaInfo of medias) {
+
+            const mediaType = mapMediaType(path.extname(mediaInfo.path));
+            if (mediaType === null) {
+                continue;
+            };
+
+            const mediaMetadata = await getMediaMetadata(mediaInfo.path);
+            const media: Media = {
+                id: null,
+                src: mediaInfo.path,
+                name: path.basename(mediaInfo.path),
+                duration: mediaMetadata.duration,
+                releaseDate: new Date().toISOString(),
+                album: mediaMetadata.album,
+                genre: null,
+                author: mediaMetadata.artist,
+                thumbnail: mediaMetadata.thumbnailPath,
+                type: mediaType,
+            };
+
+            mediasCreated.push(media);
+        }
+
         const knex = getKnex();
         const transaction = await knex.transaction();
-
         try {
 
-            let mediasCreated: Media[] = [];
-            for (const mediaInfo of medias) {
-
-                const mediaType = mapMediaType(path.extname(mediaInfo.path));
-                if (mediaType === null) {
-                    continue;
-                };
-
-                const mediaMetadata = await getMediaMetadata(mediaInfo.path);
-                const media: Media = {
-                    id: null,
-                    src: mediaInfo.path,
-                    name: path.basename(mediaInfo.path),
-                    duration: mediaMetadata.duration,
-                    releaseDate: new Date().toISOString(),
-                    album: mediaMetadata.album,
-                    genre: null,
-                    author: mediaMetadata.artist,
-                    thumbnail: mediaMetadata.thumbnailPath,
-                    type: mediaType,
-                };
+            for (const media of mediasCreated) {
 
                 await knex.raw('INSERT INTO medias (name, type, author, album, genre, thumbnail, filename, duration, releaseDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [ media.name, media.type, media.author, media.album, media.genre, media.thumbnail, media.src, media.duration, media.releaseDate ]).transacting(transaction);
@@ -55,11 +61,10 @@ export const initListeners = () => {
                 const [lastRowId] = await knex.raw('SELECT last_insert_rowid() as id').transacting(transaction);
 
                 media.id = lastRowId.id;
-
-                mediasCreated.push(media);
             }
 
             await transaction.commit();
+
             return mediasCreated;
         }
         catch (error) {
@@ -75,18 +80,26 @@ export const initListeners = () => {
         const transaction = await knex.transaction();
 
         const mediasId = medias.map(m => m.id);
-        const result = await knex.raw(`SELECT thumbnail FROM medias WHERE id in (${mediasId.map(x => '?').join(', ')})`, mediasId).transacting(transaction);
 
-        for (let media of medias) {
+        try {
+            const result = await knex.raw(`SELECT thumbnail FROM medias WHERE id in (${mediasId.map(x => '?').join(', ')})`, mediasId).transacting(transaction);
 
-            await knex.raw('DELETE FROM medias WHERE id = ?', [ media.id ]).transacting(transaction);
+            for (let media of medias) {
+
+                await knex.raw('DELETE FROM medias WHERE id = ?', [ media.id ]).transacting(transaction);
+            }
+
+            await transaction.commit();
+
+            for (let media of result) {
+
+                fs.rmSync(media.thumbnail);
+            }
         }
+        catch(error) {
 
-        await transaction.commit();
-
-        for (let media of result) {
-
-            fs.rmSync(media.thumbnail);
+            await transaction.rollback();
+            throw error;
         }
     });
 
@@ -94,7 +107,7 @@ export const initListeners = () => {
         const mediaMapped: Media = {
             id: media.id,
             src: 'file://' + media.filename,
-            name: removeMediaType(media.name),
+            name: media.name,
             duration: media.duration,
             releaseDate: new Date(media.releaseDate).getFullYear().toString(),
             album: media.album,
@@ -121,11 +134,6 @@ export const initListeners = () => {
 
         return null;
     };
-
-    const removeMediaType = (name: string) => {
-
-        return name.replace(/\.[^/.]+$/, "");
-    }
 
     const getMediaMetadata = async (filePath: string) => {
 
@@ -184,21 +192,61 @@ export const initListeners = () => {
         return path.join(app.getPath('userData'), 'thumbnails');
     };
 
+    // const createVideoThumbnail = (data: {filePath: string, imageName: string, folder: string}) => {
+
+    //     const { filePath, imageName, folder } = data;
+
+    //     return new Promise<void>((resolve, reject) => {
+    //         const command = ffmpeg(filePath).takeScreenshots({
+    //             timemarks: ['5%'],
+    //             filename: imageName,
+    //             fastSeek: true,
+    //         }, folder);
+
+    //         command.on('end', () => {
+    //             resolve();
+    //         });
+    //         command.on('error', (error) => {
+    //             reject(error);
+    //         });
+    //     });
+    // };
+
     const createVideoThumbnail = (data: {filePath: string, imageName: string, folder: string}) => {
 
+        // $"-ss {startTimeAt} -i \"{filePath}\" -f image2 -vframes 1 -y \"{picturePath}\""
+        // run ffmpeg extract image
+
         const { filePath, imageName, folder } = data;
+        const picturePath = path.join(folder, imageName);
 
         return new Promise<void>((resolve, reject) => {
-            const command = ffmpeg(filePath).takeScreenshots({
-                timemarks: ['10%'],
-                filename: imageName,
-            }, folder);
+            const command = spawn(process.env.FFMPEG_PATH, [
+                '-ss', '00:00:00',
+                '-i', `${filePath}`,
+                '-f', 'image2',
+                '-vframes', '1',
+                '-y', `${picturePath}`,
+            ]);
 
-            command.on('end', () => {
-                resolve();
+            command.on('close', (code) => {
+                if (code === 0) {
+                    resolve();
+                }
+                else {
+                    reject(`ffmpeg exited with code ${code}`);
+                }
             });
+
             command.on('error', (error) => {
-                reject(error);
+                console.log(error);
+            });
+
+            command.stdout.on('data', (message) => {
+                console.log(message.toString());
+            });
+            command.stderr.on('data', (message) => {
+                console.log(message.toString());
             });
         });
     };

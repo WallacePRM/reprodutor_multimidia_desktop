@@ -32,8 +32,10 @@ import { toggleFullScreen } from '../../common/dom';
 import { getPlayerService } from '../../service/player';
 import { selectPlayerState, setPlayerState } from '../../store/playerState';
 import { Media } from '../../../common/medias/types';
+import { removeMediaType } from '../../common/string';
 import Load from '../Load';
 import WindowControls from '../WindowControls';
+import Margin from '../Animations/Margin';
 
 import './index.css';
 
@@ -501,7 +503,7 @@ function Player() {
 
             audioComponent = ReactDOM.createPortal(
                 <Opacity cssAnimation={["opacity"]} onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen'} style={{ backgroundImage: `url("${backgroundImagePath}")` }}>
-                    <div className="c-player-fullscreen__background-music-blur" style={{ background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)' }}>
+                    <div className="c-player-fullscreen__background-music-blur bg-acrylic" style={{ background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)' }}>
                         <div className="c-player-fullscreen__header">
                             <PreviousRouter className="c-player-fullscreen__header__icon" onClick={ () => dispatch(setPlayerMode('default'))} title="Voltar"/>
                             <Logo className="ml-10"/>
@@ -531,7 +533,7 @@ function Player() {
                     <div className="c-player__file__track" onClick={handleChangeFullMode} title="Reproduzindo agora (Ctrl+N)">
                         { file?.type !== 'video' ? audioComponent : videoComponent }
                         <div className={'c-player__file__info' + (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') + (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')}>
-                            <h3 className="c-player__file__info__title">{file?.name}</h3>
+                            <h3 className="c-player__file__info__title">{removeMediaType(file?.name)}</h3>
                             <p className="c-player__file__info__author">{file?.author} { file?.album && <span className="c-player__file__info__album">{file?.album}</span>}</p>
                         </div>
                     </div>
@@ -570,13 +572,13 @@ function Player() {
                 </div>
                 <div className="c-player__options">
                     <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button"><VolumeIcon className="icon-color" title="Volume"/></div>} position="top center" >
-                        <div className="c-popup noselect" style={{ minWidth: '250px' }}>
+                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '250px' }}>
                             <div className="c-player__volume">
                                 <VolumeIcon onClick={handleMute} className="c-player__volume__icon icon-color" title="Mudo"/>
                                 <Slider  onChange={handleChangeVolume} className="c-player__volume__slider" data={{ min: 0, value: currentVolumePorcents, max: 100 }}></Slider>
                                 <span className="c-player__volume__value">{currentVolumePorcents}</span>
                             </div>
-                        </div>
+                        </Margin>
                     </Popup>
 
 
@@ -585,7 +587,7 @@ function Player() {
                         <ArrowsCornerIcon className="icon-color icon--inverted" title="Tela inteira(F11)"/>
                     </div>}
                     <Popup keepTooltipInside nested arrow={false} ref={popupRef} trigger={<div className="c-player__controls__options__item player--button c-player__controls__options__item--config" title="Mais opções"><FontAwesomeIcon icon={faEllipsis}/></div>} position="top right" >
-                        <div className="c-popup noselect">
+                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__icons">
                                     <InfoIcon className="c-popup__item__icon icon-color" />
@@ -596,7 +598,7 @@ function Player() {
                                 </div>
                             </div>
                             <Popup keepTooltipInside closeOnDocumentClick={false} arrow={false} nested on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')}><div className="c-popup__item__icons"><SpeedometerIcon className="c-popup__item__icon icon-color icon--inverted" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Velocidade</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="top right" >
-                                <div className="c-popup noselect" style={{ minWidth: '150px' }}>
+                                <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '150px' }}>
                                     <div className={'c-popup__item c-popup__item--row' + (playerConfig.playbackRate === 0.25 ? ' c-popup__item--active' : '') + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                         <input onClick={handleSetPlayerbackRate} className="c-popup__item__button-hidden" type="number" defaultValue={0.25}/>
                                         <div className="c-popup__item__label">
@@ -637,7 +639,7 @@ function Player() {
                                         </div>
                                         <div className="highlighter"></div>
                                     </div>
-                                </div>
+                                </Margin>
                             </Popup>
 
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
@@ -694,7 +696,7 @@ function Player() {
                                     <span className="c-popup__item__description">F11</span>
                                 </div>
                             </div></>}
-                        </div>
+                        </Margin>
                     </Popup>
                 </div>
             </div>
