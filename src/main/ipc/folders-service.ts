@@ -1,68 +1,61 @@
 import { ipcMain } from "electron";
+import {Like} from "typeorm";
 import { Folder } from "../../common/folders/type";
-import { getKnex } from "../database";
+import { AppDataSource } from "../database";
+import { Media as MediaDb } from "../database/entities/media";
+import { Folder as FolderDb } from "../database/entities/folder";
 import fs from "fs";
 
 export const initListeners = () => {
 
     ipcMain.handle('folderService.getFolders', async () => {
 
-        const knex = getKnex();
+        const result = await AppDataSource.getRepository(FolderDb).find();
 
-        const result = await knex.raw(`SELECT * FROM folders`);
-        return (result || []).map((x: any) => mapFolder(x));
+        return (result || []).map(x => mapFolder(x));
     });
 
     ipcMain.handle('folderService.insertFolder', async (event, folder: Folder) => {
 
-        const knex = getKnex();
-
-        const transaction = await knex.transaction();
-
-        try {
-
-            let result = await transaction.raw(`SELECT * FROM folders WHERE path = ?`, [folder.path]);
-            if (result.length > 0) {
-                return result[0];
+        let result = await AppDataSource.getRepository(FolderDb).findOne({
+            where: {
+                path: folder.path,
             }
+        });
 
-            result = await knex.raw('INSERT INTO folders (path, type) VALUES (?, ?)',
-            [ folder.path, folder.type ]).transacting(transaction);
-
-            const [folderLastId] = await knex.raw('SELECT last_insert_rowid() as id').transacting(transaction);
-            folder.id = folderLastId.id;
-
-            await transaction.commit();
-
-            return folder;
+        if (result) {
+            return result;
         }
-        catch (error) {
 
-            await transaction.rollback();
-            throw error;
-        }
+        const folderDb = new FolderDb();
+        folderDb.path = folder.path;
+        folderDb.type = folder.type;
+
+        await AppDataSource.getRepository(FolderDb).insert(folderDb);
+
+        return mapFolder(folderDb);
     });
 
     ipcMain.handle('folderService.deleteFolder', async (event, folder: Folder) => {
 
-        const knex = getKnex();
+        const medias = await AppDataSource.getRepository(MediaDb).find({
+            where: {
+                filename: Like(`%${folder.path}%`),
+            }
+        });
 
-        const medias = await knex.raw(`SELECT id, thumbnail FROM medias WHERE filename LIKE '${folder.path}%'`);
+        await AppDataSource.transaction(async (transaction) => {
 
-        const transaction = await knex.transaction();
-        try {
+            await transaction.createQueryBuilder(MediaDb, 'medias')
+            .where('medias.id IN (:...ids)', { ids: medias.map(x => x.id) })
+            .delete()
+            .execute();
 
-            await knex.raw(`DELETE FROM medias WHERE id IN (${medias.map(() => '?').join(', ')})`, medias.map((x: any) => x.id)).transacting(transaction);
-
-            await knex.raw('DELETE FROM folders WHERE id = ?', [ folder.id ]).transacting(transaction);
-
-            await transaction.commit();
-        }
-        catch (error) {
-
-            await transaction.rollback();
-            throw error;
-        }
+            await transaction.createQueryBuilder(FolderDb, 'folders')
+            .where('folders.id = :id', { id: folder.id })
+            .delete()
+            .execute();
+        });
 
         for (let media of medias) {
 
@@ -73,7 +66,7 @@ export const initListeners = () => {
     });
 };
 
-const mapFolder = (folder: any) => {
+const mapFolder = (folder: FolderDb) => {
 
     const folderMaped: Folder = {
         id: folder.id,

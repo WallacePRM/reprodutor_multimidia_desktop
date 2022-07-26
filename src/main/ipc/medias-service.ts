@@ -1,10 +1,10 @@
 import { ipcMain } from "electron";
-import { getKnex } from "../database";
+import { AppDataSource } from "../database";
+import { Media as MediaDb } from "../database/entities/media";
 import { Media, MediaInfo } from "../../common/medias/types";
 
 import { app } from 'electron';
 import musicMetadata from "music-metadata";
-import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import path from 'path';
 import { spawn } from "child_process";
@@ -13,17 +13,17 @@ export const initListeners = () => {
 
     ipcMain.handle('mediaService.getMedias', async (event, options) => {
 
-        const knex = getKnex();
+        const result = await AppDataSource.getRepository(MediaDb).find({
+            take: options.limit,
+            skip: options.offSet,
+        });
 
-        const result = await knex.raw(`SELECT * FROM medias LIMIT ? OFFSET ?`,
-        [ options.limit, options.offSet ]);
-
-        return (result || []).map((x: any) => mapMedia(x));
+        return (result || []).map(x => mapMedia(x));
     });
 
     ipcMain.handle('mediaService.insertMedias', async (event, medias: MediaInfo[]) => {
 
-        let mediasCreated: Media[] = [];
+        let mediasCreated: MediaDb[] = [];
 
         for (const mediaInfo of medias) {
 
@@ -33,12 +33,12 @@ export const initListeners = () => {
             };
 
             const mediaMetadata = await getMediaMetadata(mediaInfo.path);
-            const media: Media = {
+            const media: MediaDb = {
                 id: null,
-                src: mediaInfo.path,
+                filename: mediaInfo.path,
                 name: path.basename(mediaInfo.path),
                 duration: mediaMetadata.duration,
-                releaseDate: new Date().toISOString(),
+                releaseDate: new Date(),
                 album: mediaMetadata.album,
                 genre: null,
                 author: mediaMetadata.artist,
@@ -49,61 +49,40 @@ export const initListeners = () => {
             mediasCreated.push(media);
         }
 
-        const knex = getKnex();
-        const transaction = await knex.transaction();
-        try {
+        await AppDataSource.transaction(async (transaction) => {
 
-            for (const media of mediasCreated) {
+            await transaction.createQueryBuilder().
+            insert()
+            .into(MediaDb)
+            .values(mediasCreated)
+            .execute()
+        });
 
-                await knex.raw('INSERT INTO medias (name, type, author, album, genre, thumbnail, filename, duration, releaseDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [ media.name, media.type, media.author, media.album, media.genre, media.thumbnail, media.src, media.duration, media.releaseDate ]).transacting(transaction);
-
-                const [lastRowId] = await knex.raw('SELECT last_insert_rowid() as id').transacting(transaction);
-
-                media.id = lastRowId.id;
-            }
-
-            await transaction.commit();
-
-            return mediasCreated;
-        }
-        catch (error) {
-
-            await transaction.rollback();
-            throw error;
-        }
+        return mediasCreated.map(x => mapMedia(x));
     });
 
     ipcMain.handle('mediaService.deleteMedias', async (event, medias: Media[]) => {
 
-        const knex = getKnex();
-        const transaction = await knex.transaction();
+        const result = await AppDataSource.manager.createQueryBuilder(MediaDb, 'medias')
+        .where('medias.id IN (:...ids)', { ids: medias.map(x => x.id) })
+        .select('medias.thumbnail')
+        .getMany();
 
-        const mediasId = medias.map(m => m.id);
+        await AppDataSource.transaction(async (transaction) => {
 
-        try {
-            const result = await knex.raw(`SELECT thumbnail FROM medias WHERE id in (${mediasId.map(x => '?').join(', ')})`, mediasId).transacting(transaction);
+            await transaction.createQueryBuilder(MediaDb, 'medias')
+            .where('medias.id IN (:...ids)', { ids: medias.map(x => x.id) })
+            .delete()
+            .execute();
+        });
 
-            for (let media of medias) {
+        for (let media of result) {
 
-                await knex.raw('DELETE FROM medias WHERE id = ?', [ media.id ]).transacting(transaction);
-            }
-
-            await transaction.commit();
-
-            for (let media of result) {
-
-                fs.rmSync(media.thumbnail);
-            }
-        }
-        catch(error) {
-
-            await transaction.rollback();
-            throw error;
+            fs.rmSync(media.thumbnail);
         }
     });
 
-    const mapMedia = (media: any) => {
+    const mapMedia = (media: MediaDb) => {
         const mediaMapped: Media = {
             id: media.id,
             src: 'file://' + media.filename,
@@ -191,26 +170,6 @@ export const initListeners = () => {
 
         return path.join(app.getPath('userData'), 'thumbnails');
     };
-
-    // const createVideoThumbnail = (data: {filePath: string, imageName: string, folder: string}) => {
-
-    //     const { filePath, imageName, folder } = data;
-
-    //     return new Promise<void>((resolve, reject) => {
-    //         const command = ffmpeg(filePath).takeScreenshots({
-    //             timemarks: ['5%'],
-    //             filename: imageName,
-    //             fastSeek: true,
-    //         }, folder);
-
-    //         command.on('end', () => {
-    //             resolve();
-    //         });
-    //         command.on('error', (error) => {
-    //             reject(error);
-    //         });
-    //     });
-    // };
 
     const createVideoThumbnail = (data: {filePath: string, imageName: string, folder: string}) => {
 

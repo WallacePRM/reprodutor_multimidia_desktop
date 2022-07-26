@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from 'electron';
-import { createTablesOnce } from './main/database';
+import "reflect-metadata";
+
 import { initListeners as initListenersWindowControls} from './main/ipc/window-controls';
 import { initListeners as initListenersMediaService} from './main/ipc/medias-service';
 import { initListeners as initListenersFolderService} from './main/ipc/folders-service';
 import { createWindow } from './main/main-window';
 import path from 'path';
+import { initDataSource } from './main/database';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -41,8 +43,16 @@ const binPath = path.join(__dirname, 'libs');
 process.env.FFMPEG_PATH = path.join(binPath, "ffmpeg.exe");
 process.env.FFPROBE_PATH = path.join(binPath, "ffprobe.exe");
 
-
-createTablesOnce();
 initListenersWindowControls();
 initListenersMediaService();
 initListenersFolderService();
+
+(async () => {
+
+    try {
+        await initDataSource();
+    }
+    catch(err) {
+        console.log(err);
+    }
+})();
