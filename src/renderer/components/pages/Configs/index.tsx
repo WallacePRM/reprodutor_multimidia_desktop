@@ -13,6 +13,9 @@ import { getPageService } from '../../../service/page';
 import PathItem from './PathItem';
 import { Folder } from '../../../../common/folders/type';
 import { getFolderService } from '../../../service/folder';
+import { selectMedias, setMedias } from '../../../store/medias';
+import { getMediaService } from '../../../service/media';
+import { extractFilesInfo } from '../../../service/media/media-handle';
 
 import './index.css';
 
@@ -35,9 +38,10 @@ function Configs() {
         }
     });
 
-    const dispatch = useDispatch();
+    const medias = useSelector(selectMedias);
     const pageConfig = useSelector(selectPageConfig);
     const pageService = getPageService();
+    const dispatch = useDispatch();
 
     const mapStrTheme = (theme: string) => {
         switch (theme) {
@@ -96,8 +100,50 @@ function Configs() {
                     folders: configStateType.folders.filter((folder: Folder) => folder.id !== pathItem.id)
                 }
             });
+
+            const folderPath = 'file://' + pathItem.path;
+            const newMedias = medias.filter((media) => !media.src.startsWith(folderPath));
+
+            dispatch(setMedias(newMedias));
         }
         catch {}
+    };
+
+    const handleAddPath = async (e: React.ChangeEvent<any>) => {
+
+        e.stopPropagation();
+
+        const input = e.currentTarget as HTMLInputElement;
+        const type = input.accept.split('/')[0] === 'audio' ? 'music' : 'video';
+
+        const files: File[] = Array.prototype.slice.call(input.files, 0);
+        const fileList = extractFilesInfo(files);
+
+        const pathSeparator = fileList[0].path.includes('/') ? '/' : '\\';
+        const fileFolder = {
+            path: fileList[0].path.split(pathSeparator).slice(0, -1).join(pathSeparator),
+            type: type
+        };
+
+        try {
+
+            const newMedias = await getMediaService().insertMedias(fileList);
+            dispatch(setMedias(medias.concat(newMedias)));
+
+            const musicFolder = await getFolderService().insertFolder(fileFolder);
+
+            const configStateType = (configState as any)[type];
+            setConfigState({
+                ...configState,
+                [type]: {
+                    ...configStateType,
+                    folders: [...configStateType.folders, musicFolder]
+                }
+            });
+        }
+        catch(e) {
+            console.log(e);
+        }
     };
 
     useEffect(() => {
@@ -142,7 +188,7 @@ function Configs() {
                                         <span>Locais na biblioteca de músicas</span>
                                     </div>
                                     <div className="c-configs__block__content__item__actions">
-                                        <Button icon={faFolderClosed} label="Adicionar uma pasta" />
+                                        <Button onRead={handleAddPath} accept="audio/mp3" onlyFolder icon={faFolderClosed} label="Adicionar uma pasta" />
                                         <div className="c-configs__block__content__item__actions__icon btn--icon">
                                             <FontAwesomeIcon icon={faChevronDown} />
                                         </div>
@@ -161,7 +207,7 @@ function Configs() {
                                         <span>Locais na biblioteca de vídeos</span>
                                     </div>
                                     <div className="c-configs__block__content__item__actions">
-                                        <Button icon={faFolderClosed} label="Adicionar uma pasta" />
+                                        <Button onRead={handleAddPath} accept="video/mp4" onlyFolder icon={faFolderClosed} label="Adicionar uma pasta" />
                                         <div className="c-configs__block__content__item__actions__icon btn--icon">
                                             <FontAwesomeIcon icon={faChevronDown} />
                                         </div>

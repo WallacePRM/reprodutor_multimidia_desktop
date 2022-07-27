@@ -64,7 +64,7 @@
 }
 
 .bg-acrylic.bg-acrylic--popup::before {
-    background: rgb(var(--bg-color--solid), 0.9);
+    background: rgb(var(--bg-color--solid), 0.7);
 }
 
 .bg-acrylic > div {

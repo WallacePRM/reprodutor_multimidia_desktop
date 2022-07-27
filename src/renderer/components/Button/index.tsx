@@ -8,7 +8,10 @@ function Button(props: ButtonProps) {
     const ref: any = useRef(null);
     const inputAtt: any = props.onlyFolder ? { directory: "", webkitdirectory: "" } : '';
 
-    const handleTriggerInput = () => {
+    const handleTriggerInput = (e: React.MouseEvent) => {
+
+        e.stopPropagation();
+
         if (ref.current) {
             ref.current?.click();
         }

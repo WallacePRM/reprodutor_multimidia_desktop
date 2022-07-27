@@ -14,7 +14,7 @@
     bottom: 0;
     left: 0;
     background-color: rgb(var(--bg-color), .75);
-    /* border-color: rgb(var(--border-color--dark), .2); */
+    border-color: rgb(var(--player-border-color));
 }
 
 .c-player-fullscreen__background-music-blur {
