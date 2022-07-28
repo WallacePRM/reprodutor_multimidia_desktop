@@ -37,6 +37,7 @@
 
 .bg-acrylic {
     position: relative;
+    overflow: hidden;
 }
 
 .bg-acrylic::before {

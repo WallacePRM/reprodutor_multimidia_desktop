@@ -31,6 +31,7 @@ function GridItem(props: FileProps) {
 
     const [ animation, setAnimation ] = useState(false);
     const [ selected, setSelected ] = useState(false);
+    const [ active, setActive ] = useState(false);
 
     const { file } = props;
     const selectedItems = useSelector(selectSelectedFiles);
@@ -128,14 +129,16 @@ function GridItem(props: FileProps) {
     }, [selectedItems]);
 
     return (
-        <Opacity cssAnimation={["opacity"]} onClick={selectedItems.length === 0 ? handleSelectMedia : undefined } className={'c-grid-list__item' +
+        <Opacity cssAnimation={["opacity"]} className={'c-grid-list__item' +
         (animation ? ' c-grid-list__item--animated ' : '') +
+        (active ? ' c-grid-list__item--active' : '') +
         (props.className ? ' ' + props.className : '') +
-        (selectedItems.length > 0 ? ' select-mode' : '')}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        onMouseLeave={() => setAnimation(false)}>
+        (selectedItems.length > 0 ? ' select-mode' : '')}>
             <div className="c-grid-list__item__interface">
+                <div onClick={selectedItems.length === 0 ? handleSelectMedia : undefined } className={'c-grid-list--click-event'}
+                    onMouseDown={onMouseDown}
+                    onMouseUp={onMouseUp}
+                    onMouseLeave={() => setAnimation(false)}></div>
                 <div className="c-grid-list__item__thumbnail" style={ !file.thumbnail ? { border: '1px solid rgb(var(--border-color--dark), .1)'} : {}}>
                     { file.thumbnail && pageConfig.mediaArt ?
                         <div className="h-100 w-100">
@@ -151,12 +154,13 @@ function GridItem(props: FileProps) {
                             <><LayoutWidthDefault className="icon-color--light"/></> : null}
                         </div>
                     }
+
                     <div className="c-grid-list__item__actions">
                         <div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--play">
                             <ControlPlay className="icon-color" />
                         </div>
 
-                        <Popup onOpen={e => e?.stopPropagation()} keepTooltipInside arrow={false} ref={popupRef} trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><FontAwesomeIcon icon={faEllipsis} /></div>} position="top center">
+                        <Popup onOpen={() => setActive(true)} onClose={() => setActive(false)} nested keepTooltipInside arrow={false} ref={popupRef} trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><FontAwesomeIcon icon={faEllipsis} /></div>} position="top center">
                             <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '200px' }}>
                                 <div  className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div onClick={handleSelectMedia} className="c-popup__item__button-hidden"></div>

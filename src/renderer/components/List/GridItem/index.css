@@ -11,10 +11,24 @@
   height: 220px;
   max-height: 220px;;
   width: max-content;
-  padding: .35rem;
+  padding: .3rem;
   border-radius: .5rem;
   transition: transform .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 1px solid transparent;
+}
+
+.c-grid-list__item--active .c-grid-list__item__actions,
+.c-grid-list__item--active .c-grid-list__item__actions__item {
+  opacity: 1;
+}
+
+.c-grid-list--click-event {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 .select-mode .c-grid-list__item__interface {
@@ -97,6 +111,7 @@
   font-size: .7em;
   opacity: 0;
   pointer-events: none;
+  z-index: 2;
 }
 
 .c-grid-list__item:hover .c-grid-list__item__actions__item {
@@ -149,8 +164,8 @@
 }
 
 .c-grid-list__item__actions__item--options svg {
-  width: .5rem;
-  height: .5rem;
+  width: .7rem;
+  height: .7rem;
 }
 
 .c-grid-list__item__info {

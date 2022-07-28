@@ -20,5 +20,9 @@ module.exports = {
       ],
     }),
   ],
-  externals: ['better-sqlite3'],
+  externals: [
+
+    // Resolver problema de pacote não encontrado durante o empacotamento
+    'pg-native', 'nock', 'aws-sdk', 'mock-aws-s3'
+  ],
 };

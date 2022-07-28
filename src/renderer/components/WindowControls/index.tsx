@@ -14,7 +14,7 @@ function WindowControls(props: WindowControlsProps) {
 
     const containerMargin = useSelector(selectContainerMargin);
     const style = {
-        width: (containerMargin.appWidth - containerMargin.margin / 0.0625) + 'px',
+        width: (containerMargin.appWidth - (containerMargin.margin === 0 ?  85 : containerMargin.margin / 0.0625)) + 'px',
     };
 
     const handleClose = async () => {

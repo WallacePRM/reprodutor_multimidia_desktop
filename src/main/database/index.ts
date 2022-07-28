@@ -5,6 +5,7 @@ import { Folder } from "./entities/folder";
 import { Media } from "./entities/media";
 
 
+
 export const AppDataSource = new DataSource({
     type: "better-sqlite3",
     database: path.join(app.getPath('userData'), 'db.sqlite'),

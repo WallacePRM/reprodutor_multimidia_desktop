@@ -41,22 +41,6 @@ function Main(props: MainProps) {
     const pageConfig: PageConfig = useSelector(selectPageConfig);
     const dispatch = useDispatch();
 
-    // const mapTheme = (theme: string) => {
-    //     switch (theme) {
-    //         case 'dark':
-    //             return 'dark';
-    //         case 'light':
-    //             return 'light';
-    //         default:
-    //             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    //                 return 'dark';
-    //             }
-    //             else {
-    //                 return 'light';
-    //             }
-    //     }
-    // }
-
     useEffect(() => {
 
         const hideSidebar = () => {
@@ -145,11 +129,6 @@ function Main(props: MainProps) {
 
         getMedias();
     }, []);
-
-    // useEffect(() => {
-
-
-    // }, [location.pathname]);
 
     useEffect(() => {
 
