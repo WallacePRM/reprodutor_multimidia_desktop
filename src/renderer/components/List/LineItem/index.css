@@ -44,6 +44,8 @@
   color: rgb(var(--title-color));
   position: absolute;
   left: 3rem;
+  font-size: 1.2em;
+  padding-top: .3rem;
 }
 .c-line-list__item:hover .c-line-list__item__type-icon {
   opacity: 0;
@@ -111,7 +113,7 @@
   margin-left: 1.5rem;
   padding: .3rem;
   border-radius: .3rem;
-  font-size: 1em;
+  font-size: 1.5em;
 }
 .c-line-list__item__actions__item:hover {
   background-color: rgb(var(--border-color));

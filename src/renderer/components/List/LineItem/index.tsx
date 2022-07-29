@@ -10,9 +10,13 @@ import Opacity from '../../Animations/Opacity';
 import { useEffect, useState } from 'react';
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from '../../../store/selectedFiles';
 import { useDispatch } from 'react-redux';
+import { removeMediaType } from '../../../common/string';
+
+import { IoPlayOutline } from 'react-icons/io5';
+import { IoMusicalNotesOutline } from 'react-icons/io5';
+import { IoFilmOutline } from 'react-icons/io5';
 
 import './index.css';
-import { removeMediaType } from '../../../common/string';
 
 function LineItem(props: FileProps) {
 
@@ -70,8 +74,8 @@ function LineItem(props: FileProps) {
             }
             {props.fileTypeVisible &&
             <div className={'c-line-list__item__type-icon' + (mediaPlaying?.id === file.id ? ' accent--color' : '')}>
-                { file?.type === 'music' && <FontAwesomeIcon icon={faMusic} /> }
-                { file?.type === 'video' && <FontAwesomeIcon icon={faFilm} /> }
+                { file?.type === 'music' && <IoMusicalNotesOutline /> }
+                { file?.type === 'video' && <IoFilmOutline /> }
             </div>}
             <div onClick={selectedItems.length > 0 ? handleChangeSelected : (e) => e.stopPropagation()} className="c-line-list__item__actions c-line-list__item__actions--checkbox">
                 <input onChange={() => {}} checked={selected} className="checkbox-input" type="checkbox" />
@@ -79,7 +83,8 @@ function LineItem(props: FileProps) {
             </div>
             <div className="c-line-list__item__actions">
                 <div onClick={ handleSelectFile } className="c-line-list__item__actions__item">
-                    <Play className="icon-color" />
+                    {/* <Play className="icon-color" /> */}
+                    <IoPlayOutline className="accent--color"/>
                 </div>
             </div>
             <div className="c-line-list__item__info c-line-list__item__title" >

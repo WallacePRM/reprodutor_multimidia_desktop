@@ -3,6 +3,8 @@ import { ReactComponent as Search } from '@icon/themify-icons/icons/search.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSidebarOpened, toggleSidebar } from '../../store/sidebarOpened';
 
+import { IoSearchOutline } from 'react-icons/io5';
+
 import './index.css';
 
 function Searchbar() {
@@ -25,7 +27,8 @@ function Searchbar() {
     return (
         <div onClick={handleToggleSidebar} className={'c-searchbar' + (sidebarIsOpened ? ' c-searchbar--opened' : '')}>
             <input ref={inputRef} className="c-searchbar__field box-field" type="text" placeholder="Pesquisar"/>
-            <Search className="c-searchbar__icon icon-color icon--inverted" title="Clique para pesquisar"/>
+            {/* <Search className="c-searchbar__icon icon-color icon--inverted" title="Clique para pesquisar"/> */}
+            <IoSearchOutline className="c-searchbar__icon icon--inverted" title="Clique para pesquisar"/>
         </div>
     );
 }

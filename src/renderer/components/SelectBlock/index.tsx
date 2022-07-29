@@ -152,7 +152,7 @@ function SelectBlock(props: SelectBlockProps) {
                     <div className="checkbox-box mr-5"></div>
                     <span>{selectedItems.length > 1 ? selectedItems.length + ' itens' : selectedItems.length + ' item'} selecionado</span>
                 </label>
-                <span onClick={handleClearSelectedItems} className="c-select-block__item--clear accent-color">Limpar</span>
+                <span onClick={handleClearSelectedItems} className="c-select-block__item--clear accent--color">Limpar</span>
             </div>
             <div className="c-select-block__actions">
                 <button onClick={handlePlaySelectedItems} className="c-select-block__actions__item c-button box-field btn--primary c-button--no-media-style">
@@ -160,11 +160,11 @@ function SelectBlock(props: SelectBlockProps) {
                     <span className="c-button__label">Reproduzir</span>
                 </button>
                 {containerWidth >= 790 && <button onClick={handleSetNextMedias} className="c-select-block__actions__item c-button box-field ">
-                    <PlayForwardIcon className="c-button__icon mr-5"/>
+                    <PlayForwardIcon className="c-button__icon icon-color mr-5"/>
                     <span className="c-button__label">Reproduzir em seguida</span>
                 </button>}
                 {containerWidth > 910 && <button onClick={handleDeleteMediasSelected} className="c-select-block__actions__item c-button box-field ">
-                    <CloseIcon className="c-button__icon mr-5"/>
+                    <CloseIcon className="c-button__icon icon-color mr-5"/>
                     <span className="c-button__label">Remover</span>
                 </button>}
 

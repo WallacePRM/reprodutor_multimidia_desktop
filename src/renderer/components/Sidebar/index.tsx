@@ -15,6 +15,14 @@ import { selectSidebarOpened } from '../../store/sidebarOpened';
 import { useDispatch } from 'react-redux';
 import { setContainerMargin } from '../../store/containerMargin';
 
+import { IoHomeOutline } from 'react-icons/io5';
+import { IoMusicalNotesOutline } from 'react-icons/io5';
+import { IoFilmOutline } from 'react-icons/io5';
+import { RiPlayList2Fill } from 'react-icons/ri';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { FiSpeaker } from 'react-icons/fi';
+
+
 import './index.css';
 
 function Sidebar() {
@@ -55,21 +63,24 @@ function Sidebar() {
                 <nav className="c-sidebar__nav">
                     <Link to="/home" className={'c-sidebar__item' + (pathname === '/home' ? ' c-sidebar__item--active' : '')}  title="Início (Ctrl+Shifht+F)">
                         <div className="d-flex a-items-center">
-                            <Home className="c-sidebar__item__icon icon-color" />
+                            {/* <Home className="c-sidebar__item__icon icon-color" /> */}
+                            <IoHomeOutline className="c-sidebar__item__icon" />
                             <label className="c-sidebar__item__label" >Início</label>
                         </div>
                         <div className="highlighter"></div>
                     </Link>
                     <Link to="/musics" className={'c-sidebar__item' + (pathname === '/musics' ? ' c-sidebar__item--active' : '')} title="Biblioteca de músicas (Ctrl+R)">
                         <div className="d-flex a-items-center">
-                            <MusicAlt className="c-sidebar__item__icon icon-color" />
+                            {/* <MusicAlt className="c-sidebar__item__icon icon-color" /> */}
+                            <IoMusicalNotesOutline className="c-sidebar__item__icon" />
                             <label className="c-sidebar__item__label" >Biblioteca de músicas</label>
                         </div>
                         <div className="highlighter" ></div>
                     </Link>
                     <Link to="/videos" className={'c-sidebar__item' + (pathname === '/videos' ? ' c-sidebar__item--active' : '')} title="Biblioteca de vídeos (Ctrl+D)">
                         <div className="d-flex a-items-center">
-                            <LayoutWidthDefault className="c-sidebar__item__icon icon-color" />
+                            {/* <LayoutWidthDefault className="c-sidebar__item__icon icon-color" /> */}
+                            <IoFilmOutline className="c-sidebar__item__icon" />
                             <label className="c-sidebar__item__label" >Biblioteca de vídeos</label>
                         </div>
                         <div className="highlighter"></div>
@@ -77,17 +88,26 @@ function Sidebar() {
                     <div className="c-sidebar__separator" ></div>
                     <Link to="/queue" className={'c-sidebar__item' + (pathname === '/queue' ? ' c-sidebar__item--active' : '')} title="Fila de reprodução (Ctrl+Q)">
                         <div className="d-flex a-items-center">
-                            <LayoutListThumb className="c-sidebar__item__icon icon-color" />
+                            {/* <LayoutListThumb className="c-sidebar__item__icon icon-color" /> */}
+                            <RiPlayList2Fill className="c-sidebar__item__icon" />
                             <label className="c-sidebar__item__label">Fila de reprodução</label>
                         </div>
                         <div className="highlighter"></div>
                     </Link>
+                    {/* <Link to="/playlists" className={'c-sidebar__item' + (pathname === '/queue' ? ' c-sidebar__item--active' : '')} title="Fila de reprodução (Ctrl+Q)">
+                        <div className="d-flex a-items-center">
+                            <FiSpeaker className="c-sidebar__item__icon" />
+                            <label className="c-sidebar__item__label">Playlists</label>
+                        </div>
+                        <div className="highlighter"></div>
+                    </Link> */}
                 </nav>
             </div>
             <div className="c-sidebar__footer">
                 <Link onClick={setRotateAnimation} to="/configs" className={'c-sidebar__item' + (rotate ? ' c-sidebar__item--rotate' : '') + (pathname === '/configs' ? ' c-sidebar__item--active' : '')} title="Configurações (Ctrl+G)">
                     <div className="d-flex a-items-center">
-                        <Settings className="c-sidebar__item__icon icon-color" />
+                        {/* <Settings className="c-sidebar__item__icon icon-color" /> */}
+                        <IoSettingsOutline className="c-sidebar__item__icon" />
                         <label className="c-sidebar__item__label">Configurações</label>
                     </div>
                     <div className="highlighter"></div>

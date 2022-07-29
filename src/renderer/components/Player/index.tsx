@@ -37,6 +37,10 @@ import Load from '../Load';
 import WindowControls from '../WindowControls';
 import Margin from '../Animations/Margin';
 
+import { IoVolumeHighOutline } from 'react-icons/io5';
+import { IoVolumeLowOutline } from 'react-icons/io5';
+import { IoVolumeMuteOutline } from 'react-icons/io5';
+
 import './index.css';
 
 let timeoutId: any;
@@ -122,6 +126,13 @@ function Player() {
             clearTimeout(timeoutId);
             document.body.style.cursor = "default";
         }
+    };
+
+    const mapVolumeIcon = () => {
+
+        if (playerConfig.volume === 0) return <IoVolumeMuteOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
+        if (playerConfig.volume <= 0.5) return <IoVolumeLowOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
+        if (playerConfig.volume > 0.5) return <IoVolumeHighOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
     };
 
     const handlePlayPause = () => {
@@ -571,10 +582,10 @@ function Player() {
                     </div>}
                 </div>
                 <div className="c-player__options">
-                    <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button"><VolumeIcon className="icon-color" title="Volume"/></div>} position="top center" >
+                    <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button"><IoVolumeHighOutline title="Volume"/></div>} position="top center" >
                         <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '250px' }}>
                             <div className="c-player__volume">
-                                <VolumeIcon onClick={handleMute} className="c-player__volume__icon icon-color" title="Mudo"/>
+                                {mapVolumeIcon()}
                                 <Slider  onChange={handleChangeVolume} className="c-player__volume__slider" data={{ min: 0, value: currentVolumePorcents, max: 100 }}></Slider>
                                 <span className="c-player__volume__value">{currentVolumePorcents}</span>
                             </div>
@@ -588,7 +599,7 @@ function Player() {
                     </div>}
                     <Popup keepTooltipInside nested arrow={false} ref={popupRef} trigger={<div className="c-player__controls__options__item player--button c-player__controls__options__item--config" title="Mais opções"><FontAwesomeIcon icon={faEllipsis}/></div>} position="top right" >
                         <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
-                            <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
+                            {/* <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__icons">
                                     <InfoIcon className="c-popup__item__icon icon-color" />
                                 </div>
@@ -596,7 +607,7 @@ function Player() {
                                     <h3 className="c-popup__item__title">Propriedades</h3>
                                     <span className="c-popup__item__description">Ctrl+I</span>
                                 </div>
-                            </div>
+                            </div> */}
                             <Popup keepTooltipInside closeOnDocumentClick={false} arrow={false} nested on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')}><div className="c-popup__item__icons"><SpeedometerIcon className="c-popup__item__icon icon-color icon--inverted" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Velocidade</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="top right" >
                                 <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '150px' }}>
                                     <div className={'c-popup__item c-popup__item--row' + (playerConfig.playbackRate === 0.25 ? ' c-popup__item--active' : '') + (!file ? ' disabled' : '')} onClick={closeTooltip}>
