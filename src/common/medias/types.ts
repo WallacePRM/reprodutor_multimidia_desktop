@@ -18,7 +18,11 @@ export type MediaInfo = {
 
 export type GetMediasOptions = {
     offSet: number,
-    limit: number
+    limit: number,
+    filter?: {
+        name?: string,
+        type?: string | null,
+    }
 };
 
 export function isMediaBlob(media: Blob[] | MediaInfo[]): media is Blob[] {

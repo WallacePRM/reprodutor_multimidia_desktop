@@ -20,7 +20,7 @@ export const capitalizeFirstLetter = (str: string) => {
     return capitalized;
 };
 
-export const removeMediaType = (name: string) => {
+export const removeMediaExt = (name: string) => {
 
     if (!name) return '';
 

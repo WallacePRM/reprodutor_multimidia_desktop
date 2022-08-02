@@ -82,7 +82,7 @@
 
 .c-sidebar__item__label {
     margin-left: 20px;
-    transition: .4s;
+    transition: opacity .2s;
 }
 
 .c-sidebar__separator {

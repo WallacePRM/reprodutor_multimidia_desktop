@@ -23,7 +23,7 @@ import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from "../../
 import { setMediaPlaying } from "../../../store/mediaPlaying";
 import { getMediaService } from "../../../service/media";
 import { selectPageConfig } from "../../../store/pageConfig";
-import { removeMediaType } from "../../../common/string";
+import { removeMediaExt } from "../../../common/string";
 
 import './index.css';
 
@@ -225,7 +225,7 @@ function GridItem(props: FileProps) {
                                         <h3 className="c-popup__item__title">Propriedades</h3>
                                     </div>
                                 </div> */}
-                                <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                {!props.noSelect && <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
                                     <div onClick={handleChangeSelected} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <CheckICon className="c-popup__item__icon icon-color" />
@@ -233,26 +233,27 @@ function GridItem(props: FileProps) {
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Selecionar</h3>
                                     </div>
-                                </div>
+                                </div>}
                             </Margin>
                         </Popup>
                     </div>
                 </div>
                 <div className="c-grid-list__item__info">
-                    <span className="c-grid-list__item__title" title={removeMediaType(file.name) + (file.author ? ` - ${file.author}` : '')}>{removeMediaType(file.name) + (file.author ? ` - ${file.author}` : '')}</span>
+                    <span className="c-grid-list__item__title" title={file.name + (file.author ? ` - ${file.author}` : '')}>{removeMediaExt(file.name) + (file.author ? ` - ${file.author}` : '')}</span>
                     { file.type === 'video' ? <span className="c-grid-list__item__subtitle">{file.duration > 0 ? formatStrHHMMSS(file.duration) : ''}</span> : null}
                     { file.type === 'music' ? <span className="c-grid-list__item__subtitle">{file.author || ''}</span> : null}
                 </div>
             </div>
-            <div onClick={selectedItems.length > 0 ? handleChangeSelected : (e) => e.stopPropagation()} className="c-grid-list__item__actions__item c-grid-list__item__actions__item--checkbox">
+            {!props.noSelect && <div onClick={selectedItems.length > 0 ? handleChangeSelected : (e) => e.stopPropagation()} className="c-grid-list__item__actions__item c-grid-list__item__actions__item--checkbox">
                 <input onChange={() => {}} checked={selected} className="checkbox-input" type="checkbox" />
                 <div onClick={selectedItems.length === 0 ? handleChangeSelected : () => {}} className="checkbox-box"></div>
-            </div>
+            </div>}
         </Opacity>
     );
 }
 
 type FileProps = {
+    noSelect?: boolean,
     file: Media & {
         selected?: boolean,
     },

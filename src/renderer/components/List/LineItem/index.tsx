@@ -10,7 +10,7 @@ import Opacity from '../../Animations/Opacity';
 import { useEffect, useState } from 'react';
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from '../../../store/selectedFiles';
 import { useDispatch } from 'react-redux';
-import { removeMediaType } from '../../../common/string';
+import { removeMediaExt } from '../../../common/string';
 
 import { IoPlayOutline } from 'react-icons/io5';
 import { IoMusicalNotesOutline } from 'react-icons/io5';
@@ -77,10 +77,10 @@ function LineItem(props: FileProps) {
                 { file?.type === 'music' && <IoMusicalNotesOutline /> }
                 { file?.type === 'video' && <IoFilmOutline /> }
             </div>}
-            <div onClick={selectedItems.length > 0 ? handleChangeSelected : (e) => e.stopPropagation()} className="c-line-list__item__actions c-line-list__item__actions--checkbox">
+            {!props.noSelect && <div onClick={selectedItems.length > 0 ? handleChangeSelected : (e) => e.stopPropagation()} className="c-line-list__item__actions c-line-list__item__actions--checkbox">
                 <input onChange={() => {}} checked={selected} className="checkbox-input" type="checkbox" />
                 <label onClick={selectedItems.length === 0 ? handleChangeSelected : () => {}} className="checkbox-box"></label>
-            </div>
+            </div>}
             <div className="c-line-list__item__actions">
                 <div onClick={ handleSelectFile } className="c-line-list__item__actions__item">
                     {/* <Play className="icon-color" /> */}
@@ -88,7 +88,7 @@ function LineItem(props: FileProps) {
                 </div>
             </div>
             <div className="c-line-list__item__info c-line-list__item__title" >
-                <span>{removeMediaType(file.name)}</span>
+                <span>{file.name}</span>
             </div>
             <div className="c-line-list__item__info c-line-list__item__singer" >
                 <span>{file.author ? file.author : 'Artista desconhecido'}</span>
@@ -113,6 +113,7 @@ type FileProps = {
     file: Media,
     className?: string,
     fileTypeVisible?: boolean,
+    noSelect?: boolean,
     onClick: (file: Media) => void,
 };
 

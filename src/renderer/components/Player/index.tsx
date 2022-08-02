@@ -32,7 +32,6 @@ import { toggleFullScreen } from '../../common/dom';
 import { getPlayerService } from '../../service/player';
 import { selectPlayerState, setPlayerState } from '../../store/playerState';
 import { Media } from '../../../common/medias/types';
-import { removeMediaType } from '../../common/string';
 import Load from '../Load';
 import WindowControls from '../WindowControls';
 import Margin from '../Animations/Margin';
@@ -74,7 +73,6 @@ function Player() {
     }
 
     const currentVolumePorcents = playerConfig.volume ? parseInt((playerConfig.volume * 100).toFixed(0)) : 0;
-    const firstMedia = currentMedias && currentMedias[0];
     const lastMedia = currentMedias && currentMedias[currentMedias.length - 1];
     const popupRef: any = useRef();
     const closeTooltip = () => popupRef.current && popupRef.current.close();
@@ -135,6 +133,20 @@ function Player() {
         if (playerConfig.volume > 0.5) return <IoVolumeHighOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
     };
 
+    const playSameMedia = async () => {
+
+        const newTime = 0;
+        mediaRef.current.currentTime = newTime;
+
+        const newLastMedia = { currentTime: newTime };
+        await playerService.setLastMedia(newLastMedia);
+        dispatch(setPlayerState(newLastMedia));
+
+        if (mediaRef.current.paused) {
+            mediaRef.current.play();
+        }
+    };
+
     const handlePlayPause = () => {
 
         if (!mediaRef.current || !file) return;
@@ -169,12 +181,7 @@ function Player() {
 
         if (seconds > 5 || index === 0) {
 
-            const newTime = 0;
-            mediaRef.current.currentTime = newTime;
-
-            const newLastMedia = { currentTime: newTime };
-            await playerService.setLastMedia(newLastMedia);
-            dispatch(setPlayerState(newLastMedia));
+            await playSameMedia();
 
             return;
         }
@@ -412,14 +419,7 @@ function Player() {
                 };
 
                 if (playerConfig.repeatMode === 'once') {
-                    dispatch(setMediaPlaying(null));
-                    setTimeout(async () => {
-
-                        const newLastMedia = {currentTime: 0}
-                        await playerService.setLastMedia(newLastMedia);
-                        dispatch(setPlayerState(newLastMedia));
-                        dispatch(setMediaPlaying(newFile));
-                    }, 0);
+                    playSameMedia();
                     return;
                 }
                 else {
@@ -434,7 +434,9 @@ function Player() {
 
                 if (playerConfig.repeatMode === 'all' && index >= currentMedias.length - 1) {
                     if (newFile.id === currentMedias[0].id) {
-                        dispatch(setMediaPlaying(null));
+                        playSameMedia();
+
+                        return;
                     }
 
                     setTimeout(() => dispatch(setMediaPlaying(currentMedias[0])), 0);
@@ -544,7 +546,7 @@ function Player() {
                     <div className="c-player__file__track" onClick={handleChangeFullMode} title="Reproduzindo agora (Ctrl+N)">
                         { file?.type !== 'video' ? audioComponent : videoComponent }
                         <div className={'c-player__file__info' + (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') + (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')}>
-                            <h3 className="c-player__file__info__title">{removeMediaType(file?.name)}</h3>
+                            <h3 className="c-player__file__info__title">{file?.name}</h3>
                             <p className="c-player__file__info__author">{file?.author} { file?.album && <span className="c-player__file__info__album">{file?.album}</span>}</p>
                         </div>
                     </div>
@@ -593,7 +595,7 @@ function Player() {
                     </Popup>
 
 
-                    { document.body.clientWidth > 655 &&
+                    { document.body.clientWidth >= 850 &&
                     <div onClick={toggleFullScreen} className={'c-player__controls__options__item player--button' + (!file ? ' disabled' : '')}>
                         <ArrowsCornerIcon className="icon-color icon--inverted" title="Tela inteira(F11)"/>
                     </div>}
@@ -673,6 +675,18 @@ function Player() {
                                     <span className="c-popup__item__description">Ctrl+Direita</span>
                                 </div>
                             </div>
+                            { document.body.clientWidth < 850 &&
+                            <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
+                                <div className="c-popup__item__button-hidden" onClick={toggleFullScreen}></div>
+                                <div className="c-popup__item__icons">
+                                    <ArrowsCornerIcon className="c-popup__item__icon icon-color icon--inverted" />
+                                </div>
+                                <div className="c-popup__item__label">
+                                    <h3 className="c-popup__item__title">Tela inteira</h3>
+                                    <span className="c-popup__item__description">F11</span>
+                                </div>
+                            </div>}
+
                             { document.body.clientWidth <= 655 && <>
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleToggleShuffle}></div>
@@ -695,16 +709,6 @@ function Player() {
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Repetir: {mapRepeatMode(playerConfig.repeatMode)}</h3>
                                     <span className="c-popup__item__description">Ctrl+T</span>
-                                </div>
-                            </div>
-                            <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
-                                <div className="c-popup__item__button-hidden" onClick={toggleFullScreen}></div>
-                                <div className="c-popup__item__icons">
-                                    <ArrowsCornerIcon className="c-popup__item__icon icon-color icon--inverted" />
-                                </div>
-                                <div className="c-popup__item__label">
-                                    <h3 className="c-popup__item__title">Tela inteira</h3>
-                                    <span className="c-popup__item__description">F11</span>
                                 </div>
                             </div></>}
                         </Margin>

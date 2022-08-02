@@ -4,7 +4,8 @@ import './index.css';
 function EmptyMessage(props: EmptyMessage) {
 
     return (
-        <div className="c-empty-message">
+        <div className={'c-empty-message' +
+        (props.className ? ' ' + props.className : '')}>
             <div className="c-empty-message__container">
                 { props.icon && <img className="c-empty-message__icon" src={props.icon} />}
                 <div className="c-empty-message__box">
@@ -18,6 +19,7 @@ function EmptyMessage(props: EmptyMessage) {
 }
 
 type EmptyMessage = {
+    className?: string;
     title: string,
     description?: string,
     icon?: any,

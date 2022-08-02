@@ -1,21 +1,26 @@
 import { ipcMain } from "electron";
 import { AppDataSource } from "../database";
 import { Media as MediaDb } from "../database/entities/media";
-import { Media, MediaInfo } from "../../common/medias/types";
+import { GetMediasOptions, Media, MediaInfo } from "../../common/medias/types";
 
 import { app } from 'electron';
 import musicMetadata from "music-metadata";
 import fs from "fs";
 import path from 'path';
 import { spawn } from "child_process";
+import { Like } from "typeorm";
 
 export const initListeners = () => {
 
-    ipcMain.handle('mediaService.getMedias', async (event, options) => {
+    ipcMain.handle('mediaService.getMedias', async (event, options: GetMediasOptions) => {
 
         const result = await AppDataSource.getRepository(MediaDb).find({
             take: options.limit,
             skip: options.offSet,
+            where: options.filter ? {
+                name: options.filter.name ? Like(`%${options.filter.name}%`) : undefined,
+                type: options.filter.type ?  options.filter.type : undefined,
+            } : undefined,
         });
 
         return (result || []).map(x => mapMedia(x));
@@ -36,7 +41,7 @@ export const initListeners = () => {
             const media: MediaDb = {
                 id: null,
                 filename: mediaInfo.path,
-                name: path.basename(mediaInfo.path),
+                name: getNameFromPath(mediaInfo.path),
                 duration: mediaMetadata.duration,
                 releaseDate: new Date(),
                 album: mediaMetadata.album,
@@ -112,6 +117,14 @@ export const initListeners = () => {
         }
 
         return null;
+    };
+
+    const getNameFromPath = (fileName: string) => {
+
+        let name = path.basename(fileName);
+        name = name.replace(path.extname(name), '');
+
+        return name;
     };
 
     const getMediaMetadata = async (filePath: string) => {

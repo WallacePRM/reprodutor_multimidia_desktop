@@ -120,6 +120,38 @@
   padding: 0px 55px;
 }
 
+.c-list__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.c-list__title__text {
+  font-weight: 500;
+}
+
+.c-list__title__button {
+  margin: 0;
+  padding: .5rem;
+  border-radius: .3rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.c-list__title__button:hover {
+  background-color: rgb(var(--hover-bg-color));
+}
+
+.c-list__empty-message {
+  text-align: center;
+  font-size: .8rem;
+}
+
+
+
 /* [data-popup='tooltip'].popup-overlay {
   pointer-events: all !important;
 } */
