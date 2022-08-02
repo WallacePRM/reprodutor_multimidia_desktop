@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useWindowState } from './App.hook';
+import { CheckInteraction } from './common/dom';
 
 import Main from './components/Main';
 import Home from './components/pages/Home';
@@ -10,10 +11,9 @@ import PlayQueue from './components/pages/PlayQueue';
 import Videos from './components/pages/Videos';
 import Playlists from './components/pages/Playlists';
 import Configs from './components/pages/Configs';
-import { CheckInteraction } from './common/dom';
+import SearchResults from './components/pages/SearchResults';
 
 import './App.css';
-import SearchResults from './components/pages/SearchResults';
 
 function App() {
 

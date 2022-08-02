@@ -294,7 +294,7 @@ function Configs() {
                                         <span>Habilitar arte da mídia</span>
                                     </div>
                                     <label className="c-configs__block__content__item__actions">
-                                        <span className="c-configs__block__content__item__actions__label">{'Ativado'}</span>
+                                        <span className="c-configs__block__content__item__actions__label">{pageConfig.mediaArt ? 'Ativado' : 'Desativado'}</span>
                                         <input onChange={HandleToggleMediaArt} className="ml-20 checkbox-switch" type="checkbox" checked={pageConfig.mediaArt}/>
                                     </label>
                                 </div>

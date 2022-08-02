@@ -44,7 +44,7 @@
   color: rgb(var(--title-color));
   position: absolute;
   left: 3rem;
-  font-size: 1.2em;
+  font-size: 1.5em;
   padding-top: .3rem;
 }
 .c-line-list__item:hover .c-line-list__item__type-icon {
@@ -95,7 +95,6 @@
   display: flex;
   align-items: center;
   opacity: 0;
-  transition: .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform: scale(0);
 }
 
@@ -140,7 +139,6 @@
 
 .c-line-list__item__actions--checkbox .checkbox-box {
   transform: scale(0);
-  transition: .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: all;
 }
 

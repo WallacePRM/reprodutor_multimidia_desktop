@@ -167,7 +167,7 @@ function SearchResults() {
                     {musics.length > 0 && <>
                     <div className="c-list__title">
                         <h3 className="c-list__title__text">Músicas</h3>
-                        {musics.length <= 5 && <button onClick={handleGetAllMusicsFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
+                        {musics.length <= 5 && musics.length > 1 && <button onClick={handleGetAllMusicsFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
                     </div>
                     <div className="c-line-list">
                         {musics.map(music => (
@@ -178,7 +178,7 @@ function SearchResults() {
                     {videos.length > 0 && <>
                     <div className="c-list__title">
                         <h3 className="c-list__title__text">Vídeos</h3>
-                        {videos.length <= 5 && <button onClick={handleGetAllVideosFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
+                        {videos.length <= 5 && videos.length > 1 && <button onClick={handleGetAllVideosFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
                     </div>
                     <div className="c-grid-list">
                         {videos.map(video => <GridItem noSelect onClick={handleSelectVideo} key={video.id} file={video}/>)}
