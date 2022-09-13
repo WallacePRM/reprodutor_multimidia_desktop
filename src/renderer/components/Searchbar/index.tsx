@@ -56,7 +56,6 @@ function Searchbar() {
 
         e.preventDefault();
 
-
         if (search.trim() !== '' && sidebarIsMaximized) {
             navigate(`/search-results/${search}`);
 
@@ -72,7 +71,7 @@ function Searchbar() {
             (search !== '' ? ' c-searchbar--result-opened' : '')}>
             <input onChange={handleChange} value={search} ref={inputRef} className="c-searchbar__field box-field" type="text" placeholder="Pesquisar"/>
             {search !== '' && <IoCloseOutline onClick={handleClear} className="c-searchbar__icon c-searchbar__icon--clear" title="Ctrl+E"/>}
-            <IoSearchOutline className="c-searchbar__icon icon--inverted" title="Clique para pesquisar"/>
+            <IoSearchOutline onClick={search ? handleSearch : null} className="c-searchbar__icon icon--inverted" title="Clique para pesquisar"/>
 
             {search !== '' && sidebarIsMaximized  && searchItems.length > 0 &&
                 <div className="c-popup c-popup--searchbar noselect"
