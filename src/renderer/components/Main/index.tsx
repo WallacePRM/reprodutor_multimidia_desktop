@@ -132,10 +132,13 @@ function Main(props: MainProps) {
 
     useEffect(() => {
 
-        const setDefaultRoute = () => {
+        const setDefaultRoute = async () => {
 
             const lastRoute = location.pathname;
-            localStorage.setItem('lastRoute', lastRoute);
+
+            if (lastRoute !== '/') {
+                localStorage.setItem('lastRoute', lastRoute);
+            }
         };
 
         const resetSelectedItems = () => {

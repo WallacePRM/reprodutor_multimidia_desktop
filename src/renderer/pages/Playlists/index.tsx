@@ -2,12 +2,12 @@ import React from 'react';
 import { faChevronDown, faPlus, faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch } from 'react-redux';
-import emptyMessageIcon from '../../../assets/img/yt-gradient.svg';
-import Button from '../../Button';
-import EmptyMessage from '../../EmptyMessage';
-import Margin from '../../Animations/Margin';
-import GridItem from '../../List/GridItem';
-import Opacity from '../../Animations/Opacity';
+import emptyMessageIcon from '../../assets/img/yt-gradient.svg';
+import Button from '../../components/Button';
+import EmptyMessage from '../../components/EmptyMessage';
+import Margin from '../../components/Animations/Margin';
+import GridItem from '../../components/List/GridItem';
+import Opacity from '../../components/Animations/Opacity';
 
 function Playlists() {
 

@@ -6,16 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as PaletteIcon } from '@icon/themify-icons/icons/palette.svg';
 import { ReactComponent as BrushIcon } from '@icon/themify-icons/icons/brush.svg';
 import { ReactComponent as WorldIcon } from '@icon/themify-icons/icons/world.svg';
-import Button from '../../Button';
-import Margin from '../../Animations/Margin';
-import { selectPageConfig, setPageConfig } from '../../../store/pageConfig';
-import { getPageService } from '../../../service/page';
+import Button from '../../components/Button';
+import Margin from '../../components/Animations/Margin';
+import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
+import { getPageService } from '../../service/page';
 import PathItem from './PathItem';
-import { Folder } from '../../../../common/folders/type';
-import { getFolderService } from '../../../service/folder';
-import { selectMedias, setMedias } from '../../../store/medias';
-import { getMediaService } from '../../../service/media';
-import { extractFilesInfo } from '../../../service/media/media-handle';
+import { Folder } from '../../../common/folders/type';
+import { getFolderService } from '../../service/folder';
+import { selectMedias, setMedias } from '../../store/medias';
+import { getMediaService } from '../../service/media';
+import { extractFilesInfo } from '../../service/media/media-handle';
 
 import './index.css';
 

@@ -4,14 +4,14 @@ import { useWindowState } from './App.hook';
 import { CheckInteraction } from './common/dom';
 
 import Main from './components/Main';
-import Home from './components/pages/Home';
-import Musics from './components/pages/Musics';
-import NotFound from './components/pages/NotFound';
-import PlayQueue from './components/pages/PlayQueue';
-import Videos from './components/pages/Videos';
-import Playlists from './components/pages/Playlists';
-import Configs from './components/pages/Configs';
-import SearchResults from './components/pages/SearchResults';
+import Home from './pages/Home';
+import Musics from './pages/Musics';
+import NotFound from './pages/NotFound';
+import PlayQueue from './pages/PlayQueue';
+import Videos from './pages/Videos';
+import Playlists from './pages/Playlists';
+import Configs from './pages/Configs';
+import SearchResults from './pages/SearchResults';
 
 import './App.css';
 
@@ -19,6 +19,7 @@ function App() {
 
   const windowState = useWindowState();
   let lastRoute = localStorage.getItem('lastRoute') || '/home';
+  console.log(lastRoute);
   if (lastRoute === '/') {
     lastRoute = '/home';
   }
@@ -33,8 +34,8 @@ function App() {
           <Route path="/queue" element={<PlayQueue />} />
           <Route path="/configs" element={<Configs />} />
           <Route path="/search-results/:search" element={<SearchResults />} />
-          {/* <Route path="/playlists/youtube" element={<Playlists />} /> */}
-          <Route path="/" element={<Navigate to={lastRoute} replace/>}></Route>
+          <Route path="/playlists" element={<Playlists />} />
+          <Route path="/" element={<Navigate to={lastRoute} replace />}></Route>
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

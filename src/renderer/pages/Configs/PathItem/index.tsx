@@ -1,8 +1,8 @@
 import React from 'react';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import Button from '../../../../components/Button';
-import { getFolderService } from '../../../../service/folder';
-import { Folder } from '../../../../../common/folders/type';
+import Button from '../../../components/Button';
+import { getFolderService } from '../../../service/folder';
+import { Folder } from '../../../../common/folders/type';
 
 function PathItem(props: PathItemProps) {
 

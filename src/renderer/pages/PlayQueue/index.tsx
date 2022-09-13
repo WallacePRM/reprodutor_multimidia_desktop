@@ -1,26 +1,23 @@
-import { faFolder, faFolderClosed, faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faLink, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentMedias, setCurrentMedias } from "../../../store/player";
-import Button from "../../Button";
-import LineItem from "../../List/LineItem";
-import { isOdd } from "../../../common/number";
-import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
-import Margin from "../../Animations/Margin";
-import Opacity from "../../Animations/Opacity";
-import { setPlayerState } from "../../../store/playerState";
-import Popup from "reactjs-popup";
+import { selectCurrentMedias, setCurrentMedias } from "../../store/player";
+import Button from "../../components/Button";
+import LineItem from "../../components/List/LineItem";
+import { isOdd } from "../../common/number";
+import { selectMediaPlaying, setMediaPlaying } from "../../store/mediaPlaying";
+import Margin from "../../components/Animations/Margin";
+import Opacity from "../../components/Animations/Opacity";
+import { setPlayerState } from "../../store/playerState";
 import React, { useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getMediaService } from "../../../service/media";
-import { setMedias } from "../../../store/medias";
-import { getPlayerService } from "../../../service/player";
-import { selectSelectedFiles } from "../../../store/selectedFiles";
-import SelectBlock from "../../SelectBlock";
-import { Media } from "../../../../common/medias/types";
-import { delay } from "../../../common/async";
-import { getPageService } from "../../../service/page";
-import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
+import { getMediaService } from "../../service/media";
+import { setMedias } from "../../store/medias";
+import { getPlayerService } from "../../service/player";
+import { selectSelectedFiles } from "../../store/selectedFiles";
+import SelectBlock from "../../components/SelectBlock";
+import { Media } from "../../../common/medias/types";
+import { delay } from "../../common/async";
+import { getPageService } from "../../service/page";
+import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
 
 function PlayQueue() {
 

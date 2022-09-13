@@ -1,33 +1,33 @@
 import { faChevronDown, faLink } from "@fortawesome/free-solid-svg-icons";
 import { faFolder, faFolderClosed } from "@fortawesome/free-regular-svg-icons";
 
-import Button from "../../Button";
-import EmptyMessage from "../../EmptyMessage";
-import emptyMessageIcon from '../../../assets/img/men-headset.svg';
-import GridItem from '../../List/GridItem';
+import Button from "../../components/Button";
+import EmptyMessage from "../../components/EmptyMessage";
+import emptyMessageIcon from '../../assets/img/men-headset.svg';
+import GridItem from '../../components/List/GridItem';
 import { useDispatch, useSelector } from "react-redux";
-import { getMediaService } from "../../../service/media";
-import { selectMedias, setMedias } from "../../../store/medias";
-import { Media } from '../../../../common/medias/types';
-import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
-import { setPlayerMode } from "../../../store/playerMode";
-import { arrayUnshiftItem, revertOrder } from "../../../common/array";
-import Margin from "../../Animations/Margin";
-import Opacity from "../../Animations/Opacity";
-import { setPlayerState } from "../../../store/playerState";
+import { getMediaService } from "../../service/media";
+import { selectMedias, setMedias } from "../../store/medias";
+import { Media } from '../../../common/medias/types';
+import { selectMediaPlaying, setMediaPlaying } from "../../store/mediaPlaying";
+import { setPlayerMode } from "../../store/playerMode";
+import { arrayUnshiftItem, revertOrder } from "../../common/array";
+import Margin from "../../components/Animations/Margin";
+import Opacity from "../../components/Animations/Opacity";
+import { setPlayerState } from "../../store/playerState";
 import React, { useEffect, useRef, useState } from "react";
 import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TranformOpacity from "../../Animations/TransformOpacity";
-import { delay, validateUrl } from "../../../common/async";
-import SelectBlock from "../../SelectBlock";
-import { selectSelectedFiles } from "../../../store/selectedFiles";
-import { extractFilesInfo } from "../../../service/media/media-handle";
-import Load from "../../Load";
-import { setCurrentMedias } from "../../../store/player";
-import { getPlayerService } from "../../../service/player";
-import { getPageService } from "../../../service/page";
-import { selectPageConfig, setPageConfig } from "../../../store/pageConfig";
+import TranformOpacity from "../../components/Animations/TransformOpacity";
+import { delay, validateUrl } from "../../common/async";
+import SelectBlock from "../../components/SelectBlock";
+import { selectSelectedFiles } from "../../store/selectedFiles";
+import { extractFilesInfo } from "../../service/media/media-handle";
+import Load from "../../components/Load";
+import { setCurrentMedias } from "../../store/player";
+import { getPlayerService } from "../../service/player";
+import { getPageService } from "../../service/page";
+import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
 
 function Home() {
 
@@ -40,7 +40,7 @@ function Home() {
     const selectedItems = useSelector(selectSelectedFiles);
     const pageConfig = useSelector(selectPageConfig);
     const firstRun = pageConfig.firstRun;
-    const itemIndex = listItems.findIndex(item => item.id === mediaPlaying?.id);
+    // const itemIndex = listItems.findIndex(item => item.id === mediaPlaying?.id);
     let recentMedias: any[] = revertOrder(listItems);
     const popupRef: any = useRef();
     const modalRef: any = useRef();

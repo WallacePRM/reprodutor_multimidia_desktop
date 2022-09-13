@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getMediaService } from '../../../service/media';
-import { Media } from '../../../../common/medias/types';
-import GridItem from '../../List/GridItem';
-import LineItem from '../../List/LineItem';
-import EmptyMessage from '../../EmptyMessage';
-import { isOdd } from '../../../common/number';
-import Load from '../../Load';
-import { arrayUnshiftItem, shuffle } from '../../../common/array';
-import { selectPlayerConfig } from '../../../store/playerConfig';
-import { setCurrentMedias } from '../../../store/player';
-import { getPlayerService } from '../../../service/player';
-import { selectMediaPlaying, setMediaPlaying } from '../../../store/mediaPlaying';
-import { setPlayerState } from '../../../store/playerState';
-import Margin from '../../Animations/Margin';
-import Opacity from '../../Animations/Opacity';
+import { getMediaService } from '../../service/media';
+import { Media } from '../../../common/medias/types';
+import GridItem from '../../components/List/GridItem';
+import LineItem from '../../components/List/LineItem';
+import EmptyMessage from '../../components/EmptyMessage';
+import { isOdd } from '../../common/number';
+import Load from '../../components/Load';
+import { arrayUnshiftItem, shuffle } from '../../common/array';
+import { selectPlayerConfig } from '../../store/playerConfig';
+import { setCurrentMedias } from '../../store/player';
+import { getPlayerService } from '../../service/player';
+import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
+import { setPlayerState } from '../../store/playerState';
+import Margin from '../../components/Animations/Margin';
+import Opacity from '../../components/Animations/Opacity';
 
 function SearchResults() {
 

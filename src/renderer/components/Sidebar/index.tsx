@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { ReactComponent as Home } from '@icon/themify-icons/icons/home.svg';
-import { ReactComponent as MusicAlt } from '@icon/themify-icons/icons/music-alt.svg';
-import { ReactComponent as LayoutWidthDefault } from '@icon/themify-icons/icons/layout-width-default.svg';
-import { ReactComponent as LayoutListThumb } from '@icon/themify-icons/icons/layout-list-thumb.svg';
-import { ReactComponent as Settings } from '@icon/themify-icons/icons/settings.svg';
 import Logo from '../Logo';
 import PreviousRouter from '../PreviousRouter';
 import Searchbar from '../Searchbar';
@@ -20,8 +15,6 @@ import { IoMusicalNotesOutline } from 'react-icons/io5';
 import { IoFilmOutline } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { FiSpeaker } from 'react-icons/fi';
-
 
 import './index.css';
 
@@ -94,7 +87,7 @@ function Sidebar() {
                         </div>
                         <div className="highlighter"></div>
                     </Link>
-                    {/* <Link to="/playlists" className={'c-sidebar__item' + (pathname === '/queue' ? ' c-sidebar__item--active' : '')} title="Fila de reprodução (Ctrl+Q)">
+                    {/* <Link to="/playlists" className={'c-sidebar__item' + (pathname === '/playlists' ? ' c-sidebar__item--active' : '')} title="Fila de reprodução (Ctrl+Q)">
                         <div className="d-flex a-items-center">
                             <FiSpeaker className="c-sidebar__item__icon" />
                             <label className="c-sidebar__item__label">Playlists</label>
