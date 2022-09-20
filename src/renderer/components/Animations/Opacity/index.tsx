@@ -19,7 +19,7 @@ function Opacity(props: AnimationsProps) {
     const pageTransition = {
         type: "tween",
         cubic: "easeInOut",
-        duration: .2
+        duration: .4
     };
 
     const pageStyle: any = {
@@ -42,6 +42,7 @@ function Opacity(props: AnimationsProps) {
             onMouseUp={ props.onMouseUp ? props.onMouseUp : () => {} }
             onMouseLeave={ props.onMouseLeave ? props.onMouseLeave : () => {} }
             onMouseEnter={ props.onMouseEnter ? props.onMouseEnter : () => {} }
+            onContextMenu={ props.onContextMenu ? props.onContextMenu : () => {} }
         >
             {props.children}
         </motion.div>

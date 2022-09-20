@@ -1,5 +1,5 @@
-import { faChevronDown, faLink } from "@fortawesome/free-solid-svg-icons";
-import { faFolder, faFolderClosed } from "@fortawesome/free-regular-svg-icons";
+import React, { useEffect, useRef, useState } from "react";
+import Popup from "reactjs-popup";
 
 import Button from "../../components/Button";
 import EmptyMessage from "../../components/EmptyMessage";
@@ -15,9 +15,7 @@ import { arrayUnshiftItem, revertOrder } from "../../common/array";
 import Margin from "../../components/Animations/Margin";
 import Opacity from "../../components/Animations/Opacity";
 import { setPlayerState } from "../../store/playerState";
-import React, { useEffect, useRef, useState } from "react";
-import Popup from "reactjs-popup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import TranformOpacity from "../../components/Animations/TransformOpacity";
 import { delay, validateUrl } from "../../common/async";
 import SelectBlock from "../../components/SelectBlock";
@@ -28,6 +26,13 @@ import { setCurrentMedias } from "../../store/player";
 import { getPlayerService } from "../../service/player";
 import { getPageService } from "../../service/page";
 import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faFolder, faFolderClosed } from "@fortawesome/free-regular-svg-icons";
+import { BsFolder } from 'react-icons/bs';
+import { BsFolder2Open } from 'react-icons/bs';
+import { VscGlobe } from 'react-icons/vsc';
 
 function Home() {
 
@@ -50,14 +55,6 @@ function Home() {
     const closeModalTooltip = () => modalRef.current && modalRef.current.close();
     const openModalTooltip = () => modalRef.current && modalRef.current.open();
     const dispatch = useDispatch();
-
-    const mapUrlType = (type: string) => {
-
-        if (type === 'video')  return 'Vídeo(s)';
-        if (type === 'music')  return 'Música(s)';
-
-        return 'Arquivo(s)';
-    };
 
     const handleSelectFile = async (e: React.ChangeEvent<any>) => {
 
@@ -151,13 +148,20 @@ function Home() {
         }, 500);
     };
 
+    const mapUrlType = (type: string) => {
+
+        if (type === 'video')  return 'Vídeo(s)';
+        if (type === 'music')  return 'Música(s)';
+
+        return 'Arquivo(s)';
+    };
+
     useEffect(() => {
 
         const restoreScrollPosition = async () => {
 
             const pageConfig = await getPageService().getPageConfig();
 
-            console.log(pageConfig.firstRun);
             if (pageConfig.scrollPosition && firstRun) {
 
                 document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
@@ -196,7 +200,7 @@ function Home() {
                             <label className="c-popup__item" >
                                 <Button className="c-popup__item__button-hidden" onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faFolderClosed} />
+                                    <BsFolder2Open className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir arquivo(s)</h3>
@@ -206,7 +210,7 @@ function Home() {
                             <div className="c-popup__item">
                                 <Button className="c-popup__item__button-hidden" onlyFolder onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faFolder} />
+                                    <BsFolder className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir pasta</h3>
@@ -216,7 +220,7 @@ function Home() {
                             <div className="c-popup__item">
                                 <div className="c-popup__item__button-hidden" onClick={openModalTooltip}></div>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faLink} />
+                                    <VscGlobe className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir URL</h3>
@@ -290,7 +294,8 @@ function Home() {
                             <label className="c-popup__item">
                                 <Button className="c-popup__item__button-hidden" onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faFolderClosed} />
+                                    {/* <FontAwesomeIcon className="c-popup__item__icon" icon={faFolderClosed} /> */}
+                                    <BsFolder2Open className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir arquivo(s)</h3>
@@ -300,7 +305,8 @@ function Home() {
                             <div className="c-popup__item">
                                 <Button className="c-popup__item__button-hidden" onlyFolder onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faFolder} />
+                                    <BsFolder className="c-popup__item__icon"/>
+                                    {/* <FontAwesomeIcon className="c-popup__item__icon" icon={faFolder} /> */}
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir pasta</h3>
@@ -311,7 +317,7 @@ function Home() {
                             <Popup ref={modalRef} modal closeOnDocumentClick={false} arrow={false} keepTooltipInside trigger={<div className="c-popup__item" onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={closeTooltip}></div>
                                 <div className="c-popup__item__icons">
-                                    <FontAwesomeIcon className="c-popup__item__icon" icon={faLink} />
+                                    <VscGlobe className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Abrir URL</h3>

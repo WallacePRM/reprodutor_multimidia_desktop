@@ -1,26 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useSelector } from 'react-redux';
-import { ReactComponent as VolumeIcon } from '@icon/themify-icons/icons/volume.svg';
-import { ReactComponent as ShuffleIcon } from '@icon/themify-icons/icons/control-shuffle.svg';
-import { ReactComponent as ShuffleDesativeIcon } from '@icon/themify-icons/icons/layout-line-solid.svg';
-import { ReactComponent as LoopIcon } from '@icon/themify-icons/icons/loop.svg';
-import { ReactComponent as InfoIcon } from '@icon/themify-icons/icons/info-alt.svg';
-import { ReactComponent as SpeedometerIcon } from '@icon/themify-icons/icons/dashboard.svg';
-import { ReactComponent as BackLeftIcon } from '@icon/themify-icons/icons/back-left.svg';
-import { ReactComponent as BackRightIcon } from '@icon/themify-icons/icons/back-right.svg';
-import { ReactComponent as ArrowsCornerIcon } from '@icon/themify-icons/icons/arrows-corner.svg';
-import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faChevronRight, faPause } from "@fortawesome/free-solid-svg-icons";
-import { ReactComponent as MusicAlt } from '@icon/themify-icons/icons/music-alt.svg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBackwardStep, faEllipsis, faForwardStep, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { formatHHMMSS } from '../../common/time';
-import { useDispatch } from 'react-redux';
 import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
 import { selectCurrentMedias, setCurrentMedias } from '../../store/player';
 import { selectPlayerMode, setPlayerMode } from '../../store/playerMode';
-import ReactDOM from 'react-dom';
 import PreviousRouter from '../PreviousRouter';
 import Logo from '../Logo';
 import Opacity from '../Animations/Opacity';
@@ -28,17 +13,31 @@ import Slider from '../Slider';
 import { selectPlayerConfig, setPlayerConfig } from '../../store/playerConfig';
 import { arrayUnshiftItem, shuffle, sortAsc } from '../../common/array';
 import Popup from 'reactjs-popup';
-import { toggleFullScreen } from '../../common/dom';
 import { getPlayerService } from '../../service/player';
 import { selectPlayerState, setPlayerState } from '../../store/playerState';
 import { Media } from '../../../common/medias/types';
-import Load from '../Load';
 import WindowControls from '../WindowControls';
 import Margin from '../Animations/Margin';
+import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
 
+import { IoRemoveOutline } from 'react-icons/io5';
 import { IoVolumeHighOutline } from 'react-icons/io5';
 import { IoVolumeLowOutline } from 'react-icons/io5';
 import { IoVolumeMuteOutline } from 'react-icons/io5';
+import { IoPlaySkipForward } from 'react-icons/io5';
+import { IoPlaySkipBack } from 'react-icons/io5';
+import { IoPlay } from 'react-icons/io5';
+import { IoPause } from 'react-icons/io5';
+import { IoShuffleOutline } from 'react-icons/io5';
+import { IoRepeatOutline } from 'react-icons/io5';
+import { IoEllipsisHorizontal } from 'react-icons/io5';
+import { IoReturnUpForwardOutline } from 'react-icons/io5';
+import { IoReturnUpBackOutline } from 'react-icons/io5';
+import { IoSpeedometerOutline } from 'react-icons/io5';
+import { AiOutlineFullscreen } from 'react-icons/ai';
+import { AiOutlineFullscreenExit } from 'react-icons/ai';
+import { IoChevronForwardOutline } from 'react-icons/io5';
+import { IoMusicalNotesOutline } from 'react-icons/io5';
 
 import './index.css';
 
@@ -46,10 +45,10 @@ let timeoutId: any;
 function Player() {
 
     const [ playerHidden, setPlayerHidden ] = useState(false);
-    const [ mediaLoad, setMediaLoad ] = useState(false);
 
     const playerService = getPlayerService();
     const playerConfig = useSelector(selectPlayerConfig);
+    const pageConfig = useSelector(selectPageConfig);
     const currentMedias = useSelector(selectCurrentMedias) || [];
     const file = useSelector(selectMediaPlaying);
     const playerMode = useSelector(selectPlayerMode);
@@ -57,8 +56,6 @@ function Player() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const currentMediasRef = useRef<Media[] | null>();
     currentMediasRef.current = currentMedias;
-    const mediaLoadRef = useRef<boolean>();
-    mediaLoadRef.current = mediaLoad;
     const refLastFileId = useRef<number>();
 
     (window as any).audio = mediaRef;
@@ -128,9 +125,9 @@ function Player() {
 
     const mapVolumeIcon = () => {
 
-        if (playerConfig.volume === 0) return <IoVolumeMuteOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
-        if (playerConfig.volume <= 0.5) return <IoVolumeLowOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
-        if (playerConfig.volume > 0.5) return <IoVolumeHighOutline onClick={handleMute} className="c-player__volume__icon" title="Volume" />;
+        if (playerConfig.volume === 0) return <IoVolumeMuteOutline className="c-player__volume__icon" title="Volume" />;
+        if (playerConfig.volume <= 0.5) return <IoVolumeLowOutline className="c-player__volume__icon" title="Volume" />;
+        if (playerConfig.volume > 0.5) return <IoVolumeHighOutline className="c-player__volume__icon" title="Volume" />;
     };
 
     const playSameMedia = async () => {
@@ -355,6 +352,23 @@ function Player() {
         await playerService.setPlayerConfig({ playbackRate: newRate });
     };
 
+    const handleToggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+
+            document.documentElement.requestFullscreen();
+            dispatch(setPageConfig({fullscreen: true}));
+            dispatch(setPlayerMode('full'));
+        }
+        else {
+            if (document.exitFullscreen) {
+
+                document.exitFullscreen();
+                dispatch(setPageConfig({fullscreen: false}));
+                dispatch(setPlayerMode('default'));
+            }
+        }
+    };
+
     useEffect(() => {
         if (file) {
 
@@ -399,10 +413,6 @@ function Player() {
                 await playerService.setLastMedia(newLastMedia);
                 dispatch(setPlayerState(newLastMedia));
 
-            });
-            mediaRef.current.addEventListener('waiting', () => {
-
-                // if (mediaLoadRef.current === false) setMediaLoad(true);
             });
             mediaRef.current.addEventListener('ended', async () => {
 
@@ -449,18 +459,6 @@ function Player() {
                     isPlaying: true,
                 };
                 dispatch(setMediaPlaying(newFile));
-
-                // if (mediaLoadRef.current) setMediaLoad(false);
-            });
-            mediaRef.current.addEventListener('pause', () => {
-
-                // const newFile = {
-                //     ...file,
-                //     isPlaying: false,
-                // };
-                // dispatch(setMediaPlaying(newFile));
-
-                // if (mediaLoadRef.current) setMediaLoad(false);
             });
             mediaRef.current.addEventListener('error', () => {
 
@@ -487,26 +485,24 @@ function Player() {
 
     let videoComponent = ReactDOM.createPortal(
         <Opacity cssAnimation={["opacity"]}>
-            <div onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen__header' + (playerHidden ? ' c-player-fullscreen__header--hidden' : '')} style={{ display: playerMode === 'full' ? undefined : 'none', backgroundColor: 'rgb(24, 24 , 24, .7)' }}>
+            {!pageConfig.fullscreen &&<div onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen__header' + (playerHidden ? ' c-player-fullscreen__header--hidden' : '')} style={{ display: playerMode === 'full' ? undefined : 'none', backgroundColor: 'rgb(24, 24 , 24, .7)' }}>
                 <PreviousRouter className="c-player-fullscreen__icon"  onClick={ () => {dispatch(setPlayerMode('default')); clearInterval(timeoutId);} } title="Voltar"/>
                 <Logo className="c-player-fullscreen__logo ml-10"/>
-                <WindowControls className={playerMode === 'full' ? 'theme--dark' : ''}/>
-            </div>
+                 <WindowControls className={playerMode === 'full' ? 'theme--dark' : ''}/>
+            </div>}
             <video key={file?.src} ref={ videoRef } id="player-video" typeof="video/mp4" onClick={handleToggleVideoInterface} onMouseMove={toggleMouseView} className={'c-player__file__cover c-player__file__cover--video' + (playerMode === 'full' ? ' video-full-mode' : ' video-default-mode')}>
                 <source src={file?.src} typeof="video/mp4"/>
             </video>
-            {mediaLoad && <Load className='player-load' style={playerMode === 'default' && videoRef.current ? {zIndex: '12', top: videoRef.current.offsetTop, left: videoRef.current.offsetLeft , height: videoRef.current.offsetHeight, width: videoRef.current.offsetWidth} : {}}/>}
         </Opacity>, document.getElementById('video-container')!
     );
 
     let audioComponent = (
-        <Opacity cssAnimation={["opacity"]} className={'c-player__file__cover' + (playerMode === 'full' ? ' c-player__file__cover--music' : '')} style={ file && !file?.thumbnail ? coverStyle : {} }>
+        <Opacity cssAnimation={["opacity"]} className={'c-player__file__cover' +
+        (playerMode === 'full' ? ' c-player__file__cover--music' : '') +
+        (pageConfig.fullscreen ? ' c-player__file__cover--fullscreen' : '')
+        } style={ file && !file?.thumbnail ? coverStyle : {} }>
             { file?.thumbnail && <img src={file?.thumbnail}/> }
-            { !file?.thumbnail && file?.type === 'folder' &&
-                <><FontAwesomeIcon className="c-grid-list__item__icon__folder" icon={faFolderClosed} />
-                <FontAwesomeIcon className="c-grid-list__item__icon__list" icon={faBars}/></> }
-            { !file?.thumbnail && file?.type === 'music' && <MusicAlt className="icon-color--light"/>}
-            {mediaLoad && playerMode === 'default' && <Load className="player-load"/>}
+            { !file?.thumbnail && file?.type === 'music' && <IoMusicalNotesOutline className="icon-color--light"/>}
         </Opacity>
     );
 
@@ -517,14 +513,13 @@ function Player() {
             audioComponent = ReactDOM.createPortal(
                 <Opacity cssAnimation={["opacity"]} onClick={(e) => e.stopPropagation()} className={'c-player-fullscreen'} style={{ backgroundImage: `url("${backgroundImagePath}")` }}>
                     <div className="c-player-fullscreen__background-music-blur bg-acrylic" style={{ background: file?.thumbnail ? 'rgb(var(--bg-color--solid), .8)' : 'rgb(var(--bg-color--solid), 1)' }}>
-                        <div className="c-player-fullscreen__header">
+                        {!pageConfig.fullscreen && <div className="c-player-fullscreen__header">
                             <PreviousRouter className="c-player-fullscreen__header__icon" onClick={ () => dispatch(setPlayerMode('default'))} title="Voltar"/>
                             <Logo className="ml-10"/>
-                            <WindowControls />
-                        </div>
+                         <WindowControls />
+                        </div>}
                         {audioComponent}
                     </div>
-                    {mediaLoad && playerMode === 'full' && <Load className="player-load"/>}
                 </Opacity>,
             document.querySelector('.c-app')! );
         }
@@ -534,6 +529,7 @@ function Player() {
         <div onMouseOver={setPlayerVisible} className={'c-player' + (playerHidden ? ' c-player--hidden' : '') +
         (playerMode === 'full' && file?.type === 'video' ? ' c-player--full-mode-video theme--dark' : '') +
         (playerMode === 'full' && file?.type === 'music' ? ' c-player--full-mode-music' : '') +
+        (pageConfig.fullscreen ? ' c-player--fullscreen' : '') +
         (!file ? ' c-player--disabled ' : '')}
         style={{transition: playerMode === 'full' ? '.7s cubic-bezier(0.215, 0.610, 0.355, 1)' : '.2s cubic-bezier(0.075, 0.82, 0.165, 1)'}}>
             <div className="c-player__progress">
@@ -543,9 +539,9 @@ function Player() {
             </div>
             <div  className="c-player__actions">
                 <div className="c-player__file">
-                    <div className="c-player__file__track" onClick={handleChangeFullMode} title="Reproduzindo agora (Ctrl+N)">
+                    <div className="c-player__file__track" onClick={handleChangeFullMode} title="Reproduzindo agora (Ctrl+N)" style={pageConfig.fullscreen ? {pointerEvents: 'none'} : {}}>
                         { file?.type !== 'video' ? audioComponent : videoComponent }
-                        <div className={'c-player__file__info' + (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') + (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')}>
+                        <div className={'c-player__file__info' + (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') + (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')} style={file?.type === 'video' ? {height: '72px'} : {}}>
                             <h3 className="c-player__file__info__title">{file?.name}</h3>
                             <p className="c-player__file__info__author">{file?.author} { file?.album && <span className="c-player__file__info__album">{file?.album}</span>}</p>
                         </div>
@@ -554,40 +550,42 @@ function Player() {
                 <div className="c-player__controls">
                     { document.body.clientWidth > 655 &&
                     <div onClick={handleToggleShuffle} className="c-player__controls__item player--button  c-player__controls__item--shuffle" title={`Embaralhar: ${playerConfig.shuffle ? 'Ativado' : 'Desativado'} (Ctrl+H)`}>
-                        {!playerConfig.shuffle && <ShuffleDesativeIcon className="icon-color c-player__controls__item--desatived"/>}
-                        <ShuffleIcon className="icon-color"/>
+                        {!playerConfig.shuffle && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
+                        <IoShuffleOutline/>
                     </div>}
-                    <div onClick={handlePrevious} className={'c-player__controls__item player--button'} title="Voltar (Ctrl+B)">
-                        <FontAwesomeIcon icon={faBackwardStep}/>
+                    <div onClick={handlePrevious} className={'c-player__controls__item player--button'}title="Voltar (Ctrl+B)">
+                        <IoPlaySkipBack />
                     </div>
                     { document.body.clientWidth > 655 && file?.type === 'video' && playerMode === 'full' &&
                         <div onClick={handleTimeBack} className={'c-player__controls__item'} title="Retroceder 10 segundos (Ctrl+Esquerdo)">
-                            <BackLeftIcon className="icon-color"/>
+                            <IoReturnUpBackOutline className="c-player__controls__item--timeskip__arrow"/>
+                            <span className="c-player__controls__item--timeskip__number">10</span>
                         </div>
                     }
                     <div onClick={handlePlayPause} className="c-player__controls__item player--button c-player__controls__item--play" title="Executar (Ctrl+P)">
-                        <FontAwesomeIcon icon={!mediaRef.current || mediaRef.current.paused ? faPlay : faPause}/>
+                        {!mediaRef.current || mediaRef.current.paused ? <IoPlay /> : <IoPause />}
                     </div>
                     { document.body.clientWidth > 655 && file?.type === 'video' && playerMode === 'full' &&
                         <div onClick={handleTimeForward} className={'c-player__controls__item'} title="Avançar 30 segundos (Ctrl+Direito)">
-                            <BackRightIcon className="icon-color"/>
+                            <IoReturnUpForwardOutline className="c-player__controls__item--timeskip__arrow"/>
+                            <span className={'c-player__controls__item--timeskip__number'}>30</span>
                         </div>
                     }
                     <div onClick={handleNext } className={'c-player__controls__item player--button' + (file && (currentMedias?.length === 1 || lastMedia?.id  === file?.id) ? ' disabled' : '')} title="Avançar (Ctrl+F)">
-                        <FontAwesomeIcon icon={faForwardStep}/>
+                        <IoPlaySkipForward />
                     </div>
                     { document.body.clientWidth > 655 &&
                     <div onClick={handleChangeRepeatMode} className="c-player__controls__item player--button  c-player__controls__item--repeat" title={`Repetir: ${mapRepeatMode(playerConfig.repeatMode)} (Ctrl+T)`}>
-                        {playerConfig.repeatMode === false && <ShuffleDesativeIcon className="icon-color c-player__controls__item--desatived"/>}
+                        {playerConfig.repeatMode === false && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
                         {playerConfig.repeatMode === 'once' && <span className="c-player__controls__item--repeat-once"></span>}
-                        <LoopIcon className="icon-color"/>
+                        <IoRepeatOutline />
                     </div>}
                 </div>
                 <div className="c-player__options">
-                    <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button"><IoVolumeHighOutline title="Volume"/></div>} position="top center" >
+                    <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button" title="Volume">{mapVolumeIcon()}</div>} position="top center" >
                         <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '250px' }}>
                             <div className="c-player__volume">
-                                {mapVolumeIcon()}
+                                <div onClick={handleMute}>{mapVolumeIcon()}</div>
                                 <Slider  onChange={handleChangeVolume} className="c-player__volume__slider" data={{ min: 0, value: currentVolumePorcents, max: 100 }}></Slider>
                                 <span className="c-player__volume__value">{currentVolumePorcents}</span>
                             </div>
@@ -596,21 +594,22 @@ function Player() {
 
 
                     { document.body.clientWidth >= 850 &&
-                    <div onClick={toggleFullScreen} className={'c-player__controls__options__item player--button' + (!file ? ' disabled' : '')}>
-                        <ArrowsCornerIcon className="icon-color icon--inverted" title="Tela inteira(F11)"/>
+                    <div onClick={handleToggleFullScreen} className={'c-player__controls__options__item player--button' + (!file ? ' disabled' : '')}>
+                        {pageConfig.fullscreen ? <AiOutlineFullscreenExit title="Sair de tela inteira(F11)"/>
+                        : <AiOutlineFullscreen title="Tela inteira(F11)"/>}
                     </div>}
-                    <Popup keepTooltipInside nested arrow={false} ref={popupRef} trigger={<div className="c-player__controls__options__item player--button c-player__controls__options__item--config" title="Mais opções"><FontAwesomeIcon icon={faEllipsis}/></div>} position="top right" >
+                    <Popup keepTooltipInside nested arrow={false} ref={popupRef} trigger={<div className="c-player__controls__options__item player--button c-player__controls__options__item--config" title="Mais opções"><IoEllipsisHorizontal /></div>} position="top right" >
                         <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
                             {/* <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__icons">
-                                    <InfoIcon className="c-popup__item__icon icon-color" />
+                                    <InfoIcon className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Propriedades</h3>
                                     <span className="c-popup__item__description">Ctrl+I</span>
                                 </div>
                             </div> */}
-                            <Popup keepTooltipInside closeOnDocumentClick={false} arrow={false} nested on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')}><div className="c-popup__item__icons"><SpeedometerIcon className="c-popup__item__icon icon-color icon--inverted" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Velocidade</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="top right" >
+                            <Popup keepTooltipInside closeOnDocumentClick={false} arrow={false} nested on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')}><div className="c-popup__item__icons"><IoSpeedometerOutline className="c-popup__item__icon icon--inverted" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Velocidade</h3><IoChevronForwardOutline className="c-popup__item__description"/></div></div>} position="top right" >
                                 <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '150px' }}>
                                     <div className={'c-popup__item c-popup__item--row' + (playerConfig.playbackRate === 0.25 ? ' c-popup__item--active' : '') + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                         <input onClick={handleSetPlayerbackRate} className="c-popup__item__button-hidden" type="number" defaultValue={0.25}/>
@@ -655,10 +654,12 @@ function Player() {
                                 </Margin>
                             </Popup>
 
+                            {!(document.body.clientWidth > 655 && file?.type === 'video' && playerMode === 'full') && <>
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleTimeBack}></div>
                                 <div className="c-popup__item__icons">
-                                    <BackLeftIcon className="c-popup__item__icon icon-color" />
+                                    <IoReturnUpBackOutline className="c-popup__item__icon c-popup__item__icon--timeskip__arrow"/>
+                                    <span className="c-popup__item__icon--timeskip c-popup__item__icon--timeskip__number">10</span>
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Retroceder 10 segundos</h3>
@@ -668,18 +669,20 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleTimeForward}></div>
                                 <div className="c-popup__item__icons">
-                                    <BackRightIcon className="c-popup__item__icon icon-color" />
+                                    <IoReturnUpForwardOutline className="c-popup__item__icon c-popup__item__icon--timeskip__arrow"/>
+                                    <span className="c-popup__item__icon--timeskip__number">30</span>
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Avançar 30 segundos</h3>
                                     <span className="c-popup__item__description">Ctrl+Direita</span>
                                 </div>
-                            </div>
+                            </div></>}
                             { document.body.clientWidth < 850 &&
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
-                                <div className="c-popup__item__button-hidden" onClick={toggleFullScreen}></div>
+                                <div className="c-popup__item__button-hidden" onClick={handleToggleFullScreen}></div>
                                 <div className="c-popup__item__icons">
-                                    <ArrowsCornerIcon className="c-popup__item__icon icon-color icon--inverted" />
+                                    {pageConfig.fullscreen ? <AiOutlineFullscreenExit title="Sair de tela inteira(F11)"/>
+                                    : <AiOutlineFullscreen title="Tela inteira(F11)"/>}
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Tela inteira</h3>
@@ -691,8 +694,8 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleToggleShuffle}></div>
                                 <div className="c-popup__item__icons">
-                                    {!playerConfig.shuffle && <ShuffleDesativeIcon className="icon-color c-player__controls__item--desatived"/>}
-                                    <ShuffleIcon className="c-popup__item__icon icon-color" />
+                                    {!playerConfig.shuffle && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
+                                    <IoShuffleOutline className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Embaralhar: {playerConfig.shuffle ? 'Ativado' : 'Desativado'}</h3>
@@ -702,9 +705,9 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleChangeRepeatMode}></div>
                                 <div className="c-popup__item__icons">
-                                {playerConfig.repeatMode === false && <ShuffleDesativeIcon className="icon-color c-player__controls__item--desatived"/>}
-                                {playerConfig.repeatMode === 'once' && <span className="c-player__controls__item--repeat-once" style={{ right: '50%' }}></span>}
-                                    <LoopIcon className="c-popup__item__icon icon-color" />
+                                    {playerConfig.repeatMode === false && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
+                                    {playerConfig.repeatMode === 'once' && <span className="c-player__controls__item--repeat-once" style={{ right: '50%' }}></span>}
+                                    <IoRepeatOutline className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Repetir: {mapRepeatMode(playerConfig.repeatMode)}</h3>

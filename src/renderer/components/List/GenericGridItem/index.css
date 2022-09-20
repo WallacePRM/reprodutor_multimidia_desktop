@@ -51,7 +51,8 @@
   width: 10rem;
   height: 10rem;
   border-radius: .3rem;
-  border: 1px solid rgb(var(--border-color--dark), .15)
+  border: 1px solid rgb(var(--border-color--dark), .15);
+  overflow: hidden;
 }
 
 .c-grid-list__item__thumbnail img {
@@ -107,7 +108,7 @@
   height: 2rem;
   width: 2rem;
   color: rgb(var(--icon-color));
-  font-size: .9em;
+  font-size: 1em;
   opacity: 0;
   pointer-events: none;
   z-index: 2;
@@ -187,7 +188,7 @@
 }
 
 .c-grid-list__item__subtitle {
-  font-size: .75em;
+  font-size: .7em;
   overflow: hidden;
   text-overflow: ellipsis;
   color: rgb(var(--text-color--light));

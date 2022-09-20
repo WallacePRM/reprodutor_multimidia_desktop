@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { delay } from './common/async';
 import { setContainerMargin } from "./store/containerMargin";
-import { selectPageConfig } from "./store/pageConfig";
+import { selectMediaPlaying } from "./store/mediaPlaying";
+import { selectPageConfig, setPageConfig } from "./store/pageConfig";
+import { setPlayerMode } from "./store/playerMode";
 import { setSidebarOpened } from "./store/sidebarOpened";
 
 export function useWindowState(): WindowState {
@@ -11,6 +13,9 @@ export function useWindowState(): WindowState {
 
     let pageConfig = useRef(null);
     pageConfig.current = useSelector(selectPageConfig);
+    let mediaPlaying = useRef(null);
+    mediaPlaying.current = useSelector(selectMediaPlaying);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -54,6 +59,46 @@ export function useWindowState(): WindowState {
         }
 
     }, [pageConfig.current.theme]);
+
+    useEffect(() => {
+
+        const toggleFullScreenState = (e: any) => {
+
+            const  code = e.code;
+
+            if (code === 'F11') {
+
+                e.preventDefault();
+
+                if (!mediaPlaying.current) return;
+
+                if (!document.fullscreenElement) {
+
+                    document.documentElement.requestFullscreen();
+                    dispatch(setPageConfig({fullscreen: true}));
+                    dispatch(setPlayerMode('full'));
+                }
+                else {
+                    if (document.exitFullscreen) {
+
+                        document.exitFullscreen();
+                        dispatch(setPageConfig({fullscreen: false}));
+
+                        if (!mediaPlaying.current.isPlaying) {
+                            dispatch(setPlayerMode('default'));
+                        }
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('keydown', toggleFullScreenState);
+
+        return () => {
+            window.removeEventListener('keydown', toggleFullScreenState);
+        }
+
+    }, [])
 
     useEffect(() => {
         const handleResize = () => {

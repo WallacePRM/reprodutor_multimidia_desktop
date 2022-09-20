@@ -19,13 +19,22 @@ import { delay } from "../../common/async";
 import { getPageService } from "../../service/page";
 import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
 
+import { HiOutlinePlus } from 'react-icons/hi';
+import { RiPlayList2Fill } from 'react-icons/ri';
+
+import Popup from "reactjs-popup";
+import { selectPlaylists, setPlaylistData } from "../../store/playlists";
+import { Playlist } from "../../../common/playlists/types";
+import { getPlaylistService } from "../../service/playlist";
+
 function PlayQueue() {
 
     const medias: any = null;
+    const allPlaylists = useSelector(selectPlaylists);
     const pageConfig = useSelector(selectPageConfig);
     const firstRun = pageConfig.firstRun;
     const selectedItems = useSelector(selectSelectedFiles);
-    let listItems = useSelector(selectCurrentMedias) || [];
+    let currentMedias = useSelector(selectCurrentMedias) || [];
     const mediaPlaying = useSelector(selectMediaPlaying);
     const popupAction: any = useRef();
     const closeActionTooltip = () => popupAction.current && popupAction.current.close();
@@ -39,7 +48,31 @@ function PlayQueue() {
         const fileList = input.files || [];
 
         const medias = await getMediaService().insertMedias(fileList);
-        dispatch(setMedias(listItems.concat(medias)));
+        dispatch(setMedias(currentMedias.concat(medias)));
+    };
+
+    const handleSetMediasOnPlaylist = async (e: React.MouseEvent, playlist: Playlist) => {
+
+        if (e.target !== e.currentTarget) return;
+
+        for (const media of currentMedias) {
+            const mediaIndex = playlist.medias.findIndex(m => m.id === media.id);
+
+            if (mediaIndex === -1) {
+                playlist.medias.push(media);
+            }
+        }
+
+        try {
+            await getPlaylistService().putPlaylist(playlist);
+
+            dispatch(setPlaylistData(playlist));
+
+            closeActionTooltip();
+        }
+        catch(error) {
+            alert(error.message);
+        }
     };
 
     const handleSelectMedia = (file: Media) => {
@@ -133,42 +166,60 @@ function PlayQueue() {
             </div>
             <Opacity cssAnimation={["opacity"]} className="c-container__content__title">
                 <div className="d-flex a-items-center">
-                    <div className={'c-container__content__title__actions' + (listItems.length === 0 ? ' disabled' : '')} style={{ margin: '0' }}>
+                    <div className={'c-container__content__title__actions' + (currentMedias.length === 0 ? ' disabled' : '')} style={{ margin: '0' }}>
                         <Button onClick={handleClearQueue} className="mr-10" label="Limpar" icon={faTrashCan} title="Limpar (Ctrl+Shift+X)" />
 
-                        {/* <Popup keepTooltipInside ref={popupAction}  arrow={false} trigger={<button className="c-button box-field"><FontAwesomeIcon className="c-button__icon" icon={faPlus}/>{document.body.clientWidth > 655 && <span className="c-button__label ml-10">Adicionar a</span>}</button>} position="bottom left" >
-                            <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '130px' }}>
-                                <div className="c-popup__item c-popup__item--row" onClick={closeActionTooltip} style={{ borderBottom: 'var(--border)'}}>
-                                    <div onClick={handleAddToQueue} className="c-popup__item__button-hidden"></div>
+                        <Popup ref={popupRef} keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<button className="c-button box-field"><HiOutlinePlus className="c-button__icon mr-10" /><span className="c-button__label">Adicionar a</span></button>} position="right top" >
+                            <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '130px' }}>
+                                {/* <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                    <div onClick={handleSetNextMedia} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
-                                        <LayoutListThumb className="c-popup__item__icon icon-color" />
+                                        <RiPlayList2Fill className="c-popup__item__icon" />
                                     </div>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Fila de reprodução</h3>
                                     </div>
-                                </div>
-                                <div className="c-popup__item c-popup__item--row" onClick={closeActionTooltip}>
+                                </div> */}
+                                {/* <div className="c-popup__item--separator"></div> */}
+                                <div className="c-popup__item c-popup__item--row">
                                     <div className="c-popup__item__icons">
-                                        <FontAwesomeIcon icon={faPlus} className="c-popup__item__icon icon-color" />
+                                        <HiOutlinePlus className="c-popup__item__icon" />
                                     </div>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Nova playlist</h3>
                                     </div>
                                 </div>
+                                {allPlaylists.length > 0 &&
+                                    allPlaylists.map((p, index) => {
+
+
+                                        return (
+                                            <div key={index} className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                                <div onClick={(e) => handleSetMediasOnPlaylist(e, {...p, medias: [...p.medias] })} className="c-popup__item__button-hidden"></div>
+                                                <div className="c-popup__item__icons" style={{opacity: 0}}>
+                                                    <HiOutlinePlus className="c-popup__item__icon" />
+                                                </div>
+                                                <div className="c-popup__item__label">
+                                                    <h3 className="c-popup__item__title">{p.name}</h3>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                }
                             </Margin>
-                        </Popup> */}
+                        </Popup>
                     </div>
                 </div>
                 { selectedItems.length > 0 &&
                 <Opacity cssAnimation={["opacity"]}>
-                    <SelectBlock list={listItems}/>
+                    <SelectBlock list={currentMedias}/>
                 </Opacity>}
             </Opacity>
 
-            <div className="c-container__content" style={{ height: listItems.length === 0 ? '100%' : '' }}>
-                { listItems.length > 0 &&
+            <div className="c-container__content" style={{ height: currentMedias.length === 0 ? '100%' : '' }}>
+                { currentMedias.length > 0 &&
                     <Margin onScroll={saveScrollPosition} cssAnimation={["marginTop"]} className="c-list c-line-list">
-                        { listItems.map((item, index) => <LineItem onClick={ handleSelectMedia } fileTypeVisible className={(isOdd(index) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')} file={item} key={item.id} />) }
+                        { currentMedias.map((item, index) => <LineItem onClick={ handleSelectMedia } fileTypeVisible className={(isOdd(index) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')} file={item} key={item.id} />) }
                     </Margin>
                 }
             </div>

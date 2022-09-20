@@ -4,6 +4,7 @@ import "reflect-metadata";
 import { initListeners as initListenersWindowControls} from './main/ipc/window-controls';
 import { initListeners as initListenersMediaService} from './main/ipc/medias-service';
 import { initListeners as initListenersFolderService} from './main/ipc/folders-service';
+import { initListeners as initListenersPlaylistService} from './main/ipc/playlists-service';
 import { createWindow } from './main/main-window';
 import path from 'path';
 import { initDataSource } from './main/database';
@@ -46,6 +47,7 @@ process.env.FFPROBE_PATH = path.join(binPath, "ffprobe.exe");
 initListenersWindowControls();
 initListenersMediaService();
 initListenersFolderService();
+initListenersPlaylistService();
 
 (async () => {
 

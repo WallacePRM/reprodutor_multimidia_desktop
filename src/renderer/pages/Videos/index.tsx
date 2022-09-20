@@ -68,8 +68,8 @@ function Videos() {
 
             const videoFolder = await getFolderService().insertFolder(fileFolder);
         }
-        catch(e) {
-            console.log(e);
+        catch(error) {
+            console.log(error.message);
         }
         finally {
             setLoad(false);

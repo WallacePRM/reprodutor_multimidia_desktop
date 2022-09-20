@@ -3,6 +3,8 @@ import { ReactComponent as Menu } from '@icon/themify-icons/icons/menu.svg';
 import { useDispatch } from 'react-redux';
 import { toggleSidebar } from '../../store/sidebarOpened';
 
+import { IoMenuOutline }  from 'react-icons/io5';
+
 import './index.css';
 
 function ToggleSidebar() {
@@ -34,7 +36,7 @@ function ToggleSidebar() {
 
     return (
         <div onClick={handleToggleSidebar} onMouseLeave={() => setAnimation(false)} onMouseUp={onMouseUp} onMouseDown={onMouseDown} className="c-toggle-sidebar btn--icon">
-            <Menu className={'icon-color transform-x-scale' + (animation ? ' transform-x-scale--active' : '')} />
+            <IoMenuOutline className={'transform-x-scale' + (animation ? ' transform-x-scale--active' : '')} />
         </div>
     );
 };

@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
+import { IoChevronDownOutline } from 'react-icons/io5';
+import { IoShuffleOutline } from 'react-icons/io5';
+
 import Button from "../../components/Button";
 import EmptyMessage from "../../components/EmptyMessage";
 import emptyMessageIcon from '../../assets/img/music-gradient.svg';
@@ -76,8 +78,8 @@ function Musics() {
 
             const musicFolder = await getFolderService().insertFolder(fileFolder);
         }
-        catch(e) {
-            console.log(e);
+        catch(error) {
+            console.log(error.message);
         }
         finally {
             setLoad(false);
@@ -126,7 +128,7 @@ function Musics() {
         }
     };
 
-    const handleChangemusicsOrderBy = async (e: React.ChangeEvent<any>) => {
+    const handleChangeMusicsOrderBy = async (e: React.ChangeEvent<any>) => {
 
         const value = e.currentTarget.value;
         dispatch(setPageConfig({ musicsOrderBy: value }));
@@ -217,41 +219,45 @@ function Musics() {
             { musics.length > 0 ?
             <Opacity cssAnimation={["opacity"]} className="c-container__content__title">
                 <div className="d-flex a-items-center">
-                    <Button onClick={ handleShuffle } className="btn--primary c-button--no-media-style" label="Ordem aleatória e reproduzir" icon={faShuffle} title={ document.body.clientWidth <= 655 ? 'Ordem aleatória e reproduzir' : ''}/>
+                    <button onClick={ handleShuffle } className="c-button box-field c-button--no-media-style btn--primary" title={ document.body.clientWidth <= 655 ? 'Ordem aleatória e reproduzir' : ''}>
+                        <IoShuffleOutline className="c-button__icon mr-10"/>
+                        <span className="c-button__label">Ordem aleatória e reproduzir</span>
+                    </button>
+
                     <div className="c-container__content__title__actions">
 
-                        <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapMusicsOrderBy(filterField)}</span></label><FontAwesomeIcon className="box-field__icon ml-10" icon={faChevronDown} /></div>} position="bottom right" >
+                        <Popup keepTooltipInside arrow={false} mouseLeaveDelay={300} mouseEnterDelay={0} ref={popupRef} trigger={<div className="c-container__content__title__actions__item box-field box-field--transparent"><label>Ordernar por: <span className="accent--color">{mapMusicsOrderBy(filterField)}</span></label><IoChevronDownOutline className="box-field__icon ml-10"/></div>} position="bottom right" >
                             <Margin cssAnimation={["marginTop"]}  className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '130px' }}>
                                 <div className={'c-popup__item  c-popup__item--row' + (pageConfig.musicsOrderBy === 'name' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
-                                    <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="name"/>
+                                    <input onClick={handleChangeMusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="name"/>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">A - Z</h3>
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
                                 <div className={'c-popup__item c-popup__item--row' + (pageConfig.musicsOrderBy === 'author' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
-                                    <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="author"/>
+                                    <input onClick={handleChangeMusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="author"/>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Artista</h3>
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
                                 <div className={'c-popup__item c-popup__item--row' + (pageConfig.musicsOrderBy === 'album' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
-                                    <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="album"/>
+                                    <input onClick={handleChangeMusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="album"/>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Álbum</h3>
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
                                 <div className={'c-popup__item c-popup__item--row' + (pageConfig.musicsOrderBy === 'genre' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
-                                    <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="genre"/>
+                                    <input onClick={handleChangeMusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="genre"/>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Gênero</h3>
                                     </div>
                                     <div className="highlighter"></div>
                                 </div>
                                 <div className={'c-popup__item c-popup__item--row' + (pageConfig.musicsOrderBy === 'releaseDate' ? ' c-popup__item--active' : '')} onClick={closeTooltip}>
-                                    <input onClick={handleChangemusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="releaseDate"/>
+                                    <input onClick={handleChangeMusicsOrderBy} className="c-popup__item__button-hidden" type="text" defaultValue="releaseDate"/>
                                     <div className="c-popup__item__label">
                                         <h3 className="c-popup__item__title">Ano de lançamento</h3>
                                     </div>

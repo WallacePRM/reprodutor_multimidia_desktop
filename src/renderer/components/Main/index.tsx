@@ -27,6 +27,8 @@ import { Media } from '../../../common/medias/types';
 import WindowControls from '../WindowControls';
 import { selectPlayerMode } from '../../store/playerMode';
 import { PageConfig } from '../../service/page/type';
+import { getPlaylistService } from '../../service/playlist';
+import { setPlaylists } from '../../store/playlists';
 
 function Main(props: MainProps) {
 
@@ -38,7 +40,7 @@ function Main(props: MainProps) {
     const selectedItems = useSelector(selectSelectedFiles);
     const listItems = useSelector(selectMedias);
     const playerMode = useSelector(selectPlayerMode);
-    const pageConfig: PageConfig = useSelector(selectPageConfig);
+    const pageConfig = useSelector(selectPageConfig);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -60,8 +62,9 @@ function Main(props: MainProps) {
             return;
         };
 
-        const getMedias = async () => {
-            console.log('getMedias');
+        const getAllData = async () => {
+
+
             try {
                 const mediasOptions = {
                     offSet: 0,
@@ -85,6 +88,7 @@ function Main(props: MainProps) {
                 const playerState = await playerService.getLastMedia();
                 const playerConfig = await playerService.getPlayerConfig();
                 const pageConfig = await getPageService().getPageConfig();
+                const playlists = await getPlaylistService().getPlaylists();
 
                 pageConfig.firstRun = true;
                 if (pageConfig) {
@@ -115,19 +119,18 @@ function Main(props: MainProps) {
                     dispatch(setPlayerState(null));
                     dispatch(setCurrentMedias(currentMedias ? currentMedias : null));
                     dispatch(setMediaPlaying(media));
+                    dispatch(setPlaylists(playlists));
                 }
             }
             catch (error) {
-                console.log(error);
-
-                // throw new Error("Falha ao baixar mídias");
+                alert(error.message);
             }
             finally {
                 setPreLoad(false);
             }
         };
 
-        getMedias();
+        getAllData();
     }, []);
 
     useEffect(() => {
@@ -158,7 +161,7 @@ function Main(props: MainProps) {
     return (
         <div className={'c-app noselect' +
         (pageConfig?.theme ? ' theme--' + theme : '')}>
-            {playerMode !== 'full' && <WindowControls />}
+            {(playerMode !== 'full' && !pageConfig.fullscreen) && <WindowControls />}
             <main id="popup-root" className="c-app__content">
                 <Sidebar />
                 <div style={{ marginLeft: `${containerMargin.margin}rem` }} className="c-container">

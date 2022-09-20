@@ -5,8 +5,9 @@ import './index.css';
 
 function Button(props: ButtonProps) {
 
+    const { label, icon, style, className, title, accept, onlyFolder, onClick, onRead } = props;
+    const inputAtt: any = onlyFolder ? { directory: "", webkitdirectory: "" } : '';
     const ref: any = useRef(null);
-    const inputAtt: any = props.onlyFolder ? { directory: "", webkitdirectory: "" } : '';
 
     const handleTriggerInput = (e: React.MouseEvent) => {
 
@@ -19,11 +20,11 @@ function Button(props: ButtonProps) {
 
     return (
         <>
-            <button onClick={ props.onClick || handleTriggerInput } className={'c-button box-field' + ( props.className ? ` ${props.className}` : '' )} style={ props.style ? props.style : {} } title={props.title ? props.title : ''}>
-                { props.icon ? <FontAwesomeIcon className={'c-button__icon' + (props.label ? ' mr-10' : '')} icon={props.icon} /> : null }
-                { props.label ? <span className="c-button__label">{props.label}</span> : null }
+            <button onClick={ onClick || handleTriggerInput } className={'c-button box-field' + ( className ? ` ${className}` : '' )} style={ style ? style : {} } title={title ? title : ''}>
+                { icon ? <FontAwesomeIcon className={'c-button__icon' + (label ? ' mr-10' : '')} icon={icon} /> : null }
+                { label ? <span className="c-button__label">{label}</span> : null }
             </button>
-            { !props.onClick ? <input onChange={ props.onRead } ref={ ref } type="file" accept={props.accept ? props.accept : '*'}  {...inputAtt} multiple hidden/> : null}
+            { !onClick ? <input onChange={ onRead } ref={ ref } type="file" accept={accept ? accept : '*'}  {...inputAtt} multiple hidden/> : null}
         </>
     );
 }

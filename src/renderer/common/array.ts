@@ -36,3 +36,18 @@ export const arrayUnshiftItem = (array: any[], index: number) => {
     newArray.unshift(element);
     return newArray;
 };
+
+export const distinct = <TItem>(array: TItem[], distinctBy: (item: TItem) => any) => {
+
+    return array.reduce((obj, item) => {
+
+        const id = distinctBy(item);
+        if (!obj.index[id]) {
+
+            obj.result.push(item);
+            obj.index[id] = true;
+        }
+
+        return obj;
+    }, {index: {} as any, result: []}).result;
+};

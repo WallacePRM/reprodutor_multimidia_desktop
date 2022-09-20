@@ -8,5 +8,6 @@ export type AnimationsProps = {
     onMouseUp?: React.ReactEventHandler;
     onMouseLeave?: React.ReactEventHandler;
     onMouseEnter?: React.ReactEventHandler;
+    onContextMenu?: React.ReactEventHandler;
     children: React.ReactNode;
 };

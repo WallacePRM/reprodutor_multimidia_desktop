@@ -155,7 +155,7 @@
 
 .btn--primary {
     background-color: rgb(var(--accent-color));
-    color: #fff;
+    color: rgb(var(--title-color--inverted));
 }
 
 .btn--primary:hover {
@@ -184,11 +184,11 @@
 }
 
 .icon-color--light {
-    filter: invert(.4);
+    filter: invert(.4) !important;
 }
 
 .icon-color--inverted {
-    filter: invert(1);
+    filter: invert(1) !important;
 }
 
 .btn--icon:hover {

@@ -1,5 +1,5 @@
 .c-grid-list__item--video {
-    height: 180px;
+    height: 180px !important;
 }
 
 .c-grid-list__item--video .c-grid-list__item__thumbnail {

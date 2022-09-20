@@ -1,5 +1,6 @@
 .c-previous-router {
     width: 1em;
+    color: rgb(var(--icon-color));
 }
 
 .c-previous-router--disabled {

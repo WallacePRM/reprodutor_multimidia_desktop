@@ -1,0 +1,45 @@
+.c-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: rgb(var(--text-color));
+    transition: .2s;
+}
+
+.c-input__field {
+    font-family: 'Heebo', sans-serif;
+    flex: 1;
+    background-color: rgb(var(--bg-color));
+    padding: 8px 10px;
+    border-radius: .3rem;
+    font-size: .875em;
+    text-decoration: none;
+    outline: none;
+}
+
+.c-input__field:focus {
+    padding: 7.5px 10px;
+    border-bottom: 2px solid rgb(var(--accent-color));
+    background-color: rgb(var(--bg-color--solid));
+}
+
+.c-input__icon {
+    position: absolute;
+    color: rgb(var(--title-color));
+    padding: 8px;
+    border-radius: .3rem;
+    /* height: .7em; */
+    width: .875em;
+    right: 0;
+    transition: .2s;
+}
+.c-input__icon:hover {
+    background-color: rgb(var(--border-color), .5);
+}
+
+.c-input__icon--clear {
+    /* display: none; */
+    margin-right: 2.3rem;
+}

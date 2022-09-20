@@ -19,7 +19,7 @@ function App() {
 
   const windowState = useWindowState();
   let lastRoute = localStorage.getItem('lastRoute') || '/home';
-  console.log(lastRoute);
+
   if (lastRoute === '/') {
     lastRoute = '/home';
   }

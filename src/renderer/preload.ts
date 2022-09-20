@@ -2,6 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from "electron";
+import { Playlist } from "../common/playlists/types";
 import { Folder } from "../common/folders/type";
 import { GetMediasOptions, Media, MediaInfo } from "../common/medias/types";
 import { WindowElectronApi } from "./preload-types";
@@ -36,6 +37,23 @@ const electronApi: WindowElectronApi['electronApi'] = {
     },
     deleteMedias: (medias: Media[]): Promise<void> => {
         return ipcRenderer.invoke('mediaService.deleteMedias', medias);
+    },
+
+    getPlaylists: () => {
+
+        return ipcRenderer.invoke('playlistService.getPlaylists');
+    },
+    insertPlaylist: (playlist: Playlist) => {
+
+        return ipcRenderer.invoke('playlistService.insertPlaylist', playlist);
+    },
+    putPlaylist: (playlist: Playlist) => {
+
+        return ipcRenderer.invoke('playlistService.putPlaylist', playlist);
+    },
+    deletePlaylist: (playlist: Omit<Playlist, 'name'>): Promise<void> => {
+
+        return ipcRenderer.invoke('playlistService.deletePlaylist', playlist);
     },
 
     getFolders(): Promise<Folder[]> {

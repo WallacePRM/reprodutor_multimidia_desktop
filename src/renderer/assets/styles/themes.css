@@ -20,6 +20,7 @@
     --title-color--inverted: 14, 14, 14;
     --text-color: 240, 240, 240;
     --text-color--light: 154, 155, 157;
+    --icon-color: 255, 255, 255;
 }
 
 .theme--dark .icon-color,

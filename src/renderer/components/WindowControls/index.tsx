@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { WindowElectronApi } from '../../preload-types';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquare, faSquareFull } from '@fortawesome/free-regular-svg-icons';
 import { faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
+import { IoCloseOutline } from 'react-icons/io5';
+import { IoRemoveOutline } from 'react-icons/io5';
+
 import { selectContainerMargin } from '../../store/containerMargin';
 
 import './index.css';
@@ -47,14 +51,14 @@ function WindowControls(props: WindowControlsProps) {
     return (
         <div style={style} className={'c-window-controls' + (props.className ? ' ' + props.className : '')}>
             <div className="c-window-controls__item" onClick={handleMinimize}>
-                <FontAwesomeIcon icon={faMinus} />
+                <IoRemoveOutline />
             </div>
             <div className="c-window-controls__item c-window-controls__item--maximize" onClick={handleMaximize}>
                 {!isMaximized && <FontAwesomeIcon icon={faSquare}/>}
                 {isMaximized && <><FontAwesomeIcon className="c-window-controls__item--maximize-layer-1" icon={faSquare}/><FontAwesomeIcon className="c-window-controls__item--maximize-layer-2" icon={faSquare}/></>}
             </div>
             <div className="c-window-controls__item c-window-controls__item--close" onClick={handleClose}>
-                <FontAwesomeIcon icon={faTimes} />
+                <IoCloseOutline />
             </div>
         </div>
     );

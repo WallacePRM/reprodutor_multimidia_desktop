@@ -5,12 +5,14 @@ const pageConfigSlice = createSlice({
     name: 'pageConfig',
     initialState: {
         config: {
-           musicsOrderBy: 'name',
-           videosOrderBy: 'name',
-           theme: 'auto',
-           accentColor: 'systemPreferences.getAccentColor()',
-           mediaArt: true,
-           firstRun: true,
+            fullscreen: false,
+            musicsOrderBy: 'name',
+            videosOrderBy: 'name',
+            playlistsOrderBy: 'name',
+            theme: 'auto',
+            accentColor: 'systemPreferences.getAccentColor()',
+            mediaArt: true,
+            firstRun: true,
         } as pageConfig,
     },
     reducers: {
@@ -27,8 +29,10 @@ export const { setPageConfig } = pageConfigSlice.actions;
 export const selectPageConfig = (state: RootState) => state.pageConfig.config;
 
 export type pageConfig = {
+    fullscreen?: boolean,
     musicsOrderBy?: string;
     videosOrderBy?: string;
+    playlistsOrderBy: string;
     theme?: string;
     accentColor?: string;
     mediaArt?: boolean;

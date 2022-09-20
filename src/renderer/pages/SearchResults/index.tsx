@@ -27,6 +27,7 @@ function SearchResults() {
     const playerConfig = useSelector(selectPlayerConfig);
     const mediaPlaying = useSelector(selectMediaPlaying);
     const dispatch = useDispatch();
+
     let index = -1;
 
     const handleSelectMusic = async (file: Media) => {
@@ -172,7 +173,7 @@ function SearchResults() {
                     <div className="c-line-list">
                         {musics.map(music => (
                         index++,
-                        <LineItem noSelect onClick={handleSelectMusic} className={isOdd(index) ? 'c-line-list__item--nostyle' : ''}key={music.id} file={music}/>))}
+                        <LineItem noSelect onClick={handleSelectMusic} className={isOdd(index) ? 'c-line-list__item--nostyle' : ''} key={music.id} file={music}/>))}
                     </div></>
                     }
                     {videos.length > 0 && <>
@@ -181,7 +182,7 @@ function SearchResults() {
                         {videos.length <= 5 && videos.length > 1 && <button onClick={handleGetAllVideosFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
                     </div>
                     <div className="c-grid-list">
-                        {videos.map(video => <GridItem noSelect onClick={handleSelectVideo} key={video.id} file={video}/>)}
+                        {videos.map(video => <GridItem className="c-grid-list__item--video" noSelect onClick={handleSelectVideo} key={video.id} file={video}/>)}
                     </div></>}
                 </Margin>}
             </div>
