@@ -13,7 +13,8 @@ export class Playlist {
     modificationDate: Date | null;
 
     @ManyToMany(() => Media, {
-        cascade: true
+        cascade: true,
+        onDelete: 'CASCADE'
     })
     @JoinTable({
         name: 'playlist_items'

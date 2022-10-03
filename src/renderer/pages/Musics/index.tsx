@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
 import { IoChevronDownOutline } from 'react-icons/io5';
 import { IoShuffleOutline } from 'react-icons/io5';
@@ -8,13 +7,13 @@ import Button from "../../components/Button";
 import EmptyMessage from "../../components/EmptyMessage";
 import emptyMessageIcon from '../../assets/img/music-gradient.svg';
 import LineItem from '../../components/List/LineItem';
-import { isVisible } from "../../common/dom";
+import { isVisible, saveScrollPosition } from "../../common/dom";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMediaService } from "../../service/media";
 import { selectMedias, setMedias } from "../../store/medias";
 import { Media } from '../../../common/medias/types';
-import { setCurrentMedias } from "../../store/player";
+import { selectCurrentMedias, setCurrentMedias } from "../../store/player";
 import { arrayUnshiftItem, shuffle, sortAsc } from "../../common/array";
 import { isOdd } from "../../common/number";
 import { capitalizeFirstLetter, hasSymbol } from "../../common/string";
@@ -33,7 +32,7 @@ import Load from '../../components/Load';
 import { getFolderService } from '../../service/folder';
 import FilterBlock from '../../components/FilterBlock';
 import { getPlayerService } from '../../service/player';
-import { delay } from '../../common/async';
+import SelectBlockMedia from '../../components/SelectBlock/SelectBlockMedia';
 
 
 function Musics() {
@@ -42,21 +41,21 @@ function Musics() {
     const [ filterBlock, setFilterBlock ] = useState(false);
 
     const selectedItems = useSelector(selectSelectedFiles);
+    const currentMedias = useSelector(selectCurrentMedias);
     const pageConfig = useSelector(selectPageConfig);
-    const firstRun = pageConfig.firstRun;
     const filterField: string = pageConfig?.musicsOrderBy ? pageConfig.musicsOrderBy : 'name';
     const listItems = useSelector(selectMedias);
     const playerConfig = useSelector(selectPlayerConfig);
     const musics = (listItems.filter(item => item.type === 'music')).sort((a, b) => sortAsc(((a as any)[filterField] || '').toLocaleLowerCase(), ((b as any)[filterField] || '').toLocaleLowerCase()));
     const listSeparators = createSeparators(musics as any, filterField);
     const [ lastSeparatorInvisible, setLastSeparatorInvisible ] = useState<string | null>(listSeparators[0] || '');
-    const dispatch = useDispatch();
     const mediaPlaying = useSelector(selectMediaPlaying);
     const popupRef: any = useRef();
     const separatorRef: any = useRef();
     const closeTooltip = () => popupRef.current && popupRef.current.close();
     let fileIndex: number = 0;
     let timeoutId: any = null;
+    const dispatch = useDispatch();
 
     const handleSelectFile = async (e: React.ChangeEvent<any>) => {
 
@@ -163,9 +162,7 @@ function Musics() {
             setLastSeparatorInvisible(createLastSeparator());
         }, 50);
 
-        delay(() => {
-            saveScrollPosition();
-        }, 500);
+        saveScrollPosition();
     };
 
     const mapSeparatorByFilter = (filter: string) => {
@@ -175,26 +172,15 @@ function Musics() {
         return filter;
     };
 
-    const saveScrollPosition = () => {
-
-        delay(async () => {
-
-            const scrollPosition = document.querySelector('.c-list').scrollTop;
-            await getPageService().setPageConfig({scrollPosition: scrollPosition});
-
-        }, 500);
-    };
-
     useEffect(() => {
 
         const restoreScrollPosition = async () => {
 
             const pageConfig = await getPageService().getPageConfig();
 
-            if (pageConfig.scrollPosition && firstRun) {
+            if (pageConfig.scrollPosition && pageConfig.firstRun) {
 
                 document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
-
                 dispatch(setPageConfig({firstRun: false}));
             }
             else {
@@ -270,7 +256,7 @@ function Musics() {
                 </div>
                 { selectedItems.length > 0 &&
                 <Opacity cssAnimation={["opacity"]}>
-                    <SelectBlock list={musics}/>
+                    <SelectBlockMedia listItems={musics}/>
                 </Opacity>}
             </Opacity> : null }
 
@@ -306,7 +292,12 @@ function Musics() {
 
                                 musicsFiltred.forEach((item) => {
 
-                                    elements.push(<LineItem onClick={ handleSelectMedia } className={(isOdd(fileIndex) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')} file={item} key={item.id}/>);
+                                    elements.push(<LineItem
+                                        onPlay={handleSelectMedia}
+                                        onSelectMedia={null}
+                                        className={(isOdd(fileIndex) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')}
+                                        file={item}
+                                        key={item.id}/>);
                                     fileIndex++;
                                 });
 

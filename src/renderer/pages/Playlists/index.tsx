@@ -1,33 +1,28 @@
-import React, { useRef, useState } from 'react';
-import { findNonSerializableValue } from '@reduxjs/toolkit';
-
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Popup from 'reactjs-popup';
+
+import { HiOutlinePlus } from 'react-icons/hi';
+import { IoChevronDownOutline } from 'react-icons/io5';
+
 import emptyMessageIcon from '../../assets/img/speaker-gradient.svg';
 import Button from '../../components/Button';
 import EmptyMessage from '../../components/EmptyMessage';
 import Margin from '../../components/Animations/Margin';
 import Opacity from '../../components/Animations/Opacity';
-import Popup from 'reactjs-popup';
 import { useSelector } from 'react-redux';
 import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
 import { selectSelectedFiles } from '../../store/selectedFiles';
-import SelectBlock from '../../components/SelectBlock';
 import PlaylistItem from './PlaylistItem';
 import { getPlaylistService } from '../../service/playlist';
 import { Playlist } from '../../../common/playlists/types';
 import { selectPlaylists, setPlaylist } from '../../store/playlists';
-import { selectPlayerConfig } from '../../store/playerConfig';
-import { shuffle, sortAsc } from '../../common/array';
-import { setCurrentMedias } from '../../store/player';
-import { getPlayerService } from '../../service/player';
-import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
-import { setPlayerState } from '../../store/playerState';
+import { sortAsc } from '../../common/array';
 import Input from '../../components/Input';
 import { Media } from '../../../common/medias/types';
 import { getPageService } from '../../service/page';
-
-import { HiOutlinePlus } from 'react-icons/hi';
-import { IoChevronDownOutline } from 'react-icons/io5';
+import SelectBlockPlaylist from '../../components/SelectBlock/SelectBlockPlaylist';
+import { saveScrollPosition } from '../../common/dom';
 
 function Playlists() {
 
@@ -35,10 +30,8 @@ function Playlists() {
 
     const pageConfig = useSelector(selectPageConfig);
     const selectedItems = useSelector(selectSelectedFiles);
-    const playerConfig = useSelector(selectPlayerConfig);
-    const mediaPlaying = useSelector(selectMediaPlaying);
     const filterField: string = pageConfig?.playlistsOrderBy ? pageConfig.playlistsOrderBy : 'name';
-    const listItems = useSelector(selectPlaylists);
+    let listItems = useSelector(selectPlaylists);
     let playlists: Playlist[] = [...listItems].sort((a, b) => sortAsc(((a as any)[filterField] || '').toLocaleLowerCase(), ((b as any)[filterField] || '').toLocaleLowerCase()));
 
     const popupRef = useRef(null);
@@ -46,29 +39,6 @@ function Playlists() {
     const closeTooltip = () => popupRef.current && popupRef.current.close();
     const closePlaylistPopup = () => createPlaylistPopup.current && createPlaylistPopup.current.close();
     const dispatch = useDispatch();
-
-    const handleSelectMedia = async (item: Playlist) => {
-
-        let medias = [...item.medias];
-        if (playerConfig.shuffle) {
-
-            medias = shuffle(medias);
-        }
-
-        dispatch(setCurrentMedias(medias));
-        await getPlayerService().setLastMedia({current_medias: medias});
-
-        if (mediaPlaying?.id !== medias[0].id) {
-            dispatch(setMediaPlaying(medias[0]));
-        }
-        else {
-            dispatch(setMediaPlaying(null));
-            setTimeout(() => {
-                dispatch(setPlayerState({ file_id: medias[0].id, currentTime: 0, duration: 0 }));
-                dispatch(setMediaPlaying(medias[0]))
-            }, 0);
-        }
-    };
 
     const handleChangePlaylistsOrderBy = async (orderBy: string) => {
 
@@ -100,6 +70,25 @@ function Playlists() {
         }
     };
 
+    useEffect(() => {
+
+        const restoreScrollPosition = async () => {
+
+            const pageConfig = await getPageService().getPageConfig();
+
+            if (pageConfig.scrollPosition && pageConfig.firstRun) {
+
+                document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
+                dispatch(setPageConfig({firstRun: false}));
+            }
+            else {
+                await getPageService().setPageConfig({scrollPosition: 0});
+            }
+        };
+
+        restoreScrollPosition();
+    }, []);
+
     return (
         <div className="c-page c-playlists">
             <div className="c-container__header">
@@ -109,7 +98,7 @@ function Playlists() {
             { playlists.length > 0 ?
             <Opacity cssAnimation={["opacity"]} className="c-container__content__title">
                 <div className="d-flex a-items-center">
-                        <Popup ref={createPlaylistPopup} onOpen={() => setInputValue('Playlist sem título')} keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button-no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Nova playlist</span></div>}>
+                        <Popup ref={createPlaylistPopup} onOpen={() => setInputValue('Playlist sem título')} keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Nova playlist</span></div>}>
                             <Margin cssAnimation={["marginTop"]} className="c-popup c-popup--no-hover bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '300px'}}>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label">
@@ -118,7 +107,12 @@ function Playlists() {
                                 </label>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label" style={{alignItems: 'center'}}>
-                                      <Button onClick={handleCreatePlaylist} style={{fontSize: '.85rem', width: 'max-content'}} label="Criar playlist" className="btn--primary c-button--no-media-style" />
+                                      <Button
+                                      onClick={handleCreatePlaylist}
+                                      style={{fontSize: '.85rem', width: 'max-content'}}
+                                      label="Criar playlist"
+                                      className={'btn--primary c-button--no-media-style' +
+                                      (inputValue.trim() === '' ? ' disabled' : '')} />
                                     </div>
                                 </label>
                             </Margin>
@@ -144,10 +138,10 @@ function Playlists() {
                         </Popup>
                     </div>
                 </div>
-                {/* { selectedItems.length > 0 &&
+                { selectedItems.length > 0 &&
                 <Opacity cssAnimation={["opacity"]}>
-                    <SelectBlock list={playlists}/>
-                </Opacity>} */}
+                    <SelectBlockPlaylist listItems={playlists}/>
+                </Opacity>}
             </Opacity> : null }
 
             <div className="c-container__content" style={{ height: playlists.length === 0 ? '100%' : '' }}>
@@ -155,7 +149,7 @@ function Playlists() {
                     title="Você não tem playlists"
                     button={
                     <div className="d-flex a-items-center">
-                       <Popup ref={createPlaylistPopup} onOpen={() => setInputValue('Playlist sem título')} keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button-no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Criar uma nova lista de reprodução</span></div>}>
+                       <Popup ref={createPlaylistPopup}  keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Criar uma nova lista de reprodução</span></div>}>
                             <Margin cssAnimation={["marginTop"]} className="c-popup c-popup--no-hover bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '300px'}}>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label">
@@ -164,7 +158,12 @@ function Playlists() {
                                 </label>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label" style={{alignItems: 'center'}}>
-                                      <Button onClick={handleCreatePlaylist} style={{fontSize: '.85rem', width: 'max-content'}} label="Criar playlist" className="btn--primary c-button--no-media-style" />
+                                      <Button
+                                      onClick={handleCreatePlaylist}
+                                      style={{fontSize: '.85rem', width: 'max-content'}}
+                                      label="Criar playlist"
+                                      className={'btn--primary c-button--no-media-style' +
+                                      (inputValue.trim() === '' ? ' disabled' : '')} />
                                     </div>
                                 </label>
                             </Margin>
@@ -172,8 +171,13 @@ function Playlists() {
                     </div>}
                 /> :
                 <>
-                    <Margin cssAnimation={["marginTop"]} className="c-list c-grid-list">
-                        {playlists.map((item) => <PlaylistItem className="c-grid-list__item--playlist" onClick={ handleSelectMedia } playlist={item} key={item.id}/>)}
+                    <Margin cssAnimation={["marginTop"]}
+                    className="c-list c-grid-list"
+                    onScroll={saveScrollPosition}>
+                        {playlists.map((item) => <PlaylistItem
+                        className="c-grid-list__item--playlist"
+                        playlist={item}
+                        key={item.id}/>)}
                     </Margin>
                 </>
                 }

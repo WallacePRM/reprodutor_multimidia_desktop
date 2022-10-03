@@ -36,10 +36,6 @@
     background-color: rgb(var(--bg-color));
 }
 
-.theme--dark .c-searchbar__icon:hover {
-    background-color: rgb(var(--border-color--dark), .3);
-}
-
 .theme--dark .btn--primary,
 .theme--dark .highlighter {
     filter: brightness(2);

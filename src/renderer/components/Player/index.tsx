@@ -38,6 +38,7 @@ import { AiOutlineFullscreen } from 'react-icons/ai';
 import { AiOutlineFullscreenExit } from 'react-icons/ai';
 import { IoChevronForwardOutline } from 'react-icons/io5';
 import { IoMusicalNotesOutline } from 'react-icons/io5';
+import { IoFilmOutline } from 'react-icons/io5';
 
 import './index.css';
 
@@ -503,6 +504,7 @@ function Player() {
         } style={ file && !file?.thumbnail ? coverStyle : {} }>
             { file?.thumbnail && <img src={file?.thumbnail}/> }
             { !file?.thumbnail && file?.type === 'music' && <IoMusicalNotesOutline className="icon-color--light"/>}
+            { !file?.thumbnail && file?.type === 'video' && <IoFilmOutline className="icon-color--light"/>}
         </Opacity>
     );
 
@@ -583,7 +585,7 @@ function Player() {
                 </div>
                 <div className="c-player__options">
                     <Popup keepTooltipInside arrow={false} ref={popupRef} trigger={ <div className="c-player__controls__options__item player--button" title="Volume">{mapVolumeIcon()}</div>} position="top center" >
-                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '250px' }}>
+                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '250px', padding: '0.5rem' }}>
                             <div className="c-player__volume">
                                 <div onClick={handleMute}>{mapVolumeIcon()}</div>
                                 <Slider  onChange={handleChangeVolume} className="c-player__volume__slider" data={{ min: 0, value: currentVolumePorcents, max: 100 }}></Slider>
@@ -595,7 +597,7 @@ function Player() {
 
                     { document.body.clientWidth >= 850 &&
                     <div onClick={handleToggleFullScreen} className={'c-player__controls__options__item player--button' + (!file ? ' disabled' : '')}>
-                        {pageConfig.fullscreen ? <AiOutlineFullscreenExit title="Sair de tela inteira(F11)"/>
+                        {pageConfig.fullscreen ? <AiOutlineFullscreenExit  title="Sair de tela inteira(F11)"/>
                         : <AiOutlineFullscreen title="Tela inteira(F11)"/>}
                     </div>}
                     <Popup keepTooltipInside nested arrow={false} ref={popupRef} trigger={<div className="c-player__controls__options__item player--button c-player__controls__options__item--config" title="Mais opções"><IoEllipsisHorizontal /></div>} position="top right" >
@@ -681,8 +683,8 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleToggleFullScreen}></div>
                                 <div className="c-popup__item__icons">
-                                    {pageConfig.fullscreen ? <AiOutlineFullscreenExit title="Sair de tela inteira(F11)"/>
-                                    : <AiOutlineFullscreen title="Tela inteira(F11)"/>}
+                                    {pageConfig.fullscreen ? <AiOutlineFullscreenExit className="c-popup__item__icon" title="Sair de tela inteira(F11)"/>
+                                    : <AiOutlineFullscreen className="c-popup__item__icon" title="Tela inteira(F11)"/>}
                                 </div>
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">Tela inteira</h3>
@@ -694,7 +696,7 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleToggleShuffle}></div>
                                 <div className="c-popup__item__icons">
-                                    {!playerConfig.shuffle && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
+                                    {!playerConfig.shuffle && <IoRemoveOutline className="c-popup__item__icon c-player__controls__item--desatived" style={{height: '1.2rem', width: '1.2rem'}}/>}
                                     <IoShuffleOutline className="c-popup__item__icon" />
                                 </div>
                                 <div className="c-popup__item__label">
@@ -705,7 +707,7 @@ function Player() {
                             <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                 <div className="c-popup__item__button-hidden" onClick={handleChangeRepeatMode}></div>
                                 <div className="c-popup__item__icons">
-                                    {playerConfig.repeatMode === false && <IoRemoveOutline className="c-player__controls__item--desatived"/>}
+                                    {playerConfig.repeatMode === false && <IoRemoveOutline className="c-popup__item__icon c-player__controls__item--desatived" style={{height: '1.2rem', width: '1.2rem'}}/>}
                                     {playerConfig.repeatMode === 'once' && <span className="c-player__controls__item--repeat-once" style={{ right: '50%' }}></span>}
                                     <IoRepeatOutline className="c-popup__item__icon" />
                                 </div>

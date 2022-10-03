@@ -1,5 +1,4 @@
 import { ipcMain } from "electron";
-import { stringify } from "querystring";
 import { Media } from "../../common/medias/types";
 import { Playlist } from "../../common/playlists/types";
 import { AppDataSource } from "../database";
@@ -43,19 +42,30 @@ export const initListeners = () => {
             medias: playlist.medias.map((media) => ({id: media.id}))
         });
 
+        const playlistDb = (await repository.find({
+            relations: {
+                medias: true,
+            },
+            where: {
+                id: playlistCreated.id
+            }
+        }))[0];
+
         const count = await repository.createQueryBuilder()
         .where('LOWER(name) = LOWER(:name)', { name: playlist.name })
         .getCount();
 
+        console.log( `\n\n\n ${count} \n\n\n`);
+
         if (count > 1) {
 
-            playlistCreated.name = `${playlistCreated.name} (${count})`;
+            playlistDb.name = `${playlistDb.name} (${count})`;
         }
 
-        return mapPlaylist(playlistCreated);
+        return mapPlaylist(playlistDb);
     });
 
-    ipcMain.handle('playlistService.putPlaylist', async (event, playlist: Playlist) => {
+    ipcMain.handle('playlistService.putPlaylist', async (event, playlist: Partial<Playlist>) => {
 
         const repository = AppDataSource.getRepository(PlaylistDb);
 
@@ -68,7 +78,8 @@ export const initListeners = () => {
             }
         }))[0];
 
-        playlistDb.modificationDate = new Date(playlist.modificationDate || playlistDb.modificationDate);
+        playlistDb.name = playlist.name || playlistDb.name;
+        playlistDb.modificationDate = new Date();
         playlistDb.medias = playlistDb.medias.concat(playlist.medias.map((media) => ({id: media.id} as any)));
 
         await repository.save(playlistDb);
@@ -78,11 +89,16 @@ export const initListeners = () => {
 
         const repository = AppDataSource.getRepository(PlaylistDb);
 
-        if (playlist.medias && playlist.medias.length > 0) {
+        if (playlist.medias?.length > 0) {
 
-            const playlistDb = await repository.findOneBy({
-                id: playlist.id
-            });
+            const playlistDb = (await repository.find({
+                relations: {
+                    medias: true,
+                },
+                where: {
+                    id: playlist.id
+                }
+            }))[0];
 
             for (const media of playlistDb.medias) {
 
@@ -92,6 +108,8 @@ export const initListeners = () => {
                     playlistDb.medias.splice(mediaIndex, 1);
                 }
             }
+
+            playlistDb.modificationDate = new Date();
 
             await repository.save(playlistDb);
         }

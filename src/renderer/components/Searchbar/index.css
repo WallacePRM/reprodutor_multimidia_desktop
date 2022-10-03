@@ -34,7 +34,6 @@
     color: rgb(var(--icon-color));
     padding: 8px;
     border-radius: .3rem;
-    /* height: .7em; */
     width: .875em;
     right: 1.8rem;
     transition: .2s;
@@ -44,7 +43,6 @@
 }
 
 .c-searchbar__icon--clear {
-    /* display: none; */
     margin-right: 2.3rem;
 }
 
@@ -56,13 +54,9 @@
 }
 .c-searchbar--opened .c-searchbar__icon {
     right: 1.8rem;
-    /* height: .7em; */
     padding: 8px;
 }
 
-/* .c-searchbar--opened .c-searchbar__icon--clear {
-    display: block;
-} */
 
 .c-popup--searchbar {
     position: absolute;

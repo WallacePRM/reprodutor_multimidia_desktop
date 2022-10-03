@@ -122,6 +122,10 @@
   opacity: 0;
 }
 
+.c-line-list__item__actions__item svg {
+  pointer-events: none;
+}
+
 .c-line-list__item__actions--checkbox {
   position: absolute;
   top: 0;

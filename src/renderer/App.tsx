@@ -12,6 +12,7 @@ import Videos from './pages/Videos';
 import Playlists from './pages/Playlists';
 import Configs from './pages/Configs';
 import SearchResults from './pages/SearchResults';
+import GroupInfo from './pages/GroupInfo';
 
 import './App.css';
 
@@ -32,9 +33,10 @@ function App() {
           <Route path="/musics" element={<Musics />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/queue" element={<PlayQueue />} />
+          <Route path="/playlists" element={<Playlists />} />
           <Route path="/configs" element={<Configs />} />
           <Route path="/search-results/:search" element={<SearchResults />} />
-          <Route path="/playlists" element={<Playlists />} />
+          <Route path="/group-info" element={<GroupInfo/>} />
           <Route path="/" element={<Navigate to={lastRoute} replace />}></Route>
           <Route path="*" element={<NotFound />} />
         </Route>

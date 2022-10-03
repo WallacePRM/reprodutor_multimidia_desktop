@@ -1,5 +1,10 @@
-import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Popup from "reactjs-popup";
+
+import { HiOutlinePlus } from 'react-icons/hi';
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+
 import { selectCurrentMedias, setCurrentMedias } from "../../store/player";
 import Button from "../../components/Button";
 import LineItem from "../../components/List/LineItem";
@@ -8,39 +13,36 @@ import { selectMediaPlaying, setMediaPlaying } from "../../store/mediaPlaying";
 import Margin from "../../components/Animations/Margin";
 import Opacity from "../../components/Animations/Opacity";
 import { setPlayerState } from "../../store/playerState";
-import React, { useEffect, useRef } from "react";
 import { getMediaService } from "../../service/media";
 import { setMedias } from "../../store/medias";
 import { getPlayerService } from "../../service/player";
 import { selectSelectedFiles } from "../../store/selectedFiles";
-import SelectBlock from "../../components/SelectBlock";
 import { Media } from "../../../common/medias/types";
-import { delay } from "../../common/async";
 import { getPageService } from "../../service/page";
 import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
-
-import { HiOutlinePlus } from 'react-icons/hi';
-import { RiPlayList2Fill } from 'react-icons/ri';
-
-import Popup from "reactjs-popup";
 import { selectPlaylists, setPlaylistData } from "../../store/playlists";
 import { Playlist } from "../../../common/playlists/types";
 import { getPlaylistService } from "../../service/playlist";
+import SelectBlockMedia from "../../components/SelectBlock/SelectBlockMedia";
+import { saveScrollPosition } from "../../common/dom";
+import ModalCreatePlaylist from "../../components/Modal/ModalCreatePlaylist";
 
 function PlayQueue() {
 
     const medias: any = null;
     const allPlaylists = useSelector(selectPlaylists);
     const pageConfig = useSelector(selectPageConfig);
-    const firstRun = pageConfig.firstRun;
     const selectedItems = useSelector(selectSelectedFiles);
     let currentMedias = useSelector(selectCurrentMedias) || [];
     const mediaPlaying = useSelector(selectMediaPlaying);
+    const dispatch = useDispatch();
+
     const popupAction: any = useRef();
     const closeActionTooltip = () => popupAction.current && popupAction.current.close();
     const popupRef: any = useRef();
     const closeTooltip = () => popupRef.current && popupRef.current.close();
-    const dispatch = useDispatch();
+    const modalCreatePlaylistRef = useRef(null);
+    const openModalCreatePlaylist = () => modalCreatePlaylistRef.current && modalCreatePlaylistRef.current.open();
 
     const handleSelectFile = async (e: React.ChangeEvent<any>) => {
 
@@ -93,14 +95,14 @@ function PlayQueue() {
         }, 0);
     };
 
-    const saveScrollPosition = () => {
+    const handleRemoveMedia = (file: Media) => {
 
-        delay(async () => {
+        const medias = [...currentMedias];
+        const mediaIndex = medias.findIndex(media => media.id === file.id);
+        if (mediaIndex === -1) return;
 
-            const scrollPosition = document.querySelector('.c-list').scrollTop;
-            await getPageService().setPageConfig({scrollPosition: scrollPosition});
-
-        }, 500);
+        medias.splice(mediaIndex, 1);
+        dispatch(setCurrentMedias(medias));
     };
 
     useEffect(() => {
@@ -109,10 +111,9 @@ function PlayQueue() {
 
             const pageConfig = await getPageService().getPageConfig();
 
-            if (pageConfig.scrollPosition && firstRun) {
+            if (pageConfig.scrollPosition && pageConfig.firstRun) {
 
                 document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
-
                 dispatch(setPageConfig({firstRun: false}));
             }
             else {
@@ -167,21 +168,23 @@ function PlayQueue() {
             <Opacity cssAnimation={["opacity"]} className="c-container__content__title">
                 <div className="d-flex a-items-center">
                     <div className={'c-container__content__title__actions' + (currentMedias.length === 0 ? ' disabled' : '')} style={{ margin: '0' }}>
-                        <Button onClick={handleClearQueue} className="mr-10" label="Limpar" icon={faTrashCan} title="Limpar (Ctrl+Shift+X)" />
+                        <Button onClick={handleClearQueue}
+                        className="c-button--large mr-10"
+                        label="Limpar"
+                        icon={faTrashCan}
+                        title="Limpar (Ctrl+Shift+X)"
+                        style={{height: 'auto'}}/>
 
-                        <Popup ref={popupRef} keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<button className="c-button box-field"><HiOutlinePlus className="c-button__icon mr-10" /><span className="c-button__label">Adicionar a</span></button>} position="right top" >
+                        <Popup keepTooltipInside nested
+                        ref={popupRef}
+                        closeOnDocumentClick={false}
+                        arrow={false} on="hover"
+                        mouseLeaveDelay={300}
+                        mouseEnterDelay={300}
+                        trigger={<button className="c-button box-field c-button--large" style={{height: 'auto'}}><HiOutlinePlus className="c-button__icon mr-10" /><span className="c-button__label">Adicionar a</span></button>} position="right top" >
                             <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '130px' }}>
-                                {/* <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
-                                    <div onClick={handleSetNextMedia} className="c-popup__item__button-hidden"></div>
-                                    <div className="c-popup__item__icons">
-                                        <RiPlayList2Fill className="c-popup__item__icon" />
-                                    </div>
-                                    <div className="c-popup__item__label">
-                                        <h3 className="c-popup__item__title">Fila de reprodução</h3>
-                                    </div>
-                                </div> */}
-                                {/* <div className="c-popup__item--separator"></div> */}
-                                <div className="c-popup__item c-popup__item--row">
+                                <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                    <div onClick={openModalCreatePlaylist} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <HiOutlinePlus className="c-popup__item__icon" />
                                     </div>
@@ -212,14 +215,19 @@ function PlayQueue() {
                 </div>
                 { selectedItems.length > 0 &&
                 <Opacity cssAnimation={["opacity"]}>
-                    <SelectBlock list={currentMedias}/>
+                    <SelectBlockMedia listItems={currentMedias}/>
                 </Opacity>}
             </Opacity>
+
+            <ModalCreatePlaylist
+            medias={currentMedias}
+            reference={modalCreatePlaylistRef}
+            onOpen={closeTooltip}/>
 
             <div className="c-container__content" style={{ height: currentMedias.length === 0 ? '100%' : '' }}>
                 { currentMedias.length > 0 &&
                     <Margin onScroll={saveScrollPosition} cssAnimation={["marginTop"]} className="c-list c-line-list">
-                        { currentMedias.map((item, index) => <LineItem onClick={ handleSelectMedia } fileTypeVisible className={(isOdd(index) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')} file={item} key={item.id} />) }
+                        { currentMedias.map((item, index) => <LineItem onRemove={handleRemoveMedia} onSelectMedia={null} onPlay={ handleSelectMedia } fileTypeVisible className={(isOdd(index) ? 'c-line-list__item--nostyle' : '') + (item.id === mediaPlaying?.id ? ' c-line-list__item--active' : '')} file={item} key={item.id} />) }
                     </Margin>
                 }
             </div>

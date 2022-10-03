@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from "react-redux";
+import Popup from "reactjs-popup";
+
+import { faFolderClosed } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+
 import { sortAsc } from "../../common/array";
 import { selectMedias, setMedias } from "../../store/medias";
 import Button from "../../components/Button";
@@ -10,17 +15,12 @@ import { useDispatch } from "react-redux";
 import GridItem from "../../components/List/GridItem";
 import { setCurrentMedias } from "../../store/player";
 import { Media } from '../../../common/medias/types';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { getMediaService } from "../../service/media";
 import { selectMediaPlaying, setMediaPlaying } from "../../store/mediaPlaying";
 import { setPlayerMode } from "../../store/playerMode";
 import Margin from "../../components/Animations/Margin";
 import Opacity from "../../components/Animations/Opacity";
 import { setPlayerState } from "../../store/playerState";
-import Popup from "reactjs-popup";
-import { useRef } from "react";
-import SelectBlock from "../../components/SelectBlock";
 import { selectSelectedFiles } from "../../store/selectedFiles";
 import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
 import { getPageService } from "../../service/page";
@@ -28,7 +28,8 @@ import { extractFilesInfo } from '../../service/media/media-handle';
 import Load from '../../components/Load';
 import { getFolderService } from '../../service/folder';
 import { getPlayerService } from '../../service/player';
-import { delay } from '../../common/async';
+import SelectBlockMedia from '../../components/SelectBlock/SelectBlockMedia';
+import { saveScrollPosition } from '../../common/dom';
 
 import './index.css';
 
@@ -39,10 +40,8 @@ function Videos() {
     const selectedItems = useSelector(selectSelectedFiles);
     const listItems = useSelector(selectMedias);
     const pageConfig = useSelector(selectPageConfig);
-    const firstRun = pageConfig.firstRun;
     const filterField = pageConfig?.videosOrderBy ? pageConfig.videosOrderBy : 'name';
     const videoList = getVideosFromMedias(listItems, filterField);
-    const files: any[] = [];
     const mediaPlaying = useSelector(selectMediaPlaying);
     const popupRef: any = useRef();
     const closeTooltip = () => popupRef.current && popupRef.current.close();
@@ -104,23 +103,13 @@ function Videos() {
         await getPageService().setPageConfig({ videosOrderBy: value });
     };
 
-    const saveScrollPosition = () => {
-
-        delay(async () => {
-
-            const scrollPosition = document.querySelector('.c-list').scrollTop;
-            await getPageService().setPageConfig({scrollPosition: scrollPosition});
-
-        }, 500);
-    };
-
     useEffect(() => {
 
         const restoreScrollPosition = async () => {
 
             const pageConfig = await getPageService().getPageConfig();
 
-            if (pageConfig.scrollPosition && firstRun) {
+            if (pageConfig.scrollPosition && pageConfig.firstRun) {
 
                 document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
 
@@ -169,7 +158,7 @@ function Videos() {
                 </div>
                 { selectedItems.length > 0 &&
                 <Opacity cssAnimation={["opacity"]}>
-                    <SelectBlock list={videoList}/>
+                    <SelectBlockMedia listItems={videoList}/>
                 </Opacity>}
             </Opacity>
             }
@@ -185,7 +174,11 @@ function Videos() {
                 /> :
                 <>
                     <Margin onScroll={saveScrollPosition} cssAnimation={["marginTop"]} className="c-list c-grid-list">
-                        {videoList.map((item) => <GridItem className="c-grid-list__item--video"  onClick={ handleSelectMedia } file={item} key={item.id}/>)}
+                        {videoList.map((item) => <GridItem
+                        className="c-grid-list__item--video"
+                        onPlay={ handleSelectMedia }
+                        onSelectMedia={ handleSelectMedia }
+                        file={item} key={item.id}/>)}
                     </Margin>
                 </>
                 }

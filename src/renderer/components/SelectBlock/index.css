@@ -5,14 +5,14 @@
     align-items: center;
     justify-content: space-between;
     padding: .7rem 1rem;
-    width: calc(100% - 110px - 1rem);
+    width: calc(100% - 110px - 2.3rem);
     background-color: rgb(var(--bg-color--solid), 1);
     color: rgb(var(--title-color));
     font-size: .85rem;
     border-radius: .5rem;
     border: 1px solid rgb(var(--border-color--dark), .1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
-    z-index: 1;
+    box-shadow: 0 3px 15px rgb(0 0 0 / 15%);
+    z-index: 2;
 }
 
 .c-select-block__info {

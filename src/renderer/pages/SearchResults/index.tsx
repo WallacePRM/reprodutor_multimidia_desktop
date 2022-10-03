@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+
 import { getMediaService } from '../../service/media';
 import { Media } from '../../../common/medias/types';
 import GridItem from '../../components/List/GridItem';
@@ -161,7 +162,7 @@ function SearchResults() {
             <Opacity cssAnimation={['opacity']} className="c-container__header">
                 <h1 className="c-container__header__title" style={{ whiteSpace: 'break-spaces'}}>Procurar resultados para "{search}"</h1>
             </Opacity>
-            <div className="c-container__content">
+            <div className="c-container__content" style={musics.length === 0 && videos.length === 0 ? {flex: '1'} : {}}>
                 {load && <Load/>}
                 {musics.length === 0 && videos.length === 0 ? <EmptyMessage className="c-list__empty-message" title="Nenhum resultado" description="Tente procurar algo diferente"/>
                 : <Margin cssAnimation={["marginTop"]} className="c-list">
@@ -173,7 +174,12 @@ function SearchResults() {
                     <div className="c-line-list">
                         {musics.map(music => (
                         index++,
-                        <LineItem noSelect onClick={handleSelectMusic} className={isOdd(index) ? 'c-line-list__item--nostyle' : ''} key={music.id} file={music}/>))}
+                        <LineItem noSelect
+                        onPlay={handleSelectMusic}
+                        onSelectMedia={handleSelectMusic}
+                        className={isOdd(index) ? 'c-line-list__item--nostyle' : ''}
+                        key={music.id}
+                        file={music}/>))}
                     </div></>
                     }
                     {videos.length > 0 && <>
@@ -182,7 +188,11 @@ function SearchResults() {
                         {videos.length <= 5 && videos.length > 1 && <button onClick={handleGetAllVideosFiltered} className="c-list__title__button"><span className="accent--color">Ver tudo</span></button>}
                     </div>
                     <div className="c-grid-list">
-                        {videos.map(video => <GridItem className="c-grid-list__item--video" noSelect onClick={handleSelectVideo} key={video.id} file={video}/>)}
+                        {videos.map(video => <GridItem className="c-grid-list__item--video" noSelect
+                        onPlay={handleSelectVideo}
+                        onSelectMedia={handleSelectVideo}
+                        key={video.id}
+                        file={video}/>)}
                     </div></>}
                 </Margin>}
             </div>

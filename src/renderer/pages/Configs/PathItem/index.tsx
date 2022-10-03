@@ -1,16 +1,17 @@
 import React from 'react';
+
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
 import Button from '../../../components/Button';
-import { getFolderService } from '../../../service/folder';
 import { Folder } from '../../../../common/folders/type';
 
 function PathItem(props: PathItemProps) {
 
-    const { pathItem } = props;
+    const { pathItem, onDelete } = props;
 
     const handleDelete = async () => {
 
-        props.onDelete(pathItem);
+        onDelete(pathItem);
     };
 
     return (

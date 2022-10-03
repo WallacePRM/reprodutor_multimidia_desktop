@@ -20,7 +20,11 @@ function Button(props: ButtonProps) {
 
     return (
         <>
-            <button onClick={ onClick || handleTriggerInput } className={'c-button box-field' + ( className ? ` ${className}` : '' )} style={ style ? style : {} } title={title ? title : ''}>
+            <button
+            disabled={className?.includes('disabled') ? true : false}
+            onClick={ onClick || handleTriggerInput }
+            className={'c-button box-field' + ( className ? ` ${className}` : '' )}
+            style={ style ? style : {} } title={title ? title : ''}>
                 { icon ? <FontAwesomeIcon className={'c-button__icon' + (label ? ' mr-10' : '')} icon={icon} /> : null }
                 { label ? <span className="c-button__label">{label}</span> : null }
             </button>

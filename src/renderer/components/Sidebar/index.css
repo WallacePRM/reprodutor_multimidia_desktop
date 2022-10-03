@@ -42,13 +42,14 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 8px 20px;
     color: rgb(var(--text-color));
     border-radius: .3rem;
     margin: 0 5px;
     white-space: nowrap;
     margin-top: 5px;
-    font-size: .875em;
+    font-size: .85em;
     transition: .2s;
 }
 
@@ -60,12 +61,43 @@
     background-color: rgb(var(--hover-bg-color));
 }
 
+.c-sidebar__item__icons {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .c-sidebar__item__icon {
     padding-bottom: 2px;
-    font-size: 1.2em;
+    font-size: 1.3em;
     color: rgb(var(--icon-color));
-    /* height: 1em; */
+}
+
+.c-sidebar__item__icon--playlists--arrow {
+    font-size: .9em;
+    transition: .2s cubic-bezier(0.68, -0.55, 0.265, 0.5);
+}
+
+.c-sidebar__item__icon--playlist-video {
+    font-size: 1em;
+}
+
+.c-sidebar__item__icon--playlist-music {
+    position: absolute;
+    right: -4px;
+    bottom: -1px;
+    font-size: 1em;
+    padding: 0;
+    background-color: rgb(var(--bg-color--light));
+}
+
+.c-sidebar__item:hover .c-sidebar__item__icon--playlist-music {
+    background-color: rgb(var(--hover-bg-color));
+}
+
+.c-sidebar__item--active .c-sidebar__item__icon--playlist-music {
+    background-color: rgb(var(--hover-bg-color));
 }
 
 @keyframes rotate {
@@ -94,6 +126,10 @@
 
 .c-sidebar__item--active .highlighter {
     height: 1.1em;
+}
+
+.c-sidebar__group .c-sidebar__item {
+    padding-left: 3.5rem;
 }
 
 /* FOOTER */

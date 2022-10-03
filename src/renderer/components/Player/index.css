@@ -339,6 +339,7 @@
     display: flex;
     align-items: center;
     padding: .3rem .5rem;
+    color: rgb(var(--title-color));
 }
 
 .c-player__volume__icon {

@@ -1,3 +1,6 @@
+import { Media } from "../../common/medias/types";
+import { Playlist } from "../../common/playlists/types";
+
 export const sortAsc = (a: any, b: any) => {
     if (a > b) return 1;
 
@@ -50,4 +53,9 @@ export const distinct = <TItem>(array: TItem[], distinctBy: (item: TItem) => any
 
         return obj;
     }, {index: {} as any, result: []}).result;
+};
+
+export const isPlaylist = (item: Media | Playlist): item is Playlist => {
+
+    return Array.isArray((item as Playlist).medias);
 };

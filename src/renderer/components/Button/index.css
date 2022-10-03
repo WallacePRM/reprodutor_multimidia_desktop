@@ -2,10 +2,23 @@
     font-size: .85em;
     height: 32px;
     white-space: nowrap;
+    transition: .2s;
 }
 
 .c-button__icon {
     font-size: .7rem;
+}
+
+.c-button--large {
+    padding: 8px 15px;
+}
+
+.c-button--large .c-button__icon {
+    font-size: .9rem;
+}
+
+.c-button--large .c-button__label {
+    font-size: .8rem;
 }
 
 @media (max-width: 655px) {

@@ -1,0 +1,101 @@
+
+.c-group-info__header--minimized .c-group-info__thumbnail {
+    max-width: 7.9rem;
+    max-height: 7.9rem;
+}
+
+.c-group-info__header__container {
+    position: relative;
+    display: flex;
+    /* align-items: center; */
+    width: 100%;
+    background-color: rgb(var(--bg-color--solid));
+    padding: 1rem;
+    margin-top: 1.5rem;
+    border-radius: .5rem;
+}
+
+.c-group-info__thumbnail {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* flex: 1; */
+    max-height: 13rem;
+    max-width: 13rem;
+    height: 25vw;
+    width: 25vw;
+    background-color: rgb(var(--bg-color--light));
+    border-radius: 0.5rem;
+    border: 1px solid rgb(var(--border-color--dark), .15);
+    animation: .2s cubic-bezier(0.215, 0.610, 0.355, 1);
+    overflow: hidden;
+}
+
+.c-group-info__thumbnail__icon {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5em;
+    color: rgb(var(--text-color), .7);
+}
+
+.c-group-info__thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.c-group-info__description {
+    flex: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: .5rem 1rem;
+}
+
+.c-group-info__title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.c-group-info__title h3 {
+    font-weight: 500;
+}
+
+.c-group-info__header--minimized .c-group-info__items-count {
+    display: none;
+}
+
+.c-group-info__items-count {
+    font-size: .8rem;
+    color: rgb(var(--text-color--light));
+}
+
+.c-group-info__actions {
+    display: flex;
+    align-items: center;
+}
+
+.c-group-info__actions__item {
+    position: relative;
+    margin-right: .5rem;
+    font-size: .75rem;
+}
+
+.c-group-info__actions__item__icons {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.c-group-info__actions__item__icon {
+    font-size: 1.2rem;
+    color: rgb(var(--icon-color));
+}

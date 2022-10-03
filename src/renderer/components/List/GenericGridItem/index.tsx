@@ -1,29 +1,32 @@
 import React, { useRef, useState, useEffect } from "react";
-
-import { faChevronRight, faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ReactComponent as ControlPlay } from '@icon/themify-icons/icons/control-play.svg';
+import { useDispatch, useSelector } from "react-redux";
+import Popup from "reactjs-popup";
 
 import { RiPlayList2Fill } from 'react-icons/ri';
 import { MdOutlineChecklist } from 'react-icons/md';
 import { HiOutlinePlus } from 'react-icons/hi';
 import { HiOutlineX } from 'react-icons/hi';
+import { HiOutlineInformationCircle } from 'react-icons/hi';
+import { HiOutlinePencil } from 'react-icons/hi';
 import { IoPlayOutline } from 'react-icons/io5';
+import { IoEllipsisHorizontal } from 'react-icons/io5';
 import { FaPlusCircle } from 'react-icons/fa';
+import { IoChevronForwardOutline } from "react-icons/io5";
+import { AiOutlineScan } from 'react-icons/ai';
 
 import { Media } from '../../../../common/medias/types';
-import { Playlist } from "../../../../common/playlists/types";
 import Opacity from "../../Animations/Opacity";
 import Margin from "../../Animations/Margin";
-import Popup from "reactjs-popup";
-import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentMedias, setCurrentMedias } from "../../../store/player";
-import { selectMedias, setMedias } from "../../../store/medias";
 import { removeSelectedFile, selectSelectedFiles, setSelectedFile } from "../../../store/selectedFiles";
-import { setMediaPlaying } from "../../../store/mediaPlaying";
-import { getMediaService } from "../../../service/media";
+import { selectMediaPlaying, setMediaPlaying } from "../../../store/mediaPlaying";
+import { selectPlaylists, setPlaylistData } from "../../../store/playlists";
+import { Playlist } from "../../../../common/playlists/types";
 import { getPlaylistService } from "../../../service/playlist";
-import { deletePlaylist } from "../../../store/playlists";
+import { getPlayerService } from "../../../service/player";
+import ModalCreatePlaylist from "../../Modal/ModalCreatePlaylist";
+import ModalRenamePlaylist from "../../Modal/ModalRenamePlaylist";
+import { isPlaylist } from "../../../common/array";
 
 import './index.css';
 
@@ -33,20 +36,36 @@ function GenericGridItem(props: GenericItemProps) {
     const [ selected, setSelected ] = useState(false);
     const [ active, setActive ] = useState(false);
 
-    const { item } = props;
+    const { item, onSelectMedia, onPlay, onRemove } = props;
     const selectedItems = useSelector(selectSelectedFiles);
     const popupRef: any = useRef();
     const currentMedias = useSelector(selectCurrentMedias) || [];
-    const allMedias = useSelector(selectMedias);
+    const mediaPlaying = useSelector(selectMediaPlaying);
+    const allPlaylists = useSelector(selectPlaylists);
+
+    const modalCreatePlaylistRef: any = useRef();
+    const openModalCreatePlaylistTooltip = () => modalCreatePlaylistRef.current && modalCreatePlaylistRef.current.open();
+
+    const modalRenamePlaylistRef: any = useRef();
+    const openModalRenamePlaylistTooltip = () => modalRenamePlaylistRef.current && modalRenamePlaylistRef.current.open();
 
     const dispatch = useDispatch();
 
-    const handleSelectMedia = () => {
+    const handleSelect = () => {
 
-        props.onClick(item);
+        onSelectMedia(item);
     };
 
-    const handleSetNextMedia = (e: React.MouseEvent) => {
+    const handlePlay = () => {
+        onPlay(item);
+    };
+
+    const handleRemove = () => {
+
+        onRemove(item);
+    };
+
+    const handleSetNextMedia = async (e: React.MouseEvent) => {
 
         if (e.target !== e.currentTarget) return;
 
@@ -54,43 +73,58 @@ function GenericGridItem(props: GenericItemProps) {
 
         if (isPlaylist(item.media)) {
 
-            item.media.medias.forEach(m => nextMedias.push(m));
+            for (let media of item.media.medias) {
+
+                if (currentMedias.some(m => m.id === media.id)) {
+                    continue;
+                }
+                else {
+                    nextMedias.push(media);
+                }
+            }
         }
         else {
-            nextMedias.push(item.media);
+            if (!currentMedias.some(m => m.id === item.media.id)) {
+
+                nextMedias.push(item.media);
+            }
         }
 
         dispatch(setCurrentMedias(nextMedias));
+        await getPlayerService().setLastMedia({current_medias: nextMedias});
 
-        if (nextMedias.length === 1) {
+        if (nextMedias.length === 1 || !mediaPlaying) {
             dispatch(setMediaPlaying(nextMedias[0]));
         }
     };
 
-    const handleDeleteMedia = async (e: React.MouseEvent) => {
+    const handleSetMediaOnPlaylist = async (e: React.MouseEvent, playlistTarget: Playlist) => {
 
         if (e.target !== e.currentTarget) return;
 
-        try {
-            if (isPlaylist(item.media)) {
+        const playlistSource = item.media as Playlist;
 
-                const playlistService = getPlaylistService();
-                await playlistService.deletePlaylist({id: item.id});
+        if (playlistSource.id === playlistTarget.id) return;
 
-                dispatch(deletePlaylist({id: item.id}));
-            }
-            else {
-                const mediaService = getMediaService();
-                await mediaService.deleteMedias([item.media]);
+        const playlistUpdated = {...playlistTarget, medias: [...playlistSource.medias]};
 
-                const medias = allMedias.filter(x => x.id !== item.id);
-                dispatch(setMedias(medias));
+        for (const media of playlistSource.medias) {
+
+            if (!playlistUpdated.medias.some(m => m.id === media.id)) {
+                playlistUpdated.medias.push(media);
             }
         }
-        catch(error) {
 
-            console.error(error);
-            alert('Falha ao remover item');
+        try {
+            await getPlaylistService().putPlaylist({
+                id: playlistUpdated.id,
+                medias: playlistUpdated.medias
+            });
+
+            dispatch(setPlaylistData(playlistUpdated));
+        }
+        catch(error) {
+            alert(error.message);
         }
     };
 
@@ -110,11 +144,6 @@ function GenericGridItem(props: GenericItemProps) {
         },0);
 
         // popupRef.current && popupRef.current.close();
-    };
-
-    const isPlaylist = (item: Media | Playlist): item is Playlist => {
-
-        return Array.isArray((item as Playlist).medias);
     };
 
     const closeTooltip = (e: any) => {
@@ -163,7 +192,7 @@ function GenericGridItem(props: GenericItemProps) {
         (props.className ? ' ' + props.className : '') +
         (selectedItems.length > 0 ? ' select-mode' : '')}>
             <div className="c-grid-list__item__interface">
-                <div onClick={selectedItems.length === 0 ? handleSelectMedia : null } className={'c-grid-list--click-event'}
+                <div onClick={selectedItems.length === 0 ? handleSelect : null } className={'c-grid-list--click-event'}
                     onMouseDown={onMouseDown}
                     onMouseUp={onMouseUp}
                     onMouseLeave={() => setAnimation(false)}></div>
@@ -172,13 +201,19 @@ function GenericGridItem(props: GenericItemProps) {
 
                     <div className="c-grid-list__item__actions">
                         <div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--play">
-                            <IoPlayOutline onClick={handleSelectMedia}/>
+                            <IoPlayOutline onClick={handlePlay}/>
                         </div>
 
-                        <Popup onOpen={() => setActive(true)} onClose={() => setActive(false)} nested keepTooltipInside arrow={false} ref={popupRef} trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><FontAwesomeIcon icon={faEllipsis} /></div>} position="top center">
+                        <Popup
+                        nested keepTooltipInside
+                        onOpen={() => setActive(true)}
+                        onClose={() => setActive(false)}
+                        arrow={false}
+                        ref={popupRef}
+                        trigger={<div className="c-grid-list__item__actions__item c-grid-list__item__actions__item--options"><IoEllipsisHorizontal /></div>} position="top center">
                             <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '200px' }}>
                                 <div  className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
-                                    <div onClick={handleSelectMedia} className="c-popup__item__button-hidden"></div>
+                                    <div onClick={handlePlay} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <IoPlayOutline className="c-popup__item__icon" />
                                     </div>
@@ -197,9 +232,10 @@ function GenericGridItem(props: GenericItemProps) {
                                     </div>
                                 </div>
                                 <div className="c-popup__item--separator"></div>
-                                <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><HiOutlinePlus className="c-popup__item__icon" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><FontAwesomeIcon className="c-popup__item__description" icon={faChevronRight}/></div></div>} position="right top" >
+                                <Popup keepTooltipInside closeOnDocumentClick={false} nested arrow={false} on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row'}><div className="c-popup__item__icons"><HiOutlinePlus className="c-popup__item__icon" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Adicionar a</h3><IoChevronForwardOutline className="c-popup__item__description"/></div></div>} position="right top" >
                                     <Margin cssAnimation={["marginTop"]} className="c-popup noselect bg-acrylic bg-acrylic--popup" style={{ minWidth: '130px' }}>
-                                        <div className="c-popup__item c-popup__item--row">
+                                        <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                            <div onClick={handleSetNextMedia} className="c-popup__item__button-hidden"></div>
                                             <div className="c-popup__item__icons">
                                                 <RiPlayList2Fill className="c-popup__item__icon" />
                                             </div>
@@ -208,7 +244,8 @@ function GenericGridItem(props: GenericItemProps) {
                                             </div>
                                         </div>
                                         <div className="c-popup__item--separator"></div>
-                                        <div className="c-popup__item c-popup__item--row">
+                                        <div className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                            <div onClick={openModalCreatePlaylistTooltip} className="c-popup__item__button-hidden"></div>
                                             <div className="c-popup__item__icons">
                                                 <HiOutlinePlus className="c-popup__item__icon" />
                                             </div>
@@ -216,17 +253,43 @@ function GenericGridItem(props: GenericItemProps) {
                                                 <h3 className="c-popup__item__title">Nova playlist</h3>
                                             </div>
                                         </div>
+                                        {allPlaylists.length > 0 &&
+                                            allPlaylists.map((p, index) => {
+
+
+                                                return (
+                                                    <div key={index} className="c-popup__item c-popup__item--row" onClick={closeTooltip}>
+                                                        <div onClick={(e) => handleSetMediaOnPlaylist(e, p)} className="c-popup__item__button-hidden"></div>
+                                                        <div className="c-popup__item__icons" style={{opacity: 0}}>
+                                                            <HiOutlinePlus className="c-popup__item__icon" />
+                                                        </div>
+                                                        <div className="c-popup__item__label">
+                                                            <h3 className="c-popup__item__title">{p.name}</h3>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        }
                                     </Margin>
                                 </Popup>
-                                <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
-                                    <div onClick={handleDeleteMedia} className="c-popup__item__button-hidden"></div>
+                                {isPlaylist(item.media) && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                                    <div onClick={openModalRenamePlaylistTooltip} className="c-popup__item__button-hidden"></div>
+                                    <div className="c-popup__item__icons">
+                                        <AiOutlineScan className="c-popup__item__icon rotate-90" />
+                                    </div>
+                                    <div className="c-popup__item__label">
+                                        <h3 className="c-popup__item__title">Renomear</h3>
+                                    </div>
+                                </div>}
+                                {isPlaylist(item.media) && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                                    <div onClick={handleRemove} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <HiOutlineX className="c-popup__item__icon" />
                                     </div>
                                     <div className="c-popup__item__label">
-                                        <h3 className="c-popup__item__title">Remover</h3>
+                                    <h3 className="c-popup__item__title">Excluír</h3>
                                     </div>
-                                </div>
+                                </div>}
                                 {/* <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div className="c-popup__item__icons">
                                         <HiOutlinePencil className="c-popup__item__icon" />
@@ -255,6 +318,14 @@ function GenericGridItem(props: GenericItemProps) {
                                 </div>}
                             </Margin>
                         </Popup>
+
+                        <ModalCreatePlaylist
+                        reference={modalCreatePlaylistRef}
+                        medias={isPlaylist(item.media) ? (item.media.medias) : [item as any as Media]}/>
+
+                        {isPlaylist(item.media) && <ModalRenamePlaylist
+                        reference={modalRenamePlaylistRef}
+                        playlist={item.media}/>}
                     </div>
                 </div>
                 <div className="c-grid-list__item__info">
@@ -274,7 +345,9 @@ type GenericItemProps = {
     noSelect?: boolean,
     item: GenericItemData,
     className?: string,
-    onClick: (item: GenericItemData) => void,
+    onSelectMedia: (item: GenericItemData) => void,
+    onPlay: (item: GenericItemData) => void,
+    onRemove?: (item: GenericItemData) => void,
 };
 
 export type GenericItemData = {

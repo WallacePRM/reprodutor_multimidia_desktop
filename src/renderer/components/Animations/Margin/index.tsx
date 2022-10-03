@@ -33,6 +33,7 @@ function Margin(props: AnimationsProps) {
 
     return (
         <motion.div
+        ref={props.ref ? props.ref : null}
             style={pageStyle}
             className={props.className ? props.className : ''}
             initial="initial"

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { delay } from './common/async';
 import { setContainerMargin } from "./store/containerMargin";
 import { selectMediaPlaying } from "./store/mediaPlaying";
 import { selectPageConfig, setPageConfig } from "./store/pageConfig";
@@ -84,7 +83,7 @@ export function useWindowState(): WindowState {
                         document.exitFullscreen();
                         dispatch(setPageConfig({fullscreen: false}));
 
-                        if (!mediaPlaying.current.isPlaying) {
+                        if (!mediaPlaying.current.isPlaying || mediaPlaying.current.type === 'music') {
                             dispatch(setPlayerMode('default'));
                         }
                     }
@@ -101,8 +100,13 @@ export function useWindowState(): WindowState {
     }, [])
 
     useEffect(() => {
+
+        let timoutRisezeId: any = null;
         const handleResize = () => {
-            delay(() => {
+
+            if (timoutRisezeId) clearTimeout(timoutRisezeId);
+
+            timoutRisezeId = setTimeout(() => {
                 if (document.body.clientWidth < 1000) {
                     if (document.body.clientWidth <= 655) {
                         dispatch(setContainerMargin({

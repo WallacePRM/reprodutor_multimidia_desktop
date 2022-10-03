@@ -16,7 +16,7 @@ export type WindowElectronApi = Window & typeof globalThis & {
         getPlaylists: () => Promise<Playlist[]>;
         insertPlaylist: (playlist: Playlist) => Promise<Playlist>;
         deletePlaylist: (Playlist: Pick<Playlist, 'id'>) => Promise<void>;
-        putPlaylist: (playlist: Playlist) => Promise<void>;
+        putPlaylist: (playlist: Partial<Playlist>) => Promise<void>;
 
         getFolders(): Promise<Folder[]>;
         insertFolder(folder: Folder): Promise<Folder>;

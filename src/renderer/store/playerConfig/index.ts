@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
 const playerConfigSlice = createSlice({
-    name: 'pageConfig',
+    name: 'playerConfig',
     initialState: {
         config: {
             shuffle: true,

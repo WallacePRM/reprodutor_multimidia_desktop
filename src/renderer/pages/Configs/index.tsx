@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { faCopyright, faFolder, faFolderClosed } from '@fortawesome/free-regular-svg-icons';
-import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as PaletteIcon } from '@icon/themify-icons/icons/palette.svg';
 import { ReactComponent as BrushIcon } from '@icon/themify-icons/icons/brush.svg';
-import { ReactComponent as WorldIcon } from '@icon/themify-icons/icons/world.svg';
+import { BsGlobe2 } from 'react-icons/bs';
+
 import Button from '../../components/Button';
 import Margin from '../../components/Animations/Margin';
 import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
@@ -16,8 +18,12 @@ import { getFolderService } from '../../service/folder';
 import { selectMedias, setMedias } from '../../store/medias';
 import { getMediaService } from '../../service/media';
 import { extractFilesInfo } from '../../service/media/media-handle';
+import { getPlaylistService } from '../../service/playlist';
+import { setPlaylists } from '../../store/playlists';
+import { selectCurrentMedias, setCurrentMedias } from '../../store/player';
 
 import './index.css';
+import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
 
 function Configs() {
 
@@ -39,6 +45,8 @@ function Configs() {
     });
 
     const medias = useSelector(selectMedias);
+    const currentMedias = useSelector(selectCurrentMedias);
+    const mediaPlaying = useSelector(selectMediaPlaying);
     const pageConfig = useSelector(selectPageConfig);
     const pageService = getPageService();
     const dispatch = useDispatch();
@@ -105,6 +113,24 @@ function Configs() {
             const newMedias = medias.filter((media) => !media.src.startsWith(folderPath));
 
             dispatch(setMedias(newMedias));
+
+            const playlists = await getPlaylistService().getPlaylists();
+            dispatch(setPlaylists(playlists));
+
+            const newCurrentMedias = [];
+            for (const currentMedia of currentMedias) {
+
+                const media = newMedias.find(m => m.id === currentMedia.id);
+                if (media) {
+                    newCurrentMedias.push(media);
+                }
+            }
+            dispatch(setCurrentMedias(newCurrentMedias.length === 0 ? null : newCurrentMedias));
+
+            if (!newCurrentMedias.some(m => m.id === mediaPlaying?.id)) {
+                dispatch(setMediaPlaying(null));
+            }
+
         }
         catch {}
     };
@@ -188,7 +214,11 @@ function Configs() {
                                         <span>Locais na biblioteca de músicas</span>
                                     </div>
                                     <div className="c-configs__block__content__item__actions">
-                                        <Button onRead={handleAddPath} accept="audio/mp3" onlyFolder icon={faFolderClosed} label="Adicionar uma pasta" />
+                                        <Button onlyFolder
+                                        onRead={handleAddPath}
+                                        accept="audio/mp3"
+                                        icon={faFolderClosed}
+                                        label="Adicionar uma pasta" />
                                         <div className="c-configs__block__content__item__actions__icon btn--icon">
                                             <FontAwesomeIcon icon={faChevronDown} />
                                         </div>
@@ -290,7 +320,7 @@ function Configs() {
                             <div className={'c-configs__block__content__item c-configs__block__content__item--huge' + (configState.theme.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
                                 <div className="c-configs__block__content__item__info">
                                     <div className="c-configs__block__content__item__label">
-                                        <WorldIcon className="c-configs__block__content__item__label__icon icon-color"/>
+                                        <BsGlobe2 className="c-configs__block__content__item__label__icon"/>
                                         <span>Habilitar arte da mídia</span>
                                     </div>
                                     <label className="c-configs__block__content__item__actions">

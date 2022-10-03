@@ -65,7 +65,7 @@
 }
 
 .bg-acrylic.bg-acrylic--popup::before {
-    background: rgb(var(--bg-color--solid), 0.7);
+    background: rgb(var(--bg-color--solid), 0.8);
 }
 
 .bg-acrylic > div {
@@ -126,6 +126,18 @@
     border-bottom: 2px solid rgb(var(--accent-color));
 }
 
+.box-square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 8rem;
+    width: 8rem;
+    background-color: rgb(var(--bg-color--light));
+    border-radius: 0.3rem;
+    border: 1px solid rgb(var(--border-color--dark), .15);
+    font-size: 3em;
+}
+
 .icon--inverted {
     transform: scaleX(-1);
 }
@@ -165,6 +177,7 @@
 
 .disabled.btn--primary {
     background-color: rgb(var(--border-color--dark), .5);
+    filter: brightness(1);
 }
 
 .btn--icon {

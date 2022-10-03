@@ -78,9 +78,9 @@ function Searchbar() {
                 style={{top: inputRef.current.offsetHeight + 10 + 'px', width: (321 - 54) + 'px'}}>
                     <Margin cssAnimation={["marginTop"]} className="c-popup--searchbar__list">
 
-                        {searchItems.map((item, ) => {
+                        {searchItems.map((item, index) => {
                             return (
-                            <Opacity cssAnimation={["opacity"]} onClick={handleSearchItem(item.name)} className="c-popup__item">
+                            <Opacity key={index} cssAnimation={["opacity"]} onClick={handleSearchItem(item.name)} className="c-popup__item">
                                 <div className="c-popup__item__label">
                                     <h3 className="c-popup__item__title">{item.name}</h3>
                                 </div>

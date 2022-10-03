@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence } from "framer-motion";
+import WindowControls from '../WindowControls';
+import { WindowState } from '../../App.hook';
 
 import PreLoad from '../../components/PreLoad';
 import Sidebar from '../../components/Sidebar';
@@ -7,13 +11,9 @@ import Player from '../../components/Player';
 import Logo from '../../components/Logo';
 import ToggleSidebar from '../../components/ToggleSidebar';
 import PreviousRouter from '../../components/PreviousRouter';
-import { WindowState } from '../../App.hook';
-import { Outlet, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { setSidebarOpened } from '../../store/sidebarOpened';
-import { useSelector } from 'react-redux';
 import { selectContainerMargin } from '../../store/containerMargin';
-import { selectMedias, setMedias } from '../../store/medias';
+import { setMedias } from '../../store/medias';
 import { getMediaService } from '../../service/media';
 import { getPlayerService } from '../../service/player';
 import { getPageService } from '../../service/page';
@@ -24,11 +24,12 @@ import { setPlayerConfig } from '../../store/playerConfig';
 import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
 import { selectSelectedFiles, setSelectedFiles } from '../../store/selectedFiles';
 import { Media } from '../../../common/medias/types';
-import WindowControls from '../WindowControls';
 import { selectPlayerMode } from '../../store/playerMode';
-import { PageConfig } from '../../service/page/type';
 import { getPlaylistService } from '../../service/playlist';
 import { setPlaylists } from '../../store/playlists';
+import { getGroupInfoService } from '../../service/groupInfo';
+import { setGroupInfo } from '../../store/groupInfo';
+
 
 function Main(props: MainProps) {
 
@@ -38,7 +39,6 @@ function Main(props: MainProps) {
     const location = useLocation();
     const containerMargin = useSelector(selectContainerMargin);
     const selectedItems = useSelector(selectSelectedFiles);
-    const listItems = useSelector(selectMedias);
     const playerMode = useSelector(selectPlayerMode);
     const pageConfig = useSelector(selectPageConfig);
     const dispatch = useDispatch();
@@ -54,16 +54,8 @@ function Main(props: MainProps) {
     }, []);
 
     useEffect(() => {
-        if (listItems.length > 0) {
-            setTimeout(() => {
-                setPreLoad(false);
-            }, 1000);
-
-            return;
-        };
 
         const getAllData = async () => {
-
 
             try {
                 const mediasOptions = {
@@ -89,6 +81,7 @@ function Main(props: MainProps) {
                 const playerConfig = await playerService.getPlayerConfig();
                 const pageConfig = await getPageService().getPageConfig();
                 const playlists = await getPlaylistService().getPlaylists();
+                const groupInfo = await getGroupInfoService().getGroupInfo();
 
                 pageConfig.firstRun = true;
                 if (pageConfig) {
@@ -121,6 +114,10 @@ function Main(props: MainProps) {
                     dispatch(setMediaPlaying(media));
                     dispatch(setPlaylists(playlists));
                 }
+
+                if (groupInfo) {
+                    dispatch(setGroupInfo(groupInfo));
+                }
             }
             catch (error) {
                 alert(error.message);
@@ -140,6 +137,9 @@ function Main(props: MainProps) {
             const lastRoute = location.pathname;
 
             if (lastRoute !== '/') {
+
+                if (lastRoute === '/group-info') return;
+
                 localStorage.setItem('lastRoute', lastRoute);
             }
         };
