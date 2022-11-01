@@ -20,6 +20,7 @@ export const initListeners = () => {
         let result = await AppDataSource.getRepository(FolderDb).findOne({
             where: {
                 path: folder.path,
+                type: folder.type
             }
         });
 
@@ -41,6 +42,7 @@ export const initListeners = () => {
         const medias = await AppDataSource.getRepository(MediaDb).find({
             where: {
                 filename: Like(`%${folder.path}%`),
+                type: folder.type
             }
         });
 

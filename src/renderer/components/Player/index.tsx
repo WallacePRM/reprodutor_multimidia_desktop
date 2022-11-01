@@ -612,7 +612,7 @@ function Player() {
                                 </div>
                             </div> */}
                             <Popup keepTooltipInside closeOnDocumentClick={false} arrow={false} nested on="hover" mouseLeaveDelay={300} mouseEnterDelay={300} trigger={<div className={'c-popup__item c-popup__item--row' + (!file ? ' disabled' : '')}><div className="c-popup__item__icons"><IoSpeedometerOutline className="c-popup__item__icon icon--inverted" /></div><div className="c-popup__item__label"><h3 className="c-popup__item__title">Velocidade</h3><IoChevronForwardOutline className="c-popup__item__description"/></div></div>} position="top right" >
-                                <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '150px' }}>
+                                <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{ minWidth: '150px', overflowY: 'hidden' }}>
                                     <div className={'c-popup__item c-popup__item--row' + (playerConfig.playbackRate === 0.25 ? ' c-popup__item--active' : '') + (!file ? ' disabled' : '')} onClick={closeTooltip}>
                                         <input onClick={handleSetPlayerbackRate} className="c-popup__item__button-hidden" type="number" defaultValue={0.25}/>
                                         <div className="c-popup__item__label">

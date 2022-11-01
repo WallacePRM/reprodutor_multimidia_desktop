@@ -162,7 +162,7 @@
   border: 1px solid rgb(var(--border-color--dark), .15);
   box-shadow: 0 3px 15px rgb(0 0 0 / 15%);
   overflow: hidden;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .c-popup__item {

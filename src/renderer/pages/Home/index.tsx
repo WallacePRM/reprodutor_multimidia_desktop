@@ -24,15 +24,14 @@ import { validateUrl } from "../../common/async";
 import { selectSelectedFiles } from "../../store/selectedFiles";
 import { extractFilesInfo } from "../../service/media/media-handle";
 import Load from "../../components/Load";
-import { setCurrentMedias } from "../../store/player";
+import {setCurrentMedias } from "../../store/player";
 import { getPlayerService } from "../../service/player";
 import { getPageService } from "../../service/page";
 import { setPageConfig } from "../../store/pageConfig";
 import Modal from "../../components/Modal";
 import SelectBlockMedia from "../../components/SelectBlock/SelectBlockMedia";
 import { saveScrollPosition } from "../../common/dom";
-import { getPlaylistService } from "../../service/playlist";
-import { setPlaylists } from "../../store/playlists";
+import { getFolderService } from "../../service/folder";
 
 function Home() {
 
@@ -40,6 +39,7 @@ function Home() {
     const [ urlValidate, setUrlValidate ] = useState(false);
     const [ load, setLoad ] = useState(false);
 
+    const allMedias = useSelector(selectMedias);
     const listItems = useSelector(selectMedias);
     const mediaPlaying = useSelector(selectMediaPlaying);
     const selectedItems = useSelector(selectSelectedFiles);
@@ -67,6 +67,25 @@ function Home() {
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
 
+            const pathSeparator = fileList[0].path.includes('/') ? '/' : '\\';
+            const fileFolder = {
+                path: fileList[0].path.split(pathSeparator).slice(0, -1).join(pathSeparator),
+                type: medias[0].type
+            };
+
+            const mediasTypes = medias.reduce((result, media) => {
+                if (result.some(type => type === media.type)) return result;
+
+                result.push(media.type);
+                return result;
+            }, []);
+
+            for (const type of mediasTypes) {
+
+                fileFolder.type = type;
+                await getFolderService().insertFolder(fileFolder);
+            }
+
             dispatch(setCurrentMedias(medias));
             await getPlayerService().setLastMedia({current_medias: medias});
 
@@ -74,7 +93,7 @@ function Home() {
             dispatch(setPlayerMode('full'));
         }
         catch(e) {
-            console.log(e);
+            console.log(e.message);
         }
         finally {
             setLoad(false);
@@ -123,9 +142,9 @@ function Home() {
         closeModalTooltip();
     };
 
-    const handleChangeUrlType = (e: any) => {
+    const handleChangeUrlType = (urlType: string) => {
 
-        const urlType = e.currentTarget.value;
+        // const urlType = e.currentTarget.value;
         setUrlStype(urlType);
     };
 
@@ -208,45 +227,6 @@ function Home() {
                             </div>
                         </Margin>
                     </Popup>
-
-                    <Modal
-                    title="Abrir um URL"
-                    footer={<Button onClick={handleOpenUrl} className={'flex-1 d-flex a-items-center j-content-center btn--primary c-button--no-media-style' + (!urlValidate ? ' disabled' : '')} label="Abrir"/>}
-                    onOpen={closeTooltip}
-                    reference={modalRef}
-                    >
-                        <>
-                            <div className="c-modal__content__item">
-                                <input onChange={handleValidateUrl} ref={urlRef} placeholder="Insira a URL de um arquivo, streaming ou playlist" className="box-field box-field--input flex-1" type="url"/>
-                            </div>
-                            <div className="c-modal__content__item mt-20">
-                                <label className="c-modal__content__item__label">Tipo: </label>
-                                <div className="d-flex a-items-center">
-                                    <Button
-                                    onClick={() => {}}
-                                    className="c-button--no-media-style"
-                                    label={mapUrlType(urlType)}
-                                    style={{ borderRadius: '.3rem 0 0 .3rem' }} />
-                                    <Popup nested arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0', borderLeft: 'none' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" style={{fontSize: '.5rem'}} icon={faChevronDown}/></button>} position="bottom right" >
-                                        <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '100px'}}>
-                                            <label className="c-popup__item" onClick={closeTooltip}>
-                                                <input onClick={handleChangeUrlType} className="c-popup__item__button-hidden" type="text" defaultValue="video"/>
-                                                <div className="c-popup__item__label">
-                                                    <h3 className="c-popup__item__title">Vídeo(s)</h3>
-                                                </div>
-                                            </label>
-                                            <div className="c-popup__item" onClick={closeTooltip}>
-                                            <input onClick={handleChangeUrlType} className="c-popup__item__button-hidden" type="text" defaultValue="music"/>
-                                                <div className="c-popup__item__label">
-                                                    <h3 className="c-popup__item__title">Música(s)</h3>
-                                                </div>
-                                            </div>
-                                        </Margin>
-                                    </Popup>
-                                </div>
-                            </div>
-                        </>
-                    </Modal>
                     </> : null }
                 </div>
             </div>
@@ -261,6 +241,45 @@ function Home() {
                 </Opacity>
             : null }
 
+            <Modal
+            title="Abrir um URL"
+            footer={<Button onClick={handleOpenUrl} className={'flex-1 d-flex a-items-center j-content-center btn--primary c-button--no-media-style' + (!urlValidate ? ' disabled' : '')} label="Abrir"/>}
+            onOpen={closeTooltip}
+            reference={modalRef}
+            >
+                <>
+                    <div className="c-modal__content__item">
+                        <input onChange={handleValidateUrl} ref={urlRef} placeholder="Insira a URL de um arquivo, streaming ou playlist" className="box-field box-field--input flex-1" type="url"/>
+                    </div>
+                    <div className="c-modal__content__item mt-20">
+                        <label className="c-modal__content__item__label">Tipo: </label>
+                        <div className="d-flex a-items-center">
+                            <Button
+                            onClick={() => {}}
+                            className="c-button--no-media-style"
+                            label={mapUrlType(urlType)}
+                            style={{ borderRadius: '.3rem 0 0 .3rem' }} />
+                            <Popup nested arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0', borderLeft: 'none' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" style={{fontSize: '.5rem'}} icon={faChevronDown}/></button>} position="bottom right" >
+                                <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '100px'}}>
+                                    <div className="c-popup__item" onClick={closeTooltip}>
+                                        <div onClick={(e) => handleChangeUrlType('video')} className="c-popup__item__button-hidden"/>
+                                        <div className="c-popup__item__label">
+                                            <h3 className="c-popup__item__title">Vídeo(s)</h3>
+                                        </div>
+                                    </div>
+                                    <div className="c-popup__item" onClick={closeTooltip}>
+                                        <div onClick={(e) => handleChangeUrlType('music')} className="c-popup__item__button-hidden"/>
+                                        <div className="c-popup__item__label">
+                                            <h3 className="c-popup__item__title">Música(s)</h3>
+                                        </div>
+                                    </div>
+                                </Margin>
+                            </Popup>
+                        </div>
+                    </div>
+                </>
+            </Modal>
+
             <div className="c-container__content" style={{ height: listItems.length === 0 ? '100%' : '' }}>
                 {load && <Load style={{backgroundColor: 'rgb(var(--bg-color))'}}/>}
                 { listItems.length == 0 ?  <EmptyMessage icon={emptyMessageIcon}
@@ -270,7 +289,7 @@ function Home() {
                     <Button onRead={ handleSelectFile } accept="audio/*,video/*" className="btn--primary c-button--no-media-style" label="Abrir arquivo" icon={faFolderClosed} style={{ borderRadius: '.3rem 0 0 .3rem', borderRight: 0 }}/>
                     <Popup arrow={false} ref={popupRef} keepTooltipInside trigger={<button className="btn--primary c-button box-field" style={{ borderRadius: '0 .3rem .3rem 0' }} title="Mais opções para abrir mídia"><FontAwesomeIcon className="c-button__icon" icon={faChevronDown}/></button>} position="bottom right" >
                         <Margin cssAnimation={["marginTop"]} className="c-popup bg-acrylic bg-acrylic--popup noselect">
-                            <label className="c-popup__item">
+                            <div className="c-popup__item" >
                                 <Button className="c-popup__item__button-hidden" onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
                                     <FontAwesomeIcon icon={faFolderClosed} className="c-popup__item__icon" />
@@ -279,8 +298,8 @@ function Home() {
                                     <h3 className="c-popup__item__title">Abrir arquivo(s)</h3>
                                     <span className="c-popup__item__description">Procure arquivos para reproduzir</span>
                                 </div>
-                            </label>
-                            <div className="c-popup__item">
+                            </div>
+                            <div className="c-popup__item" >
                                 <Button className="c-popup__item__button-hidden" onlyFolder onRead={ handleSelectFile } accept="audio/*,video/*"/>
                                 <div className="c-popup__item__icons">
                                     <FontAwesomeIcon className="c-popup__item__icon" icon={faFolder} />
@@ -290,9 +309,8 @@ function Home() {
                                     <span className="c-popup__item__description">Escolha uma pasta e reproduza todas as mídias nessa pasta</span>
                                 </div>
                             </div>
-
-                            <Popup ref={modalRef} modal closeOnDocumentClick={false} arrow={false} keepTooltipInside trigger={<div className="c-popup__item" onClick={closeTooltip}>
-                                <div className="c-popup__item__button-hidden" onClick={closeTooltip}></div>
+                            <div className="c-popup__item" onClick={closeTooltip}>
+                                <div className="c-popup__item__button-hidden" onClick={openModalTooltip}></div>
                                 <div className="c-popup__item__icons">
                                     <BsGlobe2 className="c-popup__item__icon" />
                                 </div>
@@ -300,20 +318,8 @@ function Home() {
                                     <h3 className="c-popup__item__title">Abrir URL</h3>
                                     <span className="c-popup__item__description">Insíra uma URL e faça streaming de mídia desse endereço</span>
                                 </div>
-                            </div>}>
-                                <Margin cssAnimation={["marginTop"]} className="c-modal bg-acrylic bg-acrylic--popup noselect">
-                                    <div className="c-modal__header">
-                                        <h3 className="c-modal__title">Abrir um URL</h3>
-                                    </div>
-                                    <div className="c-modal__content">
-                                        <input className="box-field box-filed--input" type="text" />
-                                    </div>
-                                    <div className="c-modal__footer">
-                                        <Button className="btn--primary" label="Abrir"/>
-                                        <Button onClick={() => closeModalTooltip()} label="Cancelar"/>
-                                    </div>
-                                </Margin>
-                            </Popup>
+                            </div>
+
                         </Margin>
                     </Popup></div>}
                 /> :

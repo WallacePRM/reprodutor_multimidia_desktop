@@ -9,7 +9,7 @@ export class LocalPageService implements PageService {
 
     getPageConfig(): Promise<PageConfig> {
 
-        const pageConfig = JSON.parse(localStorage.getItem("pageConfig") || "null");
+        const pageConfig = JSON.parse(localStorage.getItem("pageConfig") || "{}");
 
         return Promise.resolve(pageConfig);
     }

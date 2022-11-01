@@ -75,7 +75,7 @@ function Musics() {
             const medias = await getMediaService().insertMedias(fileList);
             dispatch(setMedias(listItems.concat(medias)));
 
-            const musicFolder = await getFolderService().insertFolder(fileFolder);
+            await getFolderService().insertFolder(fileFolder);
         }
         catch(error) {
             console.log(error.message);

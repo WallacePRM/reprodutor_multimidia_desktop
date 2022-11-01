@@ -281,7 +281,7 @@ function GenericGridItem(props: GenericItemProps) {
                                         <h3 className="c-popup__item__title">Renomear</h3>
                                     </div>
                                 </div>}
-                                {isPlaylist(item.media) && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
+                                {isPlaylist(item.media) || props.onRemove && <div className={'c-popup__item c-popup__item--row'} onClick={closeTooltip}>
                                     <div onClick={handleRemove} className="c-popup__item__button-hidden"></div>
                                     <div className="c-popup__item__icons">
                                         <HiOutlineX className="c-popup__item__icon" />

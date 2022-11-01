@@ -15,7 +15,7 @@ import './index.css';
 
 function GridItem(props: FileProps) {
 
-    const { noSelect, file, className, onPlay, onSelectMedia } = props;
+    const { noSelect, file, className, onPlay, onSelectMedia, onRemove } = props;
 
     const pageConfig = useSelector(selectPageConfig);
 
@@ -39,6 +39,11 @@ function GridItem(props: FileProps) {
         onPlay(file);
     };
 
+    const handleRemoveMedia = () => {
+
+        onRemove(file);
+    };
+
     const item: GenericItemData = {
         id: file.id,
         description: file.type === 'video' ? (file.duration > 0 ? formatStrHHMMSS(file.duration) : '') : (file.author || ''),
@@ -56,6 +61,7 @@ function GridItem(props: FileProps) {
         key={file.id}
         onSelectMedia={handleSelectMedia}
         onPlay={handlePlay}
+        onRemove={onRemove ? handleRemoveMedia : null}
         />
     )
 }
@@ -68,6 +74,7 @@ type FileProps = {
     className?: string,
     onPlay: (file: Media) => void,
     onSelectMedia: (file: Media) => void,
+    onRemove?: (file: Media) => void
 };
 
 export default GridItem;
