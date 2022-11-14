@@ -30,3 +30,23 @@ export const removeMediaExt = (name: string) => {
 export const adjustDark = (color: string, amount: number) => {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
 };
+
+export const componentToHex = (c: any) => {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+};
+
+export const rgbToHex = (r: string, g: string, b: string) => {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+};
+
+export const hexToRgb = (hex: string) => {
+
+    var aRgbHex = hex.match(/.{1,2}/g);
+    var aRgb = [
+        parseInt(aRgbHex[0], 16),
+        parseInt(aRgbHex[1], 16),
+        parseInt(aRgbHex[2], 16)
+    ];
+    return aRgb;
+}

@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import "reflect-metadata";
 
+import { initListeners as initListenersWindowsService} from './main/ipc/windows-service';
 import { initListeners as initListenersWindowControls} from './main/ipc/window-controls';
 import { initListeners as initListenersMediaService} from './main/ipc/medias-service';
 import { initListeners as initListenersFolderService} from './main/ipc/folders-service';
@@ -44,6 +45,7 @@ const binPath = path.join(__dirname, 'libs');
 process.env.FFMPEG_PATH = path.join(binPath, "ffmpeg.exe");
 process.env.FFPROBE_PATH = path.join(binPath, "ffprobe.exe");
 
+initListenersWindowsService();
 initListenersWindowControls();
 initListenersMediaService();
 initListenersFolderService();

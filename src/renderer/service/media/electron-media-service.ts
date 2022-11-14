@@ -1,7 +1,6 @@
 import { MediaInfo, GetMediasOptions, Media, isMediaBlob } from "../../../common/medias/types";
 import { MediaService } from ".";
 import { WindowElectronApi } from "../../preload-types";
-import { electron } from "process";
 
 export class ElectronMediaService implements MediaService {
 

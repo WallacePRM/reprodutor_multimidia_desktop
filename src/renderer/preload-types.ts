@@ -21,5 +21,7 @@ export type WindowElectronApi = Window & typeof globalThis & {
         getFolders(): Promise<Folder[]>;
         insertFolder(folder: Folder): Promise<Folder>;
         deleteFolder(folder: Folder): Promise<void>;
+
+        getAccentColor(): Promise<string>;
     }
 };

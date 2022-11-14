@@ -26,7 +26,6 @@ const electronApi: WindowElectronApi['electronApi'] = {
         return ipcRenderer.invoke("window.isMaximize");
     },
 
-
     getMedias: (options: GetMediasOptions) => {
 
         return ipcRenderer.invoke('mediaService.getMedias', options);
@@ -69,6 +68,11 @@ const electronApi: WindowElectronApi['electronApi'] = {
     deleteFolder(folder: Folder): Promise<void> {
 
         return ipcRenderer.invoke('folderService.deleteFolder', folder);
+    },
+
+    getAccentColor(): Promise<string> {
+
+        return ipcRenderer.invoke('windowsService.getAccentColor');
     }
 };
 

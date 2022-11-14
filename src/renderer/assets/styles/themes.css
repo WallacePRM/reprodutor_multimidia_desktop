@@ -7,6 +7,7 @@
     --bg-color--light: 32, 32, 32; /*29, 33, 37;*/
     --bg-color--solid: 50, 50, 50; /*48, 52, 55;*/
     --bg-color--solid-inverted: 249, 249, 249;
+    --bg-color--alert: var(--yellow-color);
 
     --hover-bg-color: 45, 45, 45;
     --button-bg-color: 52, 52, 52;
@@ -21,6 +22,9 @@
     --text-color: 240, 240, 240;
     --text-color--light: 154, 155, 157;
     --icon-color: 255, 255, 255;
+
+    --yellow-color: 78, 59, 17;
+    --brown-color: 255, 255, 0;
 }
 
 .theme--dark .icon-color,

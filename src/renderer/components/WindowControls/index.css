@@ -9,7 +9,6 @@
     justify-content: flex-end;
     width: 100%;
     font-size: .9rem;
-    color: rgb(var(--title-color));
     overflow: hidden;
     z-index: 7;
 }
@@ -20,7 +19,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: rgb(var(--title-color));
     padding: .6rem 1rem;
+    height: 100%;
 }
 
 .c-window-controls__item:hover {
@@ -30,6 +31,10 @@
 .c-window-controls__item--close:hover {
     background-color: rgb(var(--red-color));
     color: #fff;
+}
+
+.c-window-controls__item--minimize {
+    font-size: .7rem;
 }
 
 .c-window-controls__item--maximize {

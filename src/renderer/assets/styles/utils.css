@@ -209,8 +209,8 @@
 }
 
 .link {
-    color: rgb(var(--accent-color));
-    text-decoration: underline;
+    color: rgb(var(--accent-color)) !important;
+    /* text-decoration: underline; */
 }
 
 .transform-x-scale {

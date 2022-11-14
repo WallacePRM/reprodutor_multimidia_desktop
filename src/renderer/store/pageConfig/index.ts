@@ -10,7 +10,7 @@ const pageConfigSlice = createSlice({
             videosOrderBy: 'name',
             playlistsOrderBy: 'name',
             theme: 'auto',
-            accentColor: 'systemPreferences.getAccentColor()',
+            accentColor: '0, 133, 166',
             mediaArt: true,
             firstRun: true,
         } as pageConfig,

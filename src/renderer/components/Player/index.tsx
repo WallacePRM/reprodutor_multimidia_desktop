@@ -46,6 +46,7 @@ let timeoutId: any;
 function Player() {
 
     const [ playerHidden, setPlayerHidden ] = useState(false);
+    const [ thumbCaptureSucess, setThumbCaptureSucess ] = useState(true);
 
     const playerService = getPlayerService();
     const playerConfig = useSelector(selectPlayerConfig);
@@ -81,7 +82,8 @@ function Player() {
         backgroundColor: 'rgb(var(--bg-color--light))',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        fontSize: playerMode === 'full' ? '5rem' : '1rem'
     };
 
     const toggleMouseView = (e: any) => {
@@ -501,10 +503,10 @@ function Player() {
         <Opacity cssAnimation={["opacity"]} className={'c-player__file__cover' +
         (playerMode === 'full' ? ' c-player__file__cover--music' : '') +
         (pageConfig.fullscreen ? ' c-player__file__cover--fullscreen' : '')
-        } style={ file && !file?.thumbnail ? coverStyle : {} }>
-            { file?.thumbnail && <img src={file?.thumbnail}/> }
-            { !file?.thumbnail && file?.type === 'music' && <IoMusicalNotesOutline className="icon-color--light"/>}
-            { !file?.thumbnail && file?.type === 'video' && <IoFilmOutline className="icon-color--light"/>}
+        } style={ file && (!file?.thumbnail || !thumbCaptureSucess) ? coverStyle : {} }>
+            { file?.thumbnail && thumbCaptureSucess && <img src={file?.thumbnail} onErrorCapture={() => setThumbCaptureSucess(false)} /> }
+            { (!file?.thumbnail || !thumbCaptureSucess) && file?.type === 'music' && <IoMusicalNotesOutline className="icon-color--light"/>}
+            { (!file?.thumbnail || !thumbCaptureSucess) && file?.type === 'video' && <IoFilmOutline className="icon-color--light"/>}
         </Opacity>
     );
 
@@ -543,7 +545,10 @@ function Player() {
                 <div className="c-player__file">
                     <div className="c-player__file__track" onClick={handleChangeFullMode} title="Reproduzindo agora (Ctrl+N)" style={pageConfig.fullscreen ? {pointerEvents: 'none'} : {}}>
                         { file?.type !== 'video' ? audioComponent : videoComponent }
-                        <div className={'c-player__file__info' + (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') + (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')} style={file?.type === 'video' ? {height: '72px'} : {}}>
+                        <div className={'c-player__file__info' +
+                        (playerMode === 'default' && file?.type === 'video' ? ' c-player__file__info--margin-video' : '') +
+                        (playerMode === 'default' && file?.type === 'music' ? ' c-player__file__info--margin-music' : '')}
+                        style={playerMode === 'full' ? {height: '72px'} : {}}>
                             <h3 className="c-player__file__info__title">{file?.name}</h3>
                             <p className="c-player__file__info__author">{file?.author} { file?.album && <span className="c-player__file__info__album">{file?.album}</span>}</p>
                         </div>

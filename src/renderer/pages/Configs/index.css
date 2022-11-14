@@ -48,6 +48,9 @@
 
 .c-configs__block__content__item__label {
     font-size: .85em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .c-configs__block__content__item__label__icon {
@@ -78,10 +81,15 @@
     background-color: rgb(var(--bg-color--light));
     border-top: var(--border);
     font-size: .85em;
-    /* padding: .5rem 0; */
+    padding: .5rem 0;
 }
 .c-configs__block__content__item--show-up .c-configs__block__content__item__list {
     display: flex;
+}
+
+.c-configs__block__content__item__list--alert {
+    background-color: rgb(var(--bg-color--alert));
+    color: var(--title-color);
 }
 
 .c-configs__block__content__item__list__item {
@@ -110,4 +118,11 @@
     background-color: transparent;
     padding: .5rem 0;
     border: 0;
+}
+
+@media (max-width: 535px) {
+
+    .c-configs__block__content__item__label__icon {
+        display: none;
+    }
 }

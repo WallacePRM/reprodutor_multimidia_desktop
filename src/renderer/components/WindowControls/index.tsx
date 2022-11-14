@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import { WindowElectronApi } from '../../preload-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquare, faSquareFull } from '@fortawesome/free-regular-svg-icons';
-import { faMinus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import { IoCloseOutline } from 'react-icons/io5';
-import { IoRemoveOutline } from 'react-icons/io5';
 
 import { selectContainerMargin } from '../../store/containerMargin';
 
@@ -50,8 +49,8 @@ function WindowControls(props: WindowControlsProps) {
 
     return (
         <div style={style} className={'c-window-controls' + (props.className ? ' ' + props.className : '')}>
-            <div className="c-window-controls__item" onClick={handleMinimize}>
-                <IoRemoveOutline />
+            <div className="c-window-controls__item c-window-controls__item--minimize" onClick={handleMinimize}>
+                <FontAwesomeIcon icon={faMinus} />
             </div>
             <div className="c-window-controls__item c-window-controls__item--maximize" onClick={handleMaximize}>
                 {!isMaximized && <FontAwesomeIcon icon={faSquare}/>}

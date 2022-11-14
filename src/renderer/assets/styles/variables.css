@@ -5,6 +5,7 @@
     --bg-color--solid: 254, 254, 254; /*252, 252, 254;*/
     --bg-color--solid-inverted: 50, 50, 50;
     --bg-color--light: 243, 243, 243;/*239, 244, 249;*/
+    --bg-color--alert: var(--yellow-color);
 
     --modal-bg-color: 0, 0, 0;
     --hover-bg-color: 234, 234, 234;
@@ -28,10 +29,10 @@
     --green-color: 50, 255, 50;
     --blue-color: 50, 100, 225;
     --blue-color--dark: 0, 133, 166; /*59, 122, 148;*/
-    --yellow-color: 255, 255, 50;
+    --yellow-color: 255, 234, 188;
+    --brown-color: 153, 91, 28;
     --purple-color: 255, 50, 255;
     --pink-color: 255, 50, 255;
     --orange-color: 255, 165, 50;
-    --brown-color: 165, 165, 165;
     --gray-color: 240, 240, 245;
 }

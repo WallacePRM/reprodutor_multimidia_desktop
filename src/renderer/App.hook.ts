@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { hexToRgb } from "./common/string";
+import { getWindowsService } from "./service/windows";
 import { setContainerMargin } from "./store/containerMargin";
 import { selectMediaPlaying } from "./store/mediaPlaying";
 import { selectPageConfig, setPageConfig } from "./store/pageConfig";
@@ -58,6 +60,24 @@ export function useWindowState(): WindowState {
         }
 
     }, [pageConfig.current.theme]);
+
+    useEffect(() => {
+
+        const setAccentColor = async () => {
+
+            const accentColor = await getWindowsService().getAccentColor();
+            console.log(accentColor);
+
+            const rgbColor = hexToRgb(accentColor) || pageConfig.current.accentColor;
+            const rgbFormated = `${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]} `;
+
+            dispatch(setPageConfig({ accentColor: rgbFormated }));
+            document.documentElement.style.setProperty('--accent-color', rgbFormated);
+        };
+
+        setAccentColor();
+
+    }, [pageConfig.current.accentColor]);
 
     useEffect(() => {
 

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { faCopyright, faFolder, faFolderClosed } from '@fortawesome/free-regular-svg-icons';
+import { faFolder, faFolderClosed, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactComponent as PaletteIcon } from '@icon/themify-icons/icons/palette.svg';
 import { ReactComponent as BrushIcon } from '@icon/themify-icons/icons/brush.svg';
+import { MdInfo } from 'react-icons/md';
+import { CgCopyright } from 'react-icons/cg';
 import { BsGlobe2 } from 'react-icons/bs';
 
 import Button from '../../components/Button';
@@ -21,9 +23,9 @@ import { extractFilesInfo } from '../../service/media/media-handle';
 import { getPlaylistService } from '../../service/playlist';
 import { setPlaylists } from '../../store/playlists';
 import { selectCurrentMedias, setCurrentMedias } from '../../store/player';
+import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
 
 import './index.css';
-import { selectMediaPlaying, setMediaPlaying } from '../../store/mediaPlaying';
 
 function Configs() {
 
@@ -41,6 +43,12 @@ function Configs() {
         },
         color: {
             isOpen: false,
+        },
+        advanced: {
+            isOpen: false,
+        },
+        medias: {
+            isOpen: false,
         }
     });
 
@@ -49,6 +57,7 @@ function Configs() {
     const mediaPlaying = useSelector(selectMediaPlaying);
     const pageConfig = useSelector(selectPageConfig);
     const pageService = getPageService();
+    const messagesEndRef = useRef(null);
     const dispatch = useDispatch();
 
     const mapStrTheme = (theme: string) => {
@@ -173,6 +182,37 @@ function Configs() {
         }
     };
 
+    const handleWipeData = async (e: React.MouseEvent) => {
+
+        e.stopPropagation();
+
+        try {
+            await getMediaService().deleteMedias(medias);
+
+            const folders: Folder[] = (configState.video.folders.concat(...configState.music.folders)) as Folder[];
+            for (const folder of folders) {
+                await getFolderService().deleteFolder(folder);
+            }
+
+            dispatch(setMedias([]));
+            setConfigState((lastState: any) => ({
+                ...lastState,
+                music: {
+                    ...lastState.music,
+                    folders: [],
+                },
+                video: {
+                    ...lastState.video,
+                    folders: [],
+                }
+            }));
+        }
+        catch(e) {
+
+            console.log(e.message);
+        }
+    };
+
     useEffect(() => {
 
         const getFoldersPath = async () => {
@@ -215,7 +255,9 @@ function Configs() {
                                         <span>Locais na biblioteca de músicas</span>
                                     </div>
                                     <div className="c-configs__block__content__item__actions">
-                                        <Button onlyFolder
+                                        <Button
+                                        className='c-button--no-media-style'
+                                        onlyFolder
                                         onRead={handleAddPath}
                                         accept="audio/mp3"
                                         icon={faFolderClosed}
@@ -238,7 +280,13 @@ function Configs() {
                                         <span>Locais na biblioteca de vídeos</span>
                                     </div>
                                     <div className="c-configs__block__content__item__actions">
-                                        <Button onRead={handleAddPath} accept="video/mp4" onlyFolder icon={faFolderClosed} label="Adicionar uma pasta" />
+                                        <Button
+                                        className='c-button--no-media-style'
+                                        onRead={handleAddPath}
+                                        accept="video/mp4"
+                                        onlyFolder
+                                        icon={faFolderClosed}
+                                        label="Adicionar uma pasta" />
                                         <div className="c-configs__block__content__item__actions__icon btn--icon">
                                             <FontAwesomeIcon icon={faChevronDown} />
                                         </div>
@@ -311,6 +359,11 @@ function Configs() {
                                             <span className="ml-10">Usar a configuração do sistema</span>
                                         </div>
                                     </div>
+                                    <div className="c-configs__block__content__item__list__item">
+                                        <div className="c-configs__block__content__item__list__item__label" style={{}}>
+                                            <span style={{fontSize: '.85em', color: 'rgb(var(--text-color--light));'}}>Você verá sua alteração na próxima vez que iniciar o aplicativo.</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -335,15 +388,42 @@ function Configs() {
                     <div className="c-configs__block c-configs__block--about">
                         <h2 className="c-configs__block__title">Sobre o Reprodutor Multimídia</h2>
                         <div className="c-configs__block__content">
-                            <div className="c-configs__block__content__item">Versão 1.1.0</div>
+                            <div className="c-configs__block__content__item">Versão 1.2.0</div>
                             <div className="c-configs__block__content__item">
                                 <div className="d-flex a-items-center">
-                                    <FontAwesomeIcon icon={faCopyright} className="mr-5" />
+                                    <CgCopyright className="mr-5" />
                                     <span>2022 Wprm-Dev. Todos os direitos reservados.</span>
                                 </div>
                             </div>
+                            <div onClick={() => {handleShowUp('advanced'); setTimeout(() => { messagesEndRef.current?.scrollIntoView()}, 0)}} className="c-configs__block__content__item accent--color">{configState.advanced.isOpen ? 'Ocultar' : 'Mostrar'} opções avançadas</div>
+
                         </div>
                     </div>
+                    {configState.advanced.isOpen && <div className={'c-configs__block'}>
+                        <div className="c-configs__block__content">
+                            <div className={'c-configs__block__content__item' + (configState.medias.isOpen ? ' c-configs__block__content__item--show-up' : '')}>
+                                <div ref={messagesEndRef} onClick={() => handleShowUp('medias')} className="c-configs__block__content__item__info">
+                                    <div className="c-configs__block__content__item__label">
+                                        <FontAwesomeIcon icon={faTrashCan} className="c-configs__block__content__item__label__icon" />
+                                        <span>Forçar exclusão de mídias</span>
+                                    </div>
+                                    <div className="c-configs__block__content__item__actions">
+                                        <span onClick={handleWipeData} className={'c-configs__block__content__item__actions__label btn--icon' + (medias.length <= 0 ? ' disabled' : '')} style={{color: 'rgb(var(--red-color))'}}>Deletar todas</span>
+                                        <div className="c-configs__block__content__item__actions__icon btn--icon">
+                                            <FontAwesomeIcon icon={faChevronDown} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="c-configs__block__content__item__list c-configs__block__content__item__list--alert">
+                                    <div className="c-configs__block__content__item__list__item" style={{justifyContent: 'start'}}>
+                                        <MdInfo className="mr-10" style={{color: 'rgb(var(--brown-color))'}}/>
+                                        Esta opção irá excluír todas as mídias e bibliotecas.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
                 </Margin>
             </div>
         </div>

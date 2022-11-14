@@ -1,7 +1,7 @@
 {
   "name": "reprodutor_multimidia_desktop",
   "productName": "Reprodutor Multimídia",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Reprodutor Multimídia",
   "main": ".webpack/main",
   "scripts": {
