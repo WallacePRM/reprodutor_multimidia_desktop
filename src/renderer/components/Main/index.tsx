@@ -160,7 +160,8 @@ function Main(props: MainProps) {
     }
     return (
         <div className={'c-app noselect' +
-        (pageConfig?.theme ? ' theme--' + theme : '')}>
+        (pageConfig?.theme ? ' theme--' + theme : '')}
+        >
             {(playerMode !== 'full' && !pageConfig.fullscreen) && <WindowControls />}
             <main id="popup-root" className="c-app__content">
                 <Sidebar />

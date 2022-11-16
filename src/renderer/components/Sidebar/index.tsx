@@ -14,7 +14,7 @@ import Searchbar from '../Searchbar';
 import ToggleSidebar from '../ToggleSidebar';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectSidebarOpened } from '../../store/sidebarOpened';
+import { selectSidebarOpened, setSidebarOpened } from '../../store/sidebarOpened';
 import { useDispatch } from 'react-redux';
 import { setContainerMargin } from '../../store/containerMargin';
 import { selectPlaylists } from '../../store/playlists';
@@ -63,6 +63,7 @@ function Sidebar() {
         togglePlaylists();
 
         navigate('/playlists');
+        dispatch(setSidebarOpened({isOpened: false}));
     };
 
     const handleTogglePlaylists = (e: React.MouseEvent) => {
@@ -92,7 +93,7 @@ function Sidebar() {
                     <Searchbar />
                 </div>
                 <nav className="c-sidebar__nav">
-                    <Link to="/home" className={'c-sidebar__item' + (pathname === '/home' ? ' c-sidebar__item--active' : '')}  title="Início (Ctrl+Shifht+F)">
+                    <Link to="/home" className={'c-sidebar__item' + (pathname === '/home' ? ' c-sidebar__item--active' : '')}  title="Início (Ctrl+Shift+F)">
                         <div className="d-flex a-items-center">
                             <div className="c-sidebar__item__icons">
                                 <IoHomeOutline className="c-sidebar__item__icon" />

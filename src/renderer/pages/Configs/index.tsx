@@ -388,7 +388,7 @@ function Configs() {
                     <div className="c-configs__block c-configs__block--about">
                         <h2 className="c-configs__block__title">Sobre o Reprodutor Multimídia</h2>
                         <div className="c-configs__block__content">
-                            <div className="c-configs__block__content__item">Versão 1.2.0</div>
+                            <div className="c-configs__block__content__item">Versão 1.2.1</div>
                             <div className="c-configs__block__content__item">
                                 <div className="d-flex a-items-center">
                                     <CgCopyright className="mr-5" />
