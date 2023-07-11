@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { AnimationsProps } from "../type";
+import { AnimationsProps } from "../models";
 
-function Opacity(props: AnimationsProps) {
+export default function Opacity(props: AnimationsProps) {
 
     const pageVariants = {
         initial: {
@@ -48,5 +48,3 @@ function Opacity(props: AnimationsProps) {
         </motion.div>
     );
 }
-
-export default Opacity;

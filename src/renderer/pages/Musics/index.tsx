@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMediaService } from "../../service/media";
 import { selectMedias, setMedias } from "../../store/medias";
 import { Media } from '../../../common/medias/types';
-import { selectCurrentMedias, setCurrentMedias } from "../../store/player";
+import { setCurrentMedias } from "../../store/player";
 import { arrayUnshiftItem, shuffle, sortAsc } from "../../common/array";
 import { isOdd } from "../../common/number";
 import { capitalizeFirstLetter, hasSymbol } from "../../common/string";
@@ -25,7 +25,6 @@ import { selectPlayerConfig } from "../../store/playerConfig";
 import Popup from "reactjs-popup";
 import { selectPageConfig, setPageConfig } from "../../store/pageConfig";
 import { getPageService } from "../../service/page";
-import SelectBlock from "../../components/SelectBlock";
 import { selectSelectedFiles } from "../../store/selectedFiles";
 import { extractFilesInfo } from '../../service/media/media-handle';
 import Load from '../../components/Load';
@@ -41,7 +40,6 @@ function Musics() {
     const [ filterBlock, setFilterBlock ] = useState(false);
 
     const selectedItems = useSelector(selectSelectedFiles);
-    const currentMedias = useSelector(selectCurrentMedias);
     const pageConfig = useSelector(selectPageConfig);
     const filterField: string = pageConfig?.musicsOrderBy ? pageConfig.musicsOrderBy : 'name';
     const listItems = useSelector(selectMedias);

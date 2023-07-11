@@ -54,9 +54,7 @@ export const initListeners = () => {
         const count = await repository.createQueryBuilder()
         .where('LOWER(name) = LOWER(:name)', { name: playlist.name })
         .getCount();
-
-        console.log( `\n\n\n ${count} \n\n\n`);
-
+        
         if (count > 1) {
 
             playlistDb.name = `${playlistDb.name} (${count})`;

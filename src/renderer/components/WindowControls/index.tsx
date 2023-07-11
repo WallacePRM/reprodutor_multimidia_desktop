@@ -1,51 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { WindowElectronApi } from '../../preload-types';
-
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import { IoCloseOutline } from 'react-icons/io5';
-
-import { selectContainerMargin } from '../../store/containerMargin';
-
+import useWindowControls from './hook';
 import './index.css';
 
-function WindowControls(props: WindowControlsProps) {
+export default function WindowControls(props: WindowControlsProps) {
 
-    const [ isMaximized, setIsMaximized ] = useState(false);
-
-    const containerMargin = useSelector(selectContainerMargin);
-    const style = {
-        width: (containerMargin.appWidth - (containerMargin.margin === 0 ?  85 : containerMargin.margin / 0.0625)) + 'px',
-    };
-
-    const handleClose = async () => {
-
-        await (window as WindowElectronApi).electronApi.closeWindow();
-    };
-
-    const handleMaximize = async () => {
-
-        await (window as WindowElectronApi).electronApi.maximizeWindow();
-        setIsMaximized(isMaximized);
-    };
-
-    const handleMinimize = async () => {
-
-        await (window as WindowElectronApi).electronApi.minimizeWindow();
-    };
-
-    useEffect(() => {
-
-        const setWindowMaximed = async () => {
-            const isMaximized = await (window as WindowElectronApi).electronApi.isMaximize();
-            setIsMaximized(isMaximized);
-        };
-
-        setWindowMaximed();
-
-    }), [isMaximized];
+    const { style, isMaximized, handleMinimize, handleMaximize, handleClose } = useWindowControls();
 
     return (
         <div style={style} className={'c-window-controls' + (props.className ? ' ' + props.className : '')}>
@@ -63,8 +26,6 @@ function WindowControls(props: WindowControlsProps) {
     );
 }
 
-type WindowControlsProps = {
+interface WindowControlsProps {
     className?: string;
 }
-
-export default WindowControls;

@@ -11,7 +11,7 @@ import Modal from '..';
 import Button from '../../Button';
 import Input from '../../Input';
 
-function ModalCreatePlaylist(props: ModalCreatePlaylistProps) {
+export default function ModalCreatePlaylist(props: ModalCreatePlaylistProps) {
 
     const { medias, reference, onClose, onOpen } = props;
 
@@ -57,7 +57,6 @@ function ModalCreatePlaylist(props: ModalCreatePlaylistProps) {
             (inputValue.trim() === '' ? ' disabled' : '')}
             label="Criar"/>}>
             <>
-
             <div className="c-modal__content__item" style={{justifyContent: 'center'}}>
                 <div className="box-square mb-20" >
                     <FiSpeaker className="icon-color--light" />
@@ -71,11 +70,9 @@ function ModalCreatePlaylist(props: ModalCreatePlaylistProps) {
     );
 }
 
-type ModalCreatePlaylistProps = {
+interface ModalCreatePlaylistProps {
     reference: any;
     medias: Media[];
     onClose?: () => void;
     onOpen?: () => void
 };
-
-export default ModalCreatePlaylist;

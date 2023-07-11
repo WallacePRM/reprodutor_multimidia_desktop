@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { AnimationsProps } from "../type";
+import { AnimationsProps } from "../models";
 
-function TranformOpacity(props: AnimationsProps) {
+export default function TranformOpacity(props: AnimationsProps) {
 
     const pageVariants = {
         initial: {
@@ -50,5 +50,3 @@ function TranformOpacity(props: AnimationsProps) {
         </motion.div>
     );
 }
-
-export default TranformOpacity;

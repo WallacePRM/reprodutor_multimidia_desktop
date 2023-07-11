@@ -18,8 +18,5 @@ export const AppDataSource = new DataSource({
 export const initDataSource = async () => {
 
     await AppDataSource.initialize();
-
-    const result = await AppDataSource.getRepository(Playlist).find();
-    console.log(result);
-    console.log('\n\n\n\n\n');
+    await AppDataSource.getRepository(Playlist).find();
 };

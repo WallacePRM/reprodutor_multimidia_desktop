@@ -3,7 +3,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontaw
 import { ChangeEventHandler, useRef } from 'react';
 import './index.css';
 
-function Button(props: ButtonProps) {
+export default  function Button(props: ButtonProps) {
 
     const { label, icon, style, className, title, accept, onlyFolder, onClick, onRead } = props;
     const inputAtt: any = onlyFolder ? { directory: "", webkitdirectory: "" } : '';
@@ -13,9 +13,9 @@ function Button(props: ButtonProps) {
 
         e.stopPropagation();
 
-        if (ref.current) {
-            ref.current?.click();
-        }
+        if (!ref.current) return;
+
+        ref.current.click();
     };
 
     return (
@@ -33,7 +33,7 @@ function Button(props: ButtonProps) {
     );
 }
 
-type ButtonProps = {
+interface ButtonProps {
     label?: string,
     icon?: FontAwesomeIconProps['icon'],
     style?: object,
@@ -44,5 +44,3 @@ type ButtonProps = {
     onClick?: () => void,
     onRead?: ChangeEventHandler<HTMLInputElement>,
 };
-
-export default Button;

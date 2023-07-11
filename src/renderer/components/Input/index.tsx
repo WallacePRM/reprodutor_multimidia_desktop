@@ -1,10 +1,8 @@
 import React from 'react';
-
 import { IoCloseOutline } from 'react-icons/io5';
-
 import './index.css';
 
-function Input(props: InputProps) {
+export default function Input(props: InputProps) {
 
     const { value, onChange } = props;
 
@@ -26,9 +24,7 @@ function Input(props: InputProps) {
     );
 }
 
-type InputProps = {
+interface InputProps {
     value: string,
-    onChange: (value: string) => void,
+    onChange: (value: string) => void
 };
-
-export default Input;

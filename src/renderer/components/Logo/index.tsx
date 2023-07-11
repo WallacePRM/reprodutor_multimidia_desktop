@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../../logo.svg';
 import './index.css';
 
-function Logo(props: LogoProps) {
+export default function Logo(props: LogoProps) {
     return (
         <div className={'c-logo noselect ' + (props.className ? props.className : '')}>
             <img className="c-logo__image" src={logo} />
@@ -11,8 +11,6 @@ function Logo(props: LogoProps) {
     );
 }
 
-type LogoProps = {
+interface LogoProps {
     className?: string;
 };
-
-export default Logo;

@@ -33,7 +33,6 @@
   font-size: .75em;
   font-weight: normal;
   padding: .5rem 1rem;
-  /* padding-left: 2rem; */
 }
 
 .c-line-list__item--active span {
@@ -60,7 +59,6 @@
 }
 
 .c-line-list__item:hover {
-  /* background-color: rgb(var(--border-color), .4); */
   background-color: rgb(var(--hover-bg-color));
 }
 

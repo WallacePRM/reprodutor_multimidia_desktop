@@ -12,7 +12,7 @@ import { setPlaylistData } from '../../../store/playlists';
 import { setGroupInfo } from '../../../store/groupInfo';
 import { getGroupInfoService } from '../../../service/groupInfo';
 
-function ModalRenamePlaylist(props: ModalRenamePlaylistProps) {
+export default function ModalRenamePlaylist(props: ModalRenamePlaylistProps) {
 
     const { reference, playlist, onClose, onOpen } = props;
 
@@ -51,7 +51,7 @@ function ModalRenamePlaylist(props: ModalRenamePlaylistProps) {
     };
 
     return (
-
+        
         <Modal
         reference={modalRef}
         title="Renomear a playlist"
@@ -77,11 +77,9 @@ function ModalRenamePlaylist(props: ModalRenamePlaylistProps) {
     );
 }
 
-type ModalRenamePlaylistProps = {
+interface ModalRenamePlaylistProps {
     playlist: Omit<Playlist, 'modificationDate'>,
     reference: any,
     onClose?: () => void;
     onOpen?: () => void;
 };
-
-export default ModalRenamePlaylist;

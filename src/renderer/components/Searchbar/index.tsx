@@ -1,69 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectSidebarOpened, toggleSidebar } from '../../store/sidebarOpened';
+import React, {  } from 'react';
 import Opacity from '../Animations/Opacity';
-import { useNavigate } from 'react-router-dom';
-import { selectMedias } from '../../store/medias';
-
 import { IoSearchOutline } from 'react-icons/io5';
 import { IoCloseOutline } from 'react-icons/io5';
-
-import './index.css';
 import Margin from '../Animations/Margin';
+import useSearchbar from './hook';
+import './index.css';
 
-function Searchbar() {
+export default function Searchbar() {
 
-    const [ search, setSearch ] = useState('');
-
-    const medias = useSelector(selectMedias);
-    const searchItems = medias.filter(x => x.name.toLowerCase().includes(search.toLowerCase())).slice(0, 9);
-    const sidebarIsOpened = useSelector(selectSidebarOpened);
-    const sidebarIsMaximized = sidebarIsOpened || document.body.clientWidth > 999;
-    const inputRef = useRef(null);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const handleClear = () => {
-
-        setSearch('');
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-        setSearch(e.currentTarget.value);
-    };
-
-    const handleToggleSidebar = (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        if (!(document.body.clientWidth < 999 && document.body.clientWidth > 655)) return;
-        if (!sidebarIsOpened) {
-            dispatch(toggleSidebar());
-        }
-
-        inputRef.current && inputRef.current.focus();
-    };
-
-    const handleSearchItem = (item: string) => () => {
-
-        navigate(`/search-results/${item}`);
-        dispatch(toggleSidebar());
-
-        setSearch('');
-    };
-
-    const handleSearch = (e: React.FormEvent) => {
-
-        e.preventDefault();
-
-        if (search.trim() !== '' && sidebarIsMaximized) {
-            navigate(`/search-results/${search}`);
-
-            dispatch(toggleSidebar());
-        }
-
-        setSearch('');
-    };
+    const { search, inputRef, searchItems, sidebarIsMaximized, sidebarIsOpened, 
+        handleToggleSidebar, handleSearch, handleChange, handleClear, handleSearchItem } = useSearchbar();
 
     return (
         <form onSubmit={handleSearch} onClick={handleToggleSidebar} className={'c-searchbar' +
@@ -80,11 +26,12 @@ function Searchbar() {
 
                         {searchItems.map((item, index) => {
                             return (
-                            <Opacity key={index} cssAnimation={["opacity"]} onClick={handleSearchItem(item.name)} className="c-popup__item">
-                                <div className="c-popup__item__label">
-                                    <h3 className="c-popup__item__title">{item.name}</h3>
-                                </div>
-                            </Opacity>)
+                                <Opacity key={index} cssAnimation={["opacity"]} onClick={handleSearchItem(item.name)} className="c-popup__item">
+                                    <div className="c-popup__item__label">
+                                        <h3 className="c-popup__item__title">{item.name}</h3>
+                                    </div>
+                                </Opacity>
+                            )
                         })}
                     </Margin>
                 </div>
@@ -92,5 +39,3 @@ function Searchbar() {
         </form>
     );
 }
-
-export default Searchbar;

@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ReactComponent as Menu } from '@icon/themify-icons/icons/menu.svg';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSidebar } from '../../store/sidebarOpened';
-
 import { IoMenuOutline }  from 'react-icons/io5';
-
 import './index.css';
 
-function ToggleSidebar() {
+export default function ToggleSidebar() {
 
     const dispatch = useDispatch();
     const [ animation, setAnimation ] = useState(false);
@@ -40,5 +37,3 @@ function ToggleSidebar() {
         </div>
     );
 };
-
-export default ToggleSidebar;

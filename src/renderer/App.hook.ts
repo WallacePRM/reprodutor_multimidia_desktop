@@ -66,7 +66,6 @@ export function useWindowState(): WindowState {
         const setAccentColor = async () => {
 
             const accentColor = await getWindowsService().getAccentColor();
-            console.log(accentColor);
 
             const rgbColor = hexToRgb(accentColor) || pageConfig.current.accentColor;
             const rgbFormated = `${rgbColor[0]}, ${rgbColor[1]}, ${rgbColor[2]} `;

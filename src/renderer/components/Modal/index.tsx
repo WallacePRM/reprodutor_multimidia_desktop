@@ -3,7 +3,7 @@ import Popup from 'reactjs-popup';
 import TranformOpacity from '../Animations/TransformOpacity';
 import Button from '../Button';
 
-function Modal(props: ModalProps) {
+export default function Modal(props: ModalProps) {
 
     const { className, title, children, footer, reference, onOpen, onClose } = props;
 
@@ -39,7 +39,7 @@ function Modal(props: ModalProps) {
     );
 }
 
-type ModalProps = {
+interface ModalProps {
     className?: string,
     title: string,
     children: JSX.Element,
@@ -48,5 +48,3 @@ type ModalProps = {
     onOpen?: () => void,
     onClose?: () => void,
 };
-
-export default Modal;

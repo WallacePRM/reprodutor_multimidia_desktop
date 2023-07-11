@@ -1,4 +1,5 @@
 export type AnimationsProps = {
+    
     className?: string;
     cssAnimation: string[];
     style?: {};

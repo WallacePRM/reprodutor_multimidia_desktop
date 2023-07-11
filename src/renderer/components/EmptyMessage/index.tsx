@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
 
-function EmptyMessage(props: EmptyMessage) {
+export default function EmptyMessage(props: EmptyMessageProps) {
 
     return (
         <div className={'c-empty-message' +
@@ -18,12 +18,10 @@ function EmptyMessage(props: EmptyMessage) {
     );
 }
 
-type EmptyMessage = {
+interface EmptyMessageProps {
     className?: string;
     title: string,
     description?: string,
     icon?: any,
     button?: any
 };
-
-export default EmptyMessage;

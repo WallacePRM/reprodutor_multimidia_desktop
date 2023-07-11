@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Playlist } from '../../../../common/playlists/types';
-import GenericGridItem, { GenericItemData } from '../../../components/List/GenericGridItem';
+import GenericGridItem from '../../../components/List/GenericGridItem';
 
 import { FiSpeaker } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { selectMediaPlaying, setMediaPlaying } from '../../../store/mediaPlaying
 import { getPlaylistService } from '../../../service/playlist';
 import { deletePlaylist } from '../../../store/playlists';
 import pageConfig, { selectPageConfig } from '../../../store/pageConfig';
+import { GenericItemData } from '../../../components/List/models';
 
 function PlaylistItem(props: PlaylistItemProps) {
 

@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-
+import React, {  } from 'react';
 import { FiSpeaker } from 'react-icons/fi';
 import { IoHomeOutline } from 'react-icons/io5';
 import { IoMusicalNotesOutline } from 'react-icons/io5';
@@ -7,77 +6,18 @@ import { IoFilmOutline } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { IoChevronDownOutline } from 'react-icons/io5';
-
 import Logo from '../Logo';
 import PreviousRouter from '../PreviousRouter';
 import Searchbar from '../Searchbar';
 import ToggleSidebar from '../ToggleSidebar';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectSidebarOpened, setSidebarOpened } from '../../store/sidebarOpened';
-import { useDispatch } from 'react-redux';
-import { setContainerMargin } from '../../store/containerMargin';
-import { selectPlaylists } from '../../store/playlists';
-import { selectGroupInfo, setGroupInfo } from '../../store/groupInfo';
-
+import { Link } from 'react-router-dom';
+import useSidebar from './hook';
 import './index.css';
-import { Playlist } from '../../../common/playlists/types';
-import { getGroupInfoService } from '../../service/groupInfo';
 
-function Sidebar() {
+export default function Sidebar() {
 
-    const { pathname } = useLocation();
-
-    const [ rotate, setRotate ] = useState(false);
-    const [ playlistsVisibility, setPlaylistsVisibity ] = useState(true);
-
-    const allPlaylists = useSelector(selectPlaylists);
-    const groupInfo = useSelector(selectGroupInfo);
-    const sidebarIsOpened: boolean = useSelector(selectSidebarOpened);
-    const ref = useRef<HTMLHeadingElement>(null);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-
-        const margin = document.body.offsetWidth > 655 ? (ref.current?.offsetWidth || 321) * 0.0625 : 0;
-        dispatch(setContainerMargin({ margin: margin }));
-    }, [ref.current]);
-
-    const setRotateAnimation = () => {
-
-        if (localStorage.getItem('lastRoute') === '/configs') return;
-        setRotate(true);
-        setTimeout(() => setRotate(false), 700);
-    };
-
-    const togglePlaylists = () => {
-
-        setPlaylistsVisibity(!playlistsVisibility);
-    };
-
-    const handleGoToPlaylists = (e: React.MouseEvent) => {
-
-        e.stopPropagation();
-
-        togglePlaylists();
-
-        navigate('/playlists');
-        dispatch(setSidebarOpened({isOpened: false}));
-    };
-
-    const handleTogglePlaylists = (e: React.MouseEvent) => {
-
-        e.stopPropagation();
-
-        togglePlaylists();
-    };
-
-    const handleGoToPlaylistInfo = async (playlist: Playlist) => {
-
-        await getGroupInfoService().setGroupInfo(playlist);
-        dispatch(setGroupInfo(playlist));
-    };
+    const { ref, sidebarIsOpened, pathname, playlistsVisibility, rotate, allPlaylists, groupInfo,
+        handleGoToPlaylists, setRotateAnimation, handleGoToPlaylistInfo, handleTogglePlaylists } = useSidebar();
 
     return (
         <div ref={ref} className={'c-sidebar' + (sidebarIsOpened ? ' c-sidebar--opened' : '')}>
@@ -173,5 +113,3 @@ function Sidebar() {
         </div>
     )
 }
-
-export default Sidebar;

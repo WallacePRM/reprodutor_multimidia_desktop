@@ -57,7 +57,6 @@
     padding: 8px;
 }
 
-
 .c-popup--searchbar {
     position: absolute;
     top: 0;
@@ -70,7 +69,7 @@
     padding: .2rem !important;
     padding-right: .2rem !important;
     overflow: hidden;
-    z-index: 1;
+    z-index: 49;
 }
 
 .c-popup--searchbar__list {

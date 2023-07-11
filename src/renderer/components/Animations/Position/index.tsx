@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { AnimationsProps } from "../type";
+import { AnimationsProps } from "../models";
 
-function Position(props: AnimationsProps) {
+export default function Position(props: AnimationsProps) {
 
     const { cssAnimation } = props;
     const pageVariants = {
@@ -53,5 +53,3 @@ function Position(props: AnimationsProps) {
         </motion.div>
     );
 }
-
-export default Position;

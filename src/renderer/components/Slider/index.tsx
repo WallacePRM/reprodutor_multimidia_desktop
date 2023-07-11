@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './index.css';
 
-function Slider(props: SliderProps) {
+export default function Slider(props: SliderProps) {
 
     const [ animation, setAnimation ] = useState(false);
     const { min, max, value, step } = props.data;
@@ -43,5 +43,3 @@ type SliderData = {
     step?: number;
     value: number;
 };
-
-export default Slider;

@@ -1,12 +1,12 @@
 import React from 'react';
 import TransformOpacity from '../Animations/TransformOpacity';
-
+import { getAlphabetList } from '../../common/array';
 import './index.css';
 
-function FilterBlock(props: FilterBlockProps) {
+export default function FilterBlock(props: FilterBlockProps) {
 
     const { filterList, filter } = props;
-    const alphabet = [ '&', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '...'];
+    const alphabet = getAlphabetList();
 
     const handleSelectItem = (e: React.MouseEvent) => {
 
@@ -32,10 +32,8 @@ function FilterBlock(props: FilterBlockProps) {
     );
 }
 
-type FilterBlockProps = {
+interface FilterBlockProps {
     filterList: any[];
     filter: string;
     onSelectItem: (e: React.MouseEvent) => void;
 };
-
-export default FilterBlock;

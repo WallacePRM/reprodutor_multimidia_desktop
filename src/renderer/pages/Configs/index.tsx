@@ -120,7 +120,6 @@ function Configs() {
 
             const folderPath = 'file://' + pathItem.path;
             const newMedias = medias.filter((media) => !(media.src.startsWith(folderPath) && media.type === pathItem.type));
-            console.log(newMedias);
 
             dispatch(setMedias(newMedias));
 

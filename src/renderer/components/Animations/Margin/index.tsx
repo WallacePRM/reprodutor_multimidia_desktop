@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { AnimationsProps } from "../type";
+import { AnimationsProps } from "../models";
 
-function Margin(props: AnimationsProps) {
+export default function Margin(props: AnimationsProps) {
 
     const pageVariants = {
         initial: {
@@ -47,5 +47,3 @@ function Margin(props: AnimationsProps) {
         </motion.div>
     );
 }
-
-export default Margin;

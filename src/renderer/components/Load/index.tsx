@@ -1,8 +1,7 @@
 import React from 'react';
-
 import './index.css';
 
-function Load(props: LoadProps) {
+export default function Load(props: LoadProps) {
 
     const { style } = props;
 
@@ -13,9 +12,7 @@ function Load(props: LoadProps) {
     );
 }
 
-type LoadProps = {
+interface LoadProps {
     className?: string;
     style?: React.CSSProperties,
 }
-
-export default Load;

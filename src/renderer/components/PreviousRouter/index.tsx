@@ -1,12 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate,  } from 'react-router-dom';
-
 import { IoArrowBackOutline } from 'react-icons/io5';
-
 import "./index.css";
 
-function PreviousRouter(props: PreviousRouterProps) {
+export default function PreviousRouter(props: PreviousRouterProps) {
 
     const navigate = useNavigate();
     const [ animation, setAnimation ] = useState(false);
@@ -45,10 +43,8 @@ function PreviousRouter(props: PreviousRouterProps) {
     );
 }
 
-type PreviousRouterProps = {
+interface PreviousRouterProps {
     className?: string;
     title?: string,
     onClick?: () => void;
 };
-
-export default PreviousRouter;

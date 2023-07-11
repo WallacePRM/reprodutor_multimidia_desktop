@@ -59,3 +59,8 @@ export const isPlaylist = (item: Media | Playlist): item is Playlist => {
 
     return Array.isArray((item as Playlist).medias);
 };
+
+export const getAlphabetList = () => {
+
+    return [ '&', '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '...'];
+};

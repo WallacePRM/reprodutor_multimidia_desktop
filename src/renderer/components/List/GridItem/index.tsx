@@ -1,24 +1,19 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-
 import { IoMusicalNotesOutline } from "react-icons/io5";
 import { IoFilmOutline } from "react-icons/io5";
-
-import { Media } from '../../../../common/medias/types';
 import { formatStrHHMMSS } from "../../../common/time";
-import { selectPageConfig } from "../../../store/pageConfig";
 import { removeMediaExt } from "../../../common/string";
-import GenericGridItem, { GenericItemData } from "../GenericGridItem";
-
+import GenericGridItem from "../GenericGridItem";
+import useGridItem from "./hook";
+import { GenericItemData, GridItemFileProps } from "../models";
 import './index.css';
 
-function GridItem(props: FileProps) {
+export default function GridItem(props: GridItemFileProps) {
 
-    const { noSelect, file, className, onPlay, onSelectMedia, onRemove } = props;
-
-    const pageConfig = useSelector(selectPageConfig);
-
+    const { className, pageConfig, file, noSelect, 
+            onRemove, handleRemoveMedia, handlePlay, handleSelectMedia } = useGridItem(props);
+    
     const thumbnail = (
     <div className="h-100 w-100">
        <LazyLoadImage key={file.id} style={{borderRadius: 0}} src={file.thumbnail}/>
@@ -28,21 +23,6 @@ function GridItem(props: FileProps) {
         {file.type === 'video' && <IoFilmOutline className='icon-color--light' />}
         { file.type === 'music' && <IoMusicalNotesOutline className="icon-color--light"/>}
     </div>;
-
-    const handleSelectMedia = () => {
-
-        onSelectMedia(file);
-    };
-
-    const handlePlay = () => {
-
-        onPlay(file);
-    };
-
-    const handleRemoveMedia = () => {
-
-        onRemove(file);
-    };
 
     const item: GenericItemData = {
         id: file.id,
@@ -61,20 +41,6 @@ function GridItem(props: FileProps) {
         key={file.id}
         onSelectMedia={handleSelectMedia}
         onPlay={handlePlay}
-        onRemove={onRemove ? handleRemoveMedia : null}
-        />
+        onRemove={onRemove ? handleRemoveMedia : null}/>
     )
 }
-
-type FileProps = {
-    noSelect?: boolean,
-    file: Media & {
-        selected?: boolean,
-    },
-    className?: string,
-    onPlay: (file: Media) => void,
-    onSelectMedia: (file: Media) => void,
-    onRemove?: (file: Media) => void
-};
-
-export default GridItem;
