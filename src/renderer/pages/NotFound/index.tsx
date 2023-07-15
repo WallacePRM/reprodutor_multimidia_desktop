@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as ErrorSvg } from '../../assets/img/404.svg';
 import './index.css';
 
-function NotFound() {
+export default function NotFound() {
 
     return (
         <div className="c-notfound">
@@ -18,5 +18,3 @@ function NotFound() {
         </div>
     );
 }
-
-export default NotFound;

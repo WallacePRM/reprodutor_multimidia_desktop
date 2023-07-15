@@ -1,11 +1,9 @@
 import React from 'react';
-
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
 import Button from '../../../components/Button';
 import { Folder } from '../../../../common/folders/type';
 
-function PathItem(props: PathItemProps) {
+export default function PathItem(props: PathItemProps) {
 
     const { pathItem, onDelete } = props;
 
@@ -26,9 +24,7 @@ function PathItem(props: PathItemProps) {
     );
 }
 
-type PathItemProps = {
+interface PathItemProps {
     pathItem: Folder,
     onDelete: (pathItem: Folder) => void
 };
-
-export default PathItem;

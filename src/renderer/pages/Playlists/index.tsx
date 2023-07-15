@@ -1,93 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import Popup from 'reactjs-popup';
-
 import { HiOutlinePlus } from 'react-icons/hi';
 import { IoChevronDownOutline } from 'react-icons/io5';
-
 import emptyMessageIcon from '../../assets/img/speaker-gradient.svg';
 import Button from '../../components/Button';
 import EmptyMessage from '../../components/EmptyMessage';
 import Margin from '../../components/Animations/Margin';
 import Opacity from '../../components/Animations/Opacity';
-import { useSelector } from 'react-redux';
-import { selectPageConfig, setPageConfig } from '../../store/pageConfig';
-import { selectSelectedFiles } from '../../store/selectedFiles';
 import PlaylistItem from './PlaylistItem';
-import { getPlaylistService } from '../../service/playlist';
-import { Playlist } from '../../../common/playlists/types';
-import { selectPlaylists, setPlaylist } from '../../store/playlists';
-import { sortAsc } from '../../common/array';
 import Input from '../../components/Input';
-import { Media } from '../../../common/medias/types';
-import { getPageService } from '../../service/page';
 import SelectBlockPlaylist from '../../components/SelectBlock/SelectBlockPlaylist';
 import { saveScrollPosition } from '../../common/dom';
+import usePlaylists from '../../components/Playlists/hook';
 
-function Playlists() {
+export default function Playlists() {
 
-    const [ inputValue, setInputValue ] = useState('Playlist sem título');
-
-    const pageConfig = useSelector(selectPageConfig);
-    const selectedItems = useSelector(selectSelectedFiles);
-    const filterField: string = pageConfig?.playlistsOrderBy ? pageConfig.playlistsOrderBy : 'name';
-    let listItems = useSelector(selectPlaylists);
-    let playlists: Playlist[] = [...listItems].sort((a, b) => sortAsc(((a as any)[filterField] || '').toLocaleLowerCase(), ((b as any)[filterField] || '').toLocaleLowerCase()));
-
-    const popupRef = useRef(null);
-    const createPlaylistPopup = useRef(null);
-    const closeTooltip = () => popupRef.current && popupRef.current.close();
-    const closePlaylistPopup = () => createPlaylistPopup.current && createPlaylistPopup.current.close();
-    const dispatch = useDispatch();
-
-    const handleChangePlaylistsOrderBy = async (orderBy: string) => {
-
-        dispatch(setPageConfig({ playlistsOrderBy: orderBy }));
-        await getPageService().setPageConfig({ playlistsOrderBy: orderBy });
-    };
-
-    const handleCreatePlaylist = async () => {
-
-        if (inputValue.trim() === '') {
-            setInputValue('Playlist sem título');
-        }
-
-        try {
-            const playlistService = getPlaylistService();
-            const playlist: Playlist = await playlistService.insertPlaylist({
-                name: inputValue,
-                modificationDate: new Date().toISOString(),
-                medias: [] as Media[],
-            });
-
-            dispatch(setPlaylist(playlist));
-        }
-        catch(error) {
-            alert(error.message);
-        }
-        finally {
-            closePlaylistPopup();
-        }
-    };
-
-    useEffect(() => {
-
-        const restoreScrollPosition = async () => {
-
-            const pageConfig = await getPageService().getPageConfig();
-
-            if (pageConfig.scrollPosition && pageConfig.firstRun) {
-
-                document.querySelector('.c-list').scrollTo(0, pageConfig.scrollPosition);
-                dispatch(setPageConfig({firstRun: false}));
-            }
-            else {
-                await getPageService().setPageConfig({scrollPosition: 0});
-            }
-        };
-
-        restoreScrollPosition();
-    }, []);
+    const { playlists, inputValue, pageConfig, popupRef, selectedItems, modalCreatePlaylistPopup, filterField,
+        setInputValue, handleCreatePlaylist, mapPlaylistOrderBy, handleChangePlaylistsOrderBy, closeTooltip } = usePlaylists();
 
     return (
         <div className="c-page c-playlists">
@@ -98,7 +27,7 @@ function Playlists() {
             { playlists.length > 0 ?
             <Opacity cssAnimation={["opacity"]} className="c-container__content__title">
                 <div className="d-flex a-items-center">
-                        <Popup ref={createPlaylistPopup} onOpen={() => setInputValue('Playlist sem título')} keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Nova playlist</span></div>}>
+                        <Popup ref={modalCreatePlaylistPopup} onOpen={() => setInputValue('Playlist sem título')} keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Nova playlist</span></div>}>
                             <Margin cssAnimation={["marginTop"]} className="c-popup c-popup--no-hover bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '300px'}}>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label">
@@ -149,7 +78,7 @@ function Playlists() {
                     title="Você não tem playlists"
                     button={
                     <div className="d-flex a-items-center">
-                       <Popup ref={createPlaylistPopup}  keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Criar uma nova lista de reprodução</span></div>}>
+                       <Popup ref={modalCreatePlaylistPopup}  keepTooltipInside arrow={false} trigger={<div className="c-button box-field btn--primary c-button--no-media-style" style={{maxHeight: '21px'}}><HiOutlinePlus className="c-button__icon mr-10"/><span className="c-button__label">Criar uma nova lista de reprodução</span></div>}>
                             <Margin cssAnimation={["marginTop"]} className="c-popup c-popup--no-hover bg-acrylic bg-acrylic--popup noselect" style={{minWidth: '300px'}}>
                                 <label className="c-popup__item">
                                     <div className="c-popup__item__label">
@@ -185,13 +114,3 @@ function Playlists() {
         </div>
     );
 }
-
-function mapPlaylistOrderBy(playlistOrderBy: string) {
-
-    if (playlistOrderBy === 'name') return 'A - Z';
-    if (playlistOrderBy === 'modificationDate') return 'Data de modificação';
-
-    return 'Aleatório';
-}
-
-export default Playlists;
